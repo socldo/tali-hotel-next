@@ -20,5 +20,7 @@ export default async function handler(request: Request, response: Response) {
             Accept: "application/json",
         }),
     });
+
+    
     return response;
 }
