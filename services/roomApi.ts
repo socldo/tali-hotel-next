@@ -1,15 +1,15 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import {IHotel, IRoom, IUser} from '../models'
-import {RootState} from '../store/store'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { IHotel, IRoom, IUser } from '../models'
+import { RootState } from '../store/store'
 
-import {apiUrl} from '../utils/config'
+import { apiUrl } from '../utils/config'
 
 export const roomApi = createApi({
     reducerPath: 'roomApi',
     tagTypes: ['room'],
     baseQuery: fetchBaseQuery({
         baseUrl: apiUrl,
-        prepareHeaders: (headers, {getState, endpoint}) => {
+        prepareHeaders: (headers, { getState, endpoint }) => {
             const user = (getState() as RootState).persistedReducer.auth
 
             if (user && user.token && endpoint !== 'refresh') {
@@ -25,7 +25,7 @@ export const roomApi = createApi({
         }),
         createRoom: builder.mutation<IRoom, Partial<IRoom> & { hotelId: string }>({
             query: (data) => {
-                const {hotelId, ...body} = data
+                const { hotelId, ...body } = data
                 return {
                     url: `/rooms/${hotelId}`,
                     method: 'POST',
@@ -36,7 +36,7 @@ export const roomApi = createApi({
         }),
         updateRoom: builder.mutation<IRoom, Partial<IRoom>>({
             query: (data) => {
-                const {_id, ...body} = data
+                const { _id, ...body } = data
                 return {
                     url: `/rooms/${_id}`,
                     method: 'PUT',
@@ -57,4 +57,4 @@ export const roomApi = createApi({
     })
 })
 
-export const {useGetHotelRoomsQuery, useCreateRoomMutation, useUpdateRoomMutation, useDeleteRoomMutation} = roomApi
+export const { useGetHotelRoomsQuery, useCreateRoomMutation, useUpdateRoomMutation, useDeleteRoomMutation } = roomApi

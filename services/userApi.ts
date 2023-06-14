@@ -1,15 +1,15 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import {IHotel, IUser} from '../models'
-import {RootState} from '../store/store'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { IHotel, IUser } from '../models'
+import { RootState } from '../store/store'
 
-import {apiUrl} from '../utils/config'
+import { apiUrl } from '../utils/config'
 
 export const userApi = createApi({
     reducerPath: 'userApi',
     tagTypes: ['myHotels'],
     baseQuery: fetchBaseQuery({
         baseUrl: apiUrl,
-        prepareHeaders: (headers, {getState, endpoint}) => {
+        prepareHeaders: (headers, { getState, endpoint }) => {
             const user = (getState() as RootState).persistedReducer.auth
 
             if (user && user.token && endpoint !== 'refresh') {
@@ -24,8 +24,8 @@ export const userApi = createApi({
             query: (id) => `/users/${id}`
         }),
         updateUser: builder.mutation<IUser, Partial<IUser>>({
-            query (data) {
-                const {_id, ...body} = data
+            query(data) {
+                const { _id, ...body } = data
                 return {
                     url: `/users/${_id}`,
                     method: 'PUT',
@@ -34,7 +34,7 @@ export const userApi = createApi({
             }
         }),
         changePassword: builder.mutation<{ message: string }, any>({
-            query (body) {
+            query(body) {
                 return {
                     url: `/users/reset`,
                     method: 'PUT',
@@ -43,7 +43,7 @@ export const userApi = createApi({
             }
         }),
         deleteUser: builder.mutation({
-            query (id) {
+            query(id) {
                 return {
                     url: `/users/${id}`,
                     method: 'DELETE'
@@ -54,19 +54,19 @@ export const userApi = createApi({
             query: (body: {
                 id: string;
             }) => {
-                return {url: '/users/wishlist', method: 'post', body}
+                return { url: '/users/wishlist', method: 'post', body }
             }
         }),
         deleteWishList: builder.mutation({
             query: (body: {
                 id: string;
             }) => {
-                return {url: '/users/wishlist', method: 'delete', body}
+                return { url: '/users/wishlist', method: 'delete', body }
             }
         }),
         createHotel: builder.mutation<IHotel, Partial<IHotel>>({
             query: (body) => {
-                return {url: '/hotels', method: 'post', body}
+                return { url: '/hotels', method: 'post', body }
             },
             invalidatesTags: ['myHotels']
         }),
@@ -76,13 +76,13 @@ export const userApi = createApi({
         }),
         deleteHotel: builder.mutation<void, string>({
             query: (id) => {
-                return {url: `/hotels/${id}`, method: 'delete'}
+                return { url: `/hotels/${id}`, method: 'delete' }
             },
             invalidatesTags: ['myHotels']
         }),
         updateHotel: builder.mutation<void, Partial<IHotel>>({
             query: (data) => {
-                const {_id, ...body} = data
+                const { _id, ...body } = data
                 return {
                     url: `/hotels/${_id}`,
                     method: 'PUT',

@@ -1,8 +1,8 @@
 import MapBoxGeocoder from '@mapbox/mapbox-gl-geocoder'
-import {useControl} from 'react-map-gl'
+import { useControl } from 'react-map-gl'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
-import {mapboxAccessToken} from '../../utils/config'
-import {AddressFormProps} from '../join/AddressForm'
+import { mapboxAccessToken } from '../../utils/config'
+import { AddressFormProps } from '../join/AddressForm'
 
 const Geocoder = ({
     address,

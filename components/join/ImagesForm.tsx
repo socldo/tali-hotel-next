@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import {FiTrash} from '../../utils/icons'
-import {toast} from 'react-toastify'
-import {useDeleteImageMutation, useUploadImagesMutation} from '../../services/uploadApi'
+import { FiTrash } from '../../utils/icons'
+import { toast } from 'react-toastify'
+import { useDeleteImageMutation, useUploadImagesMutation } from '../../services/uploadApi'
 import CubeLoader from '../layout/CubeLoader'
 
 const DEFAULT_MAX_FILE_SIZE_IN_BYTES = 500000
@@ -25,7 +25,7 @@ const ImagesForm = (
     const [uploadImages] = useUploadImagesMutation()
     const [deleteImage] = useDeleteImageMutation()
     const handleNewFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {files: newFiles} = e.target
+        const { files: newFiles } = e.target
         if (newFiles) {
             try {
                 let formData = new FormData()
@@ -52,7 +52,7 @@ const ImagesForm = (
     }
     const uploadImageToCloud = async (formData: FormData) => {
         try {
-            const {url} = await uploadImages(formData).unwrap()
+            const { url } = await uploadImages(formData).unwrap()
             return url
         } catch (e) {
             console.log(e)
@@ -63,7 +63,7 @@ const ImagesForm = (
         try {
             const newFiles = files.filter((e) => e !== file)
             setFiles(newFiles)
-            await deleteImage({url: file}).unwrap()
+            await deleteImage({ url: file }).unwrap()
         } catch (e) {
             console.log(e)
         }
@@ -91,7 +91,7 @@ const ImagesForm = (
                             onChange={handleNewFileUpload}
                             accept=".jpg,.png,.jpeg"
                             multiple
-                            className="opacity-0 w-full h-full absolute "/>
+                            className="opacity-0 w-full h-full absolute " />
                         <label htmlFor="hidden-input"
                             className="z-20 mt-2 rounded-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 focus:shadow-outline focus:outline-none text-center">
                             Upload a file
@@ -103,7 +103,7 @@ const ImagesForm = (
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24">
                                     <path
-                                        d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479-1.092l4 4h-3v4h-2v-4h-3l4-4z"/>
+                                        d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479-1.092l4 4h-3v4h-2v-4h-3l4-4z" />
                                 </svg>
                             </i>
                             <p className="text-lg text-blue-700 text-center">Drop files to upload</p>
@@ -119,7 +119,7 @@ const ImagesForm = (
                                     className="h-full w-full text-center flex flex-col items-center justify-center items-center">
                                     <img className="mx-auto w-32"
                                         src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
-                                        alt="no data"/>
+                                        alt="no data" />
                                     <span className="text-small text-gray-500">No files selected</span>
                                 </li>
                                 : <section className="w-full grid grid-cols-2 lg:grid-cols-3 gap-5">
@@ -139,14 +139,14 @@ const ImagesForm = (
                                                                 `}
                                                 onClick={() => removeFile(file)}
                                             >
-                                                <FiTrash/>
+                                                <FiTrash />
                                             </div>
                                         </div>
                                     ))}
                                     {[...Array(counter)].map((_, index) => (
                                         <div key={index} className="w-full h-40 relative border">
                                             <div className="w-full h-full flex justify-center items-center">
-                                                <CubeLoader/>
+                                                <CubeLoader />
                                             </div>
                                         </div>
                                     ))}

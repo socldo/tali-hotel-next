@@ -6,14 +6,14 @@ import ReactMapGL, {
 import 'mapbox-gl/dist/mapbox-gl.css'
 import React from 'react'
 import Geocoder from './Geocoder'
-import {mapboxAccessToken} from '../../utils/config'
-import {AddressFormProps} from '../join/AddressForm'
+import { mapboxAccessToken } from '../../utils/config'
+import { AddressFormProps } from '../join/AddressForm'
 
 const AddLocation = ({
     address,
     updateFields
 }: AddressFormProps) => {
-    const {lat, lng} = address
+    const { lat, lng } = address
 
     return (
         <div>
@@ -24,7 +24,7 @@ const AddLocation = ({
                     latitude: lat,
                     zoom: 10
                 }}
-                style={{height: '50vh'}}
+                style={{ height: '50vh' }}
                 mapStyle="mapbox://styles/mapbox/streets-v11"
             >
                 {lat && lng && <Marker
@@ -41,7 +41,7 @@ const AddLocation = ({
                         })
                     }
                 />}
-                <NavigationControl position="bottom-right"/>
+                <NavigationControl position="bottom-right" />
                 <GeolocateControl
                     position="top-left"
                     trackUserLocation
@@ -56,7 +56,7 @@ const AddLocation = ({
                     }
                     }
                 />
-                <Geocoder address={address} updateFields={updateFields}/>
+                <Geocoder address={address} updateFields={updateFields} />
             </ReactMapGL>
         </div>
     )

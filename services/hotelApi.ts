@@ -1,8 +1,8 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { IHotel } from '../models'
 import { RootState } from '../store/store'
 
-import {apiUrl} from '../utils/config'
+import { apiUrl } from '../utils/config'
 
 export const hotelApi = createApi({
     reducerPath: 'hotelApi',
@@ -25,10 +25,10 @@ export const hotelApi = createApi({
         }),
         getHotels: builder.query<IHotel[], { city?: string; limit?: number; min?: number; max?: number }>({
             query: (arg) => {
-                const {city, limit, min, max} = arg
+                const { city, limit, min, max } = arg
                 return {
                     url: '/hotels',
-                    params: {city, limit, min, max}
+                    params: { city, limit, min, max }
                 }
             },
             providesTags: ['hotels']
@@ -37,13 +37,13 @@ export const hotelApi = createApi({
             query: (body: {
                 id: string; review: string; score: number
             }) => {
-                return {url: '/hotels/review', method: 'post', body}
+                return { url: '/hotels/review', method: 'post', body }
             },
             invalidatesTags: ['hotels']
         }),
         deleteReview: builder.mutation({
             query: (id) => {
-                return {url: `/hotels/review/${id}`, method: 'delete'}
+                return { url: `/hotels/review/${id}`, method: 'delete' }
             },
             invalidatesTags: ['hotels']
         }),
@@ -58,4 +58,4 @@ export const hotelApi = createApi({
     })
 })
 
-export const {useGetHotelsQuery, useGetHotelQuery, usePostReviewMutation, useDeleteReviewMutation, useUpdateReviewMutation} = hotelApi
+export const { useGetHotelsQuery, useGetHotelQuery, usePostReviewMutation, useDeleteReviewMutation, useUpdateReviewMutation } = hotelApi
