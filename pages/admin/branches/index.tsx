@@ -9,8 +9,7 @@ import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
-import BranchForm from '../../../components/branch/branch-form';
-import handlerBranch from '../../api/branch';
+import BranchForm from '../../../components/admin/branch/branch-form';
 function Branch() {
 
     const [branches, setBranches] = useState<Model.Branch[]>([]);
@@ -23,45 +22,31 @@ function Branch() {
 
 
     useEffect(() => {
-
-        setLoading(true);
-
-        const fetchData = async () => {
-            try {
-
-                // const response = await fetch('../api/branches');
-
-                const response = await handlerBranch();
-
-                // const response = await fetch('http://localhost:1802/api/branches')
-                //     .then(response => response.json())
-                //     .then(json => console.log(json))
-
-
-
-                // const response = await fetch("http://localhost:1802/api/branches", {
-                //     method: "GET",
-                //     headers: new Headers({
-                //         "Content-Type": "application/json",
-                //         Accept: "application/json",
-                //     }),
-                // });
-
-                console.log(response);
-                // Xử lý dữ liệu response ở đây
-
-
-                setBranches(response.data);
-                setLoading(false);
-
-            } catch (error) {
-                console.error(error);
-                setLoading(false);
-            }
-        };
-
-        fetchData();
+        fetchBranches();
     }, []);
+
+    const fetchBranches = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch("/api/branches", {
+                method: "GET",
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+            // Cập nhật giá trị branches trong state
+            setBranches(data.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching branches:', error);
+            setLoading(false);
+        }
+    };
 
 
     const statusBodyTemplate = (rowData: Model.Branch) => {

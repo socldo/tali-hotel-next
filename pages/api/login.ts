@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 type User = {
-  username?: string;
-  password?: string;
+    username?: string;
+    password?: string;
 };
 
 export const config = {
@@ -11,7 +11,7 @@ export const config = {
 export default async function handler(request: Request, response: Response) {
     const data: User = await request.json();
     console.log(data);
-    
+
     response = await fetch("http://localhost:1802/api/auth/signin", {
         method: request.method,
         body: JSON.stringify(data),
@@ -21,6 +21,6 @@ export default async function handler(request: Request, response: Response) {
         }),
     });
 
-    
+
     return response;
 }
