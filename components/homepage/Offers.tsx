@@ -6,68 +6,88 @@ import 'swiper/css'
 import { Autoplay } from 'swiper'
 import getFlagEmoji from '../../utils/getFLagEMoji'
 import Link from 'next/link'
-const offers =  [
-    {
-        title: 'Save 15% with Late Escape Deals',
-        description: 'Check one more destination off your wishlist',
-        button: 'Explore',
-        image: '1.avif'
-    },
-    {
-        title: 'Escape for a while',
-        description: 'Enjoy the freedom of a monthly stay on Booking',
-        button: 'Discover',
-        image: '2.avif'
-    },
-    {
-        title: 'Easy trip planner',
-        description: 'Pick a vibe and explore the top destinations',
-        button: 'Discover',
-        image: '3.avif'
+
+
+
+  
+const Offers = async () => {
+    async function getBranches() {
+        const response: Response = await fetch("/api/branch/branch", {
+            method: "GET",
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODIwIiwiaWF0IjoxNjg2NzMwNjgyLCJleHAiOjE2ODY4MTcwODJ9.9oDXYaYD05g5Af_M4dxPe4rDqUaHkwM2k6nLXLsJfrUx-bp4f8I2vWLdsyToY0jB_fFBqwzshL4QFtIOq9n-5g"
+            }),
+        });
+        const data = await response.json();
+        console.log(data.data);
+        
+        return response
     }
-]
+    const branchData = await getBranches();
+    console.log(branchData);
+    
 
-const locations =  [
-    {
-        name: 'Sapa',
-        city: 'sapa',
-        countryCode: 'VN',
-        image: 'https://images.unsplash.com/photo-1584003654022-074f97adc1d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
-    },
-    {
-        name: 'Da Nang',
-        city: 'danang',
-        countryCode: 'VN',
-        image: 'https://images.unsplash.com/photo-1620976128192-7181e9f91342?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
-    },
-    {
-        name: 'Nha Trang',
-        city: 'nha trang',
-        countryCode: 'VN',
-        image: 'https://images.unsplash.com/photo-1642864319140-f2f3c418c707?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=766&q=80'
-    },
-    {
-        name: 'Da Lat',
-        city: 'dalat',
-        countryCode: 'VN',
-        image: 'https://images.unsplash.com/photo-1620814153812-38115a7f0fbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
-    },
-    {
-        name: 'Hue',
-        city: 'hue',
-        countryCode: 'VN',
-        image: 'https://images.unsplash.com/photo-1568775791746-bcc117bcb312?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80'
-    },
-    {
-        name: 'Phu Quoc',
-        city: 'phuquoc',
-        countryCode: 'VN',
-        image: 'https://images.unsplash.com/photo-1587730675685-f71bccb607d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-    }
-]
-export default async function Offers() {
-
-
+    const offers =  [
+        {
+            title: 'Save 15% with Late Escape Deals',
+            description: 'Check one more destination off your wishlist',
+            button: 'Explore',
+            image: '1.avif'
+        },
+        {
+            title: 'Escape for a while',
+            description: 'Enjoy the freedom of a monthly stay on Booking',
+            button: 'Discover',
+            image: '2.avif'
+        },
+        {
+            title: 'Easy trip planner',
+            description: 'Pick a vibe and explore the top destinations',
+            button: 'Discover',
+            image: '3.avif'
+        }
+    ]
+    
+    const locations =  [
+        {
+            name: 'Sapa',
+            city: 'sapa',
+            countryCode: 'VN',
+            image: 'https://images.unsplash.com/photo-1584003654022-074f97adc1d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
+        },
+        {
+            name: 'Da Nang',
+            city: 'danang',
+            countryCode: 'VN',
+            image: 'https://images.unsplash.com/photo-1620976128192-7181e9f91342?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
+        },
+        {
+            name: 'Nha Trang',
+            city: 'nha trang',
+            countryCode: 'VN',
+            image: 'https://images.unsplash.com/photo-1642864319140-f2f3c418c707?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=766&q=80'
+        },
+        {
+            name: 'Da Lat',
+            city: 'dalat',
+            countryCode: 'VN',
+            image: 'https://images.unsplash.com/photo-1620814153812-38115a7f0fbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
+        },
+        {
+            name: 'Hue',
+            city: 'hue',
+            countryCode: 'VN',
+            image: 'https://images.unsplash.com/photo-1568775791746-bcc117bcb312?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80'
+        },
+        {
+            name: 'Phu Quoc',
+            city: 'phuquoc',
+            countryCode: 'VN',
+            image: 'https://images.unsplash.com/photo-1587730675685-f71bccb607d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+        }
+    ]
     
     return (
         <div className="mt-48 sm:mt-32 lg:mt-28 mb-20 w-full relative">
@@ -109,7 +129,7 @@ export default async function Offers() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {/* Fix key index */}
-                {locations.map((location, index) =>
+                {branchData.map((location: any, index: any) =>
                     <Link href={`/search/${location.city}`} key={index}>
                         <div
                             className={`relative block overflow-hidden rounded-xl `}
@@ -132,3 +152,4 @@ export default async function Offers() {
 }
 
 
+export default Offers;

@@ -36,7 +36,7 @@ export default function SignIn() {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        const response = await fetch("/api/login", {
+        const response = await fetch("/api/auth/login", {
             method: "POST",
             body: JSON.stringify({
                 phone: username,

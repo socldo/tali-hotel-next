@@ -10,7 +10,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import BranchForm from '../../../components/branch/branch-form';
-import handlerBranch from '../../api/branch';
+import handlerBranch from '../../api/branch/branch';
 function Branch() {
 
     const [branches, setBranches] = useState<Model.Branch[]>([]);
