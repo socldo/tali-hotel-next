@@ -17,13 +17,15 @@ function Branch() {
     const [loading, setLoading] = useState(true);
     const [visible, setVisible] = useState(false);
     const [confirmPopup, setConfirmPopup] = useState(false);
+    const [renderCount, setRenderCount] = useState(0);
     const toast = useRef<Toast>(null);
     const buttonEl = useRef(null);
 
+    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
 
     useEffect(() => {
         fetchBranches();
-    }, []);
+    }, [renderCount]);
 
     const fetchBranches = async () => {
         setLoading(true);
@@ -33,13 +35,14 @@ function Branch() {
                 headers: new Headers({
                     "Content-Type": "application/json",
                     Accept: "application/json",
+                    Authorization: token
                 }),
+
             });
 
             const data = await response.json();
-            console.log(data);
+            console.log('data:', data);
 
-            // Cập nhật giá trị branches trong state
             setBranches(data.data);
             setLoading(false);
         } catch (error) {
@@ -113,6 +116,7 @@ function Branch() {
     const showSuccess = () => {
         let message = !branch ? 'Tạo mới thành công' : 'Cập nhật thành công';
         toast.current?.show({ severity: 'success', summary: 'Thành công', detail: message, life: 3000 });
+        setRenderCount(renderCount + 1);
     }
 
 
