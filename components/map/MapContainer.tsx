@@ -1,15 +1,15 @@
-import {mapboxAccessToken} from '../../utils/config'
-import Map, {GeolocateControl, Marker, Popup} from 'react-map-gl'
+import { mapboxAccessToken } from '../../utils/config'
+import Map, { GeolocateControl, Marker, Popup } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import {useAppSelector} from '../../store/hooks'
-import {useState} from 'react'
-import {IHotel} from '../../models'
+import { useAppSelector } from '../../store/hooks'
+import { useState } from 'react'
+import { IHotel } from '../../models'
 import Image from 'next/image'
-import {useRouter} from 'next/router'
+import { useRouter } from 'next/router'
 
-const MapContainer = ({hotel}: { hotel: IHotel }) => {
+const MapContainer = ({ hotel }: { hotel: IHotel }) => {
     const router = useRouter()
-    const {hotels} = useAppSelector((state) => state.persistedReducer.hotel)
+    const { hotels } = useAppSelector((state) => state.persistedReducer.hotel)
 
     const [popupInfo, setPopupInfo] = useState<IHotel | null>(null)
 
@@ -21,7 +21,7 @@ const MapContainer = ({hotel}: { hotel: IHotel }) => {
                     latitude: hotel.address.lat,
                     zoom: 16
                 }}
-                style={{width: 600, height: 400}}
+                style={{ width: 600, height: 400 }}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
                 mapboxAccessToken={mapboxAccessToken}
             >
@@ -44,7 +44,7 @@ const MapContainer = ({hotel}: { hotel: IHotel }) => {
                         setPopupInfo(hotel)
                     }}
                 />
-                <GeolocateControl/>
+                <GeolocateControl />
 
                 {popupInfo && (
                     <Popup
@@ -65,7 +65,7 @@ const MapContainer = ({hotel}: { hotel: IHotel }) => {
                             <div className="font-bold">
                                 {popupInfo.title}
                             </div>
-                            <Image src={popupInfo.photos[0]} alt={popupInfo.name} width={250} height={150}/>
+                            <Image src={popupInfo.photos[0]} alt={popupInfo.name} width={250} height={150} />
                         </div>
                     </Popup>
                 )}

@@ -1,17 +1,17 @@
 import React from 'react'
 import Link from 'next/link'
-import {Button} from '../../components/core'
-import {CiEdit, FiTrash, IoMdAdd} from '../../utils/icons'
-import {useDeleteHotelMutation, useGetMyHotelsQuery} from '../../services/userApi'
-import {Layout, Loader} from '../../components/layout'
+import { Button } from '../../components/core'
+import { CiEdit, FiTrash, IoMdAdd } from '../../utils/icons'
+import { useDeleteHotelMutation, useGetMyHotelsQuery } from '../../services/userApi'
+import { Layout, Loader } from '../../components/layout'
 import ErrorPage from 'next/error'
 import moment from 'moment'
 import Image from 'next/image'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 import withAuthentication from '../../components/withAuthentication'
 
 const JoinPage = () => {
-    const {data: myHotels = [], isLoading, error} = useGetMyHotelsQuery()
+    const { data: myHotels = [], isLoading, error } = useGetMyHotelsQuery()
 
     const handleDelete = async (id: string) => {
         if (window.confirm('Are you sure to delete?')) {
@@ -23,19 +23,19 @@ const JoinPage = () => {
             }
         }
     }
-    const [deleteHotel, {isLoading: isDeleting}] = useDeleteHotelMutation()
+    const [deleteHotel, { isLoading: isDeleting }] = useDeleteHotelMutation()
 
     if (isLoading) {
         return (
             <div className="w-screen mt-20 flex items-center justify-center">
-                <Loader/>
+                <Loader />
             </div>
         )
     }
     if (error) {
         // @ts-ignore
         const status = error.status || 404
-        return <ErrorPage statusCode={status}/>
+        return <ErrorPage statusCode={status} />
     }
     return (
         <Layout
@@ -47,7 +47,7 @@ const JoinPage = () => {
             <div className="my-4 mx-auto container px-4 lg:px-6 overflow-hidden flex flex-col">
                 <div className="w-max mb-4">
                     <Link href="/join/create">
-                        <Button text={'New Hotel'} bgColor="bg-lightPrimary" textColor="text-white" IcAfter={IoMdAdd}/>
+                        <Button text={'New Hotel'} bgColor="bg-lightPrimary" textColor="text-white" IcAfter={IoMdAdd} />
                     </Link>
                 </div>
                 {myHotels?.length > 0

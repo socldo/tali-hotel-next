@@ -1,22 +1,22 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import withAuthentication from '../../components/withAuthentication'
-import {Layout} from '../../components/layout'
-import {PersonalDetails, Security} from '../../components/user'
-import {BsShieldLock, RiUserSettingsLine} from '../../utils/icons'
+import { Layout } from '../../components/layout'
+import { PersonalDetails, Security } from '../../components/user'
+import { BsShieldLock, RiUserSettingsLine } from '../../utils/icons'
 
 const UserPage = () => {
     const sidebar = [
         {
-            icon: <RiUserSettingsLine/>,
+            icon: <RiUserSettingsLine />,
             name: 'Personal details',
             id: 1,
-            component: <PersonalDetails/>
+            component: <PersonalDetails />
         },
         {
-            icon: <BsShieldLock/>,
+            icon: <BsShieldLock />,
             name: 'Security',
             id: 2,
-            component: <Security/>
+            component: <Security />
         }
     ]
     const [active, setActive] = useState(1)

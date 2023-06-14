@@ -4,7 +4,7 @@ import SocialsAuth from "./SocialsAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
-import {signUpSchema} from '../../utils/validationSchema'
+import { signUpSchema } from '../../utils/validationSchema'
 import { SignInForm, SignUpForm } from "../../interface/auth";
 import { signInSchema } from "../../utils/validationSchema";
 import { useAppDispatch } from "../../store/hooks";
@@ -22,14 +22,14 @@ export default function SignIn() {
     const router = useRouter();
     const [jwtToken, setJwtToken] = useState("");
 
-    const {register, formState: {errors}} = useForm<SignUpForm>({
+    const { register, formState: { errors } } = useForm<SignUpForm>({
         mode: 'onBlur',
         resolver: yupResolver(signUpSchema)
     })
-  ;
+        ;
 
     const handleRegister = async () => {
-    // Sau khi đăng kí thành công, chuyển hướng đến trang login
+        // Sau khi đăng kí thành công, chuyển hướng đến trang login
         router.push("/");
     };
 
@@ -92,21 +92,19 @@ export default function SignIn() {
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="email"
-                                        className={`block font-bold text-sm mb-1${
-                                            errors.phone ? "text-red-400" : "text-primary"
-                                        }`}
+                                        className={`block font-bold text-sm mb-1${errors.phone ? "text-red-400" : "text-primary"
+                                            }`}
                                     >
-                                            Phone
+                                        Phone
                                     </label>
                                     <input
                                         type="text"
                                         id="phone"
                                         onChange={(e) => setUsername(e.target.value)}
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${
-                                            errors.phone
-                                                ? "text-red-300 border-red-400"
-                                                : "text-primary"
-                                        }`}
+                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
+                                            ? "text-red-300 border-red-400"
+                                            : "text-primary"
+                                            }`}
                                     />
                                     {/* {errors.phone && 
                                     (
@@ -118,25 +116,23 @@ export default function SignIn() {
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="password"
-                                        className={`block font-bold text-sm mb-1 ${
-                                            errors.password ? "text-red-400" : "text-primary"
-                                        }`}
+                                        className={`block font-bold text-sm mb-1 ${errors.password ? "text-red-400" : "text-primary"
+                                            }`}
                                     >
-                    Password
+                                        Password
                                     </label>
                                     <input
                                         type="password"
                                         id="password"
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${
-                                            errors.password
-                                                ? "text-red-300 border-red-400"
-                                                : "text-primary"
-                                        }`}
+                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
+                                            ? "text-red-300 border-red-400"
+                                            : "text-primary"
+                                            }`}
                                     />
                                     {errors.password && (
                                         <p className="text-red-500 text-sm mt-1">
-                                          Your password is required.
+                                            Your password is required.
                                         </p>
                                     )}
                                 </div>

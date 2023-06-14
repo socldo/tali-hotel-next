@@ -14,16 +14,16 @@ import {
     MdOutlineAttractions,
     RiTaxiWifiLine
 } from '../../utils/icons'
-import {Button} from '../core'
-import {useAppDispatch, useAppSelector} from '../../store/hooks'
-import {logout} from '../../features/authSlice'
-import {toast} from 'react-toastify'
-import {useRouter} from 'next/router'
-import {setBookings, setHotelWishList} from '../../features/appSlice'
+import { Button } from '../core'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { logout } from '../../features/authSlice'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
+import { setBookings, setHotelWishList } from '../../features/appSlice'
 
 const Header = () => {
     const router = useRouter()
-    const {user} = useAppSelector((state: any) => state.persistedReducer.auth)
+    const { user } = useAppSelector((state: any) => state.persistedReducer.auth)
 
     const dispatch = useAppDispatch()
 
@@ -37,54 +37,54 @@ const Header = () => {
 
     const accountMenu = [
         {
-            icon: <AiOutlineUser/>,
+            icon: <AiOutlineUser />,
             name: 'Manage account',
             link: '/user'
         },
         {
-            icon: <RiSuitcaseLine/>,
+            icon: <RiSuitcaseLine />,
             name: 'Bookings & Trips',
             link: '/user/booking'
         },
         {
-            icon: <AiOutlineWallet/>,
+            icon: <AiOutlineWallet />,
             name: 'Reward & Wallet',
             link: '/'
         },
         {
-            icon: <AiOutlineHeart/>,
+            icon: <AiOutlineHeart />,
             name: 'Saved',
             link: '/user/wishlist'
         }
     ]
     const menu = [
         {
-            icon: <BiBed/>,
+            icon: <BiBed />,
             name: 'Stays',
             link: '/'
         },
         {
-            icon: <MdOutlineAirplaneTicket/>,
+            icon: <MdOutlineAirplaneTicket />,
             name: 'Flights',
             link: '/'
         },
         {
-            icon: <GiEarthAsiaOceania/>,
+            icon: <GiEarthAsiaOceania />,
             name: 'Flight + Hotel',
             link: '/'
         },
         {
-            icon: <AiOutlineCar/>,
+            icon: <AiOutlineCar />,
             name: 'Car rentals',
             link: '/'
         },
         {
-            icon: <MdOutlineAttractions/>,
+            icon: <MdOutlineAttractions />,
             name: 'Attractions',
             link: '/'
         },
         {
-            icon: <RiTaxiWifiLine/>,
+            icon: <RiTaxiWifiLine />,
             name: 'Airport taxis',
             link: '/'
         }
@@ -98,7 +98,7 @@ const Header = () => {
                 </Link>
                 <div className=" flex flex-end items-center gap-2 sm:gap-4">
                     <Link href="/join">
-                        <Button text="List your property" textColor="text-white" bgColor="bg-transparent"/>
+                        <Button text="List your property" textColor="text-white" bgColor="bg-transparent" />
                     </Link>
                     {user
                         ? <>
@@ -110,7 +110,7 @@ const Header = () => {
                                         className="w-8 h-8 border-2 border-orange-500 rounded-full
                                             flex items-center justify-center
                                             overflow-hidden">
-                                        <HiUser size={30}/>
+                                        <HiUser size={30} />
                                     </div>
                                     <span className="hidden md:block">Your account</span>
                                 </button>
@@ -129,7 +129,7 @@ const Header = () => {
                                         className="bg-white hover:bg-gray-300 block whitespace-no-wrap">
                                         <div onClick={() => handleLogout()}
                                             className="flex items-center py-2 px-4 gap-x-2.5 cursor-pointer">
-                                            <VscSignOut/>
+                                            <VscSignOut />
                                             <span>Sign out</span>
                                         </div>
                                     </li>
@@ -138,7 +138,7 @@ const Header = () => {
                         </>
                         : <>
                             <Link href="/auth">
-                                <Button text="Sign In" textColor="text-primary" bgColor="bg-white"/>
+                                <Button text="Sign In" textColor="text-primary" bgColor="bg-white" />
                             </Link>
                         </>}
                 </div>

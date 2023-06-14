@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { RootState } from '../store/store'
-import {IBooking} from '../models'
+import { IBooking } from '../models'
 
 import { apiUrl } from '../utils/config'
 
@@ -28,7 +28,7 @@ export const bookingApi = createApi({
         }),
         deleteBooking: builder.mutation({
             query: (id) => {
-                return { url: `/booking/${id}`, method: 'delete'}
+                return { url: `/booking/${id}`, method: 'delete' }
             }
         })
     })

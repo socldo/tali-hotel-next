@@ -1,9 +1,9 @@
 import React from 'react'
 import Button from '../core/Button'
 import Image from 'next/image'
-import {Swiper, SwiperSlide} from 'swiper/react'
+import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
-import {Autoplay} from 'swiper'
+import { Autoplay } from 'swiper'
 import getFlagEmoji from '../../utils/getFLagEMoji'
 import Link from 'next/link'
 const offers =  [
@@ -98,7 +98,7 @@ export default async function Offers() {
                                     <h2 className="font-bold mb-2 text-2xl sm:text-3xl h-24 sm:h-16 lg:h-max">{offer.title}</h2>
                                     <h2 className="mb-5">{offer.description}</h2>
                                     <Button text={offer.button} textColor={'text-white'}
-                                        bgColor={'bg-lightPrimary'}/>
+                                        bgColor={'bg-lightPrimary'} />
                                 </div>
                             </div>
                         </SwiperSlide>
@@ -117,7 +117,7 @@ export default async function Offers() {
                             <Image className="absolute w-full h-full object-cover" src={location.image}
                                 alt={location.name}
                                 width={200}
-                                height={100}/>
+                                height={100} />
                             <div className="relative p-8 pt-40 text-white hover:bg-black hover:bg-opacity-40">
                                 <h3 className="text-2xl font-bold">{location.name}</h3>
                                 <p className="text-xl">{getFlagEmoji(location.countryCode)}</p>

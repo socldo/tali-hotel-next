@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react'
-import {useGetUserQuery, useUpdateUserMutation} from '../../services/userApi'
-import {Loader} from '../layout'
-import {useAppDispatch, useAppSelector} from '../../store/hooks'
-import {useForm} from 'react-hook-form'
-import {setUser} from '../../features/authSlice'
-import {Button} from '../core'
-import {CiEdit} from '../../utils/icons'
-import {toast} from 'react-toastify'
+import React, { useEffect, useState } from 'react'
+import { useGetUserQuery, useUpdateUserMutation } from '../../services/userApi'
+import { Loader } from '../layout'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { useForm } from 'react-hook-form'
+import { setUser } from '../../features/authSlice'
+import { Button } from '../core'
+import { CiEdit } from '../../utils/icons'
+import { toast } from 'react-toastify'
 
 type FormValues = {
     name: string;
@@ -15,20 +15,20 @@ type FormValues = {
 };
 
 const PersonalDetails = () => {
-    const {user, token} = useAppSelector((state) => state.persistedReducer.auth)
-    const {data: userData, isLoading: getLoading, isSuccess} = useGetUserQuery(user?._id as string)
+    const { user, token } = useAppSelector((state) => state.persistedReducer.auth)
+    const { data: userData, isLoading: getLoading, isSuccess } = useGetUserQuery(user?._id as string)
     const dispatch = useAppDispatch()
     useEffect(() => {
         if (isSuccess) {
             dispatch(
-                setUser({user: userData, token})
+                setUser({ user: userData, token })
             )
         }
     }, [dispatch, userData, isSuccess, token])
 
-    const [updateUser, {isLoading: isUpdating}] = useUpdateUserMutation()
+    const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation()
 
-    const {register, handleSubmit, watch} = useForm<FormValues>({
+    const { register, handleSubmit, watch } = useForm<FormValues>({
         defaultValues: {
             name: user?.name,
             email: user?.email,
@@ -39,7 +39,7 @@ const PersonalDetails = () => {
     const onSubmit = handleSubmit(async (dataForm) => {
         if (user) {
             try {
-                const result = await updateUser({_id: user._id, ...dataForm}).unwrap()
+                const result = await updateUser({ _id: user._id, ...dataForm }).unwrap()
                 dispatch(setUser(
                     {
                         user: result,
@@ -66,7 +66,7 @@ const PersonalDetails = () => {
     if (getLoading) {
         return (
             <div className="w-full mt-20 flex items-center justify-center">
-                <Loader/>
+                <Loader />
             </div>
         )
     }
@@ -87,7 +87,7 @@ const PersonalDetails = () => {
                         />
                         <label className="absolute inset-y-0 right-4 inline-flex items-center cursor-pointer"
                             htmlFor="name-input">
-                            <CiEdit/>
+                            <CiEdit />
                         </label>
                     </div>
                 </div>
@@ -100,7 +100,7 @@ const PersonalDetails = () => {
                         />
                         <label className="absolute inset-y-0 right-4 inline-flex items-center cursor-pointer"
                             htmlFor="email-input">
-                            <CiEdit/>
+                            <CiEdit />
                         </label>
                     </div>
                 </div>
@@ -113,7 +113,7 @@ const PersonalDetails = () => {
                         />
                         <label className="absolute inset-y-0 right-4 inline-flex items-center cursor-pointer"
                             htmlFor="phone-input">
-                            <CiEdit/>
+                            <CiEdit />
                         </label>
                     </div>
                 </div>
@@ -121,7 +121,7 @@ const PersonalDetails = () => {
                     isChange && (
                         <div onClick={onSubmit} className="float-right mt-5 mr-5">
                             <Button text={`${isUpdating ? 'Updating...' : 'Save'}`} textColor="text-white"
-                                bgColor="bg-lightPrimary"/>
+                                bgColor="bg-lightPrimary" />
                         </div>
                     )
                 }

@@ -1,17 +1,17 @@
 import Link from 'next/link'
 import React from 'react'
-import {IHotel} from '../../models'
+import { IHotel } from '../../models'
 import Button from './Button'
 import StarRating from './StarRating'
 import Image from 'next/image'
-import {MdLocationOn} from '../../utils/icons'
+import { MdLocationOn } from '../../utils/icons'
 
 interface Props {
     data?: IHotel[];
     city?: string;
 }
 
-const SearchResults: React.FC<Props> = ({data, city}) => {
+const SearchResults: React.FC<Props> = ({ data, city }) => {
     return (
         <div>
             {city && (
@@ -35,15 +35,15 @@ const SearchResults: React.FC<Props> = ({data, city}) => {
                                     <p className="text-xl font-bold text-secondary">
                                         {hotel.title}
                                     </p>
-                                    <StarRating data={hotel.rating}/>
+                                    <StarRating data={hotel.rating} />
                                 </div>
                                 <div className="text-sm underline text-secondary flex items-center flex-wrap gap-2">
-                                    <MdLocationOn/>
+                                    <MdLocationOn />
                                     <span className="cursor-pointer capitalize">
                                         {hotel.address.name}
                                     </span>
                                     <span className="cursor-pointer">
-                               Show on map
+                                        Show on map
                                     </span>
                                 </div>
 

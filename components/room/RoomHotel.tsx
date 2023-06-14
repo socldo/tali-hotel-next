@@ -1,14 +1,14 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import {
     useGetHotelRoomsQuery
 } from '../../services/roomApi'
-import {useBookingRoomMutation} from '../../services/bookingApi'
-import {FaUser} from '../../utils/icons'
-import {Loader} from '../layout'
-import {Button} from '../core'
-import {IRoom} from '../../models'
-import {toast} from 'react-toastify'
-import {useRouter} from 'next/router'
+import { useBookingRoomMutation } from '../../services/bookingApi'
+import { FaUser } from '../../utils/icons'
+import { Loader } from '../layout'
+import { Button } from '../core'
+import { IRoom } from '../../models'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 
 interface Props {
     hotelId: string;
@@ -18,7 +18,7 @@ interface RoomReserve extends IRoom {
     quantity: number;
 }
 
-const RoomHotel = ({hotelId}: Props) => {
+const RoomHotel = ({ hotelId }: Props) => {
     const services = [
         'Free toiletries',
         'Bidet',
@@ -44,7 +44,7 @@ const RoomHotel = ({hotelId}: Props) => {
         'Clothes rack',
         'Toilet paper'
     ]
-    const {data: rooms, isLoading} = useGetHotelRoomsQuery(hotelId)
+    const { data: rooms, isLoading } = useGetHotelRoomsQuery(hotelId)
     const [roomsReserve, setRoomsReserve] = useState<RoomReserve[]>([])
     const [total, setTotal] = useState<number>(0)
     const [price, setPrice] = useState<number>(0)
@@ -67,7 +67,7 @@ const RoomHotel = ({hotelId}: Props) => {
                 return item._id !== room._id
             })
             if (check) {
-                setRoomsReserve([...roomsReserve, {...room, quantity: quantity}])
+                setRoomsReserve([...roomsReserve, { ...room, quantity: quantity }])
                 setTotal(total + quantity)
                 setPrice(price + quantity * room.price)
             } else {
@@ -142,7 +142,7 @@ const RoomHotel = ({hotelId}: Props) => {
     if (isLoading) {
         return (
             <div className="w-screen flex justify-center">
-                <Loader/>
+                <Loader />
             </div>
         )
     }
@@ -218,7 +218,7 @@ const RoomHotel = ({hotelId}: Props) => {
                                     <div className="flex md:grid md:grid-cols-2 gap-y-1.5">
                                         {[...Array(room.maxPeople)].map((_, index) => (
                                             <div key={index} className="flex items-center justify-center">
-                                                <FaUser/>
+                                                <FaUser />
                                             </div>
                                         ))}
                                     </div>
@@ -274,13 +274,13 @@ const RoomHotel = ({hotelId}: Props) => {
                     >
                         &nbsp;
                         <span className="lg:hidden">
-                            <br/>
+                            <br />
                             &nbsp;
                         </span>
                     </div>
 
                     <div className="p-2.5">
-                        <Reserve/>
+                        <Reserve />
                         <div onClick={() => booking()}>
                             <Button
                                 text={"I'll reserve"}

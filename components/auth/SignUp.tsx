@@ -1,29 +1,29 @@
-import React, {useEffect} from 'react'
-import {Button} from '../core'
+import React, { useEffect } from 'react'
+import { Button } from '../core'
 import SocialsAuth from './SocialsAuth'
-import {useForm} from 'react-hook-form'
-import {yupResolver} from '@hookform/resolvers/yup'
-import {SignUpForm} from '../../interface/auth'
-import {signUpSchema} from '../../utils/validationSchema'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { SignUpForm } from '../../interface/auth'
+import { signUpSchema } from '../../utils/validationSchema'
 
-import {useRegisterUserMutation} from '../../services/authApi'
-import {setUser} from '../../features/authSlice'
-import {useAppDispatch} from '../../store/hooks'
-import {toast} from 'react-toastify'
-import {useRouter} from 'next/router'
-import {setHotelWishList} from '../../features/appSlice'
-import {Layout} from '../layout'
+import { useRegisterUserMutation } from '../../services/authApi'
+import { setUser } from '../../features/authSlice'
+import { useAppDispatch } from '../../store/hooks'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
+import { setHotelWishList } from '../../features/appSlice'
+import { Layout } from '../layout'
 
 interface Props {
     setIsSignIn: (arg: boolean) => void;
 }
 
-const SignUp = ({setIsSignIn}: Props) => {
-    const {register, handleSubmit, formState: {errors}} = useForm<SignUpForm>({
+const SignUp = ({ setIsSignIn }: Props) => {
+    const { register, handleSubmit, formState: { errors } } = useForm<SignUpForm>({
         mode: 'onBlur',
         resolver: yupResolver(signUpSchema)
     })
-    ;
+        ;
     register('role_id', { value: 1 });
 
     const router = useRouter()
@@ -41,16 +41,16 @@ const SignUp = ({setIsSignIn}: Props) => {
 
     const onSubmit = async (data: SignUpForm) => {
         console.log(data);
-        
+
         return registerUser(data)
     };
     // console.log(registerUser);
-    
+
 
     useEffect(() => {
         if (isRegisterSuccess) {
             dispatch(
-                setUser({user: registerData.user, token: registerData.token})
+                setUser({ user: registerData.user, token: registerData.token })
             )
             // dispatch(setHotelWishList(registerData.user.wishlist))
             router.push('/auth').then(() =>
@@ -87,27 +87,25 @@ const SignUp = ({setIsSignIn}: Props) => {
                                 Sign Up Account
                             </h2>
                             <div className="border-2 w-10 border-primary inline-block mb-2"></div>
-                            <SocialsAuth/>
+                            <SocialsAuth />
                             <p className="text-gray-400">or use your email account</p>
                             <form className="w-full sm:w-4/5 mx-auto flex flex-col items-center"
                                 onSubmit={handleSubmit(onSubmit)}>
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="name"
-                                        className={`block font-bold text-sm mb-1 ${
-                                            errors.name ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                        className={`block font-bold text-sm mb-1 ${errors.name ? 'text-red-400' : 'text-primary'
+                                            }`}
                                     >
                                         Name
                                     </label>
                                     <input
                                         type="text"
                                         id="name"
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${
-                                            errors.name
-                                                ? 'text-red-300 border-red-400'
-                                                : 'text-primary'
-                                        }`}
+                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.name
+                                            ? 'text-red-300 border-red-400'
+                                            : 'text-primary'
+                                            }`}
                                         {...register('name')}
                                     />
                                     {errors.name && (
@@ -119,20 +117,18 @@ const SignUp = ({setIsSignIn}: Props) => {
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="email"
-                                        className={`block font-bold text-sm mb-1 ${
-                                            errors.email ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                        className={`block font-bold text-sm mb-1 ${errors.email ? 'text-red-400' : 'text-primary'
+                                            }`}
                                     >
                                         Email
                                     </label>
                                     <input
                                         type="text"
                                         id="email"
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${
-                                            errors.email
-                                                ? 'text-red-300 border-red-400'
-                                                : 'text-primary'
-                                        }`}
+                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.email
+                                            ? 'text-red-300 border-red-400'
+                                            : 'text-primary'
+                                            }`}
                                         {...register('email')}
                                     />
                                     {errors.email && (
@@ -144,20 +140,18 @@ const SignUp = ({setIsSignIn}: Props) => {
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="phone"
-                                        className={`block font-bold text-sm mb-1 ${
-                                            errors.email ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                        className={`block font-bold text-sm mb-1 ${errors.email ? 'text-red-400' : 'text-primary'
+                                            }`}
                                     >
                                         Phone
                                     </label>
                                     <input
                                         type="text"
                                         id="email"
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${
-                                            errors.phone
-                                                ? 'text-red-300 border-red-400'
-                                                : 'text-primary'
-                                        }`}
+                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
+                                            ? 'text-red-300 border-red-400'
+                                            : 'text-primary'
+                                            }`}
                                         {...register('phone')}
                                     />
                                     {errors.phone && (
@@ -169,20 +163,18 @@ const SignUp = ({setIsSignIn}: Props) => {
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="password"
-                                        className={`block font-bold text-sm mb-1 ${
-                                            errors.password ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                        className={`block font-bold text-sm mb-1 ${errors.password ? 'text-red-400' : 'text-primary'
+                                            }`}
                                     >
                                         Password
                                     </label>
                                     <input
                                         type="password"
                                         id="password"
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${
-                                            errors.password
-                                                ? 'text-red-300 border-red-400'
-                                                : 'text-primary'
-                                        }`}
+                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
+                                            ? 'text-red-300 border-red-400'
+                                            : 'text-primary'
+                                            }`}
                                         {...register('password')}
                                     />
                                     {errors.password && (
@@ -194,20 +186,18 @@ const SignUp = ({setIsSignIn}: Props) => {
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="password2"
-                                        className={`block font-bold text-sm mb-1 ${
-                                            errors.password2 ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                        className={`block font-bold text-sm mb-1 ${errors.password2 ? 'text-red-400' : 'text-primary'
+                                            }`}
                                     >
                                         Confirm Password
                                     </label>
                                     <input
                                         type="password"
                                         id="password2"
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${
-                                            errors.password2
-                                                ? 'text-red-300 border-red-400'
-                                                : 'text-primary'
-                                        }`}
+                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password2
+                                            ? 'text-red-300 border-red-400'
+                                            : 'text-primary'
+                                            }`}
                                         {...register('password2')}
                                     />
                                     {errors.password2 && (
@@ -217,7 +207,7 @@ const SignUp = ({setIsSignIn}: Props) => {
                                     )}
                                 </div>
                                 <button type="submit">
-                                    <Button text="Sign Up" textColor="text-white" bgColor="bg-primary"/>
+                                    <Button text="Sign Up" textColor="text-white" bgColor="bg-primary" />
                                 </button>
                             </form>
 
@@ -232,7 +222,7 @@ const SignUp = ({setIsSignIn}: Props) => {
                         <div className="border-2 w-10 border-white inline-block mb-2"></div>
                         <p className="mb-2">If you already have account</p>
                         <div onClick={() => handleChangeAuth()}>
-                            <Button text="Sign in" textColor="text-secondary" bgColor="bg-white"/>
+                            <Button text="Sign in" textColor="text-secondary" bgColor="bg-white" />
                         </div>
                     </div>
                 </div>
