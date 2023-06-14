@@ -8,8 +8,8 @@ export const authApi = createApi({
     }),
     endpoints: (builder) => ({
         loginUser: builder.mutation({
-            query: (body: { email: string; password: string }) => {
-                return {url: '/auth/login', method: 'post', body}
+            query: (body: { phone: string; password: string }) => {
+                return {url: '/auth/signin', method: 'post', body}
             }
         }),
 
@@ -18,8 +18,10 @@ export const authApi = createApi({
                 name: string;
                 email: string;
                 password: string;
+                phone: string;
+                role_id: 1
             }) => {
-                return {url: '/auth/register', method: 'post', body}
+                return {url: '/auth/signup', method: 'post', body}
             }
         })
     })

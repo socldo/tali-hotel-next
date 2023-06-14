@@ -94,7 +94,7 @@ const Header = () => {
         <nav className="">
             <div className="flex flex-wrap justify-between items-center gap-2.5 mx-auto container px-4 lg:px-6 py-2.5 ">
                 <Link href="/">
-                    <span className="self-center text-3xl font-semibold whitespace-nowrap text-white">Booking</span>
+                    <span className="self-center text-3xl font-semibold whitespace-nowrap text-white"><img className='h-12' src="/tali-hotel-logo.png" alt="" /></span>
                 </Link>
                 <div className=" flex flex-end items-center gap-2 sm:gap-4">
                     <Link href="/join">
