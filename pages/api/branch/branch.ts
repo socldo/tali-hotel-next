@@ -30,6 +30,6 @@ export default async function handlerBranch(response: Response) {
         return (response);
 
     } else {
-        console.error("Error:", (await response).json().then( x => x.message));
+        console.error("Error:", response.json().then( x => x.message));
     }
 }

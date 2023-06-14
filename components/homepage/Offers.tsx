@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../core/Button'
 import Image from 'next/image'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -10,46 +10,7 @@ import Link from 'next/link'
 
 
   
-const Offers = async () => {
-    async function getBranches() {
-        const response: Response = await fetch("/api/branch/branch", {
-            method: "GET",
-            headers: new Headers({
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODIwIiwiaWF0IjoxNjg2NzMwNjgyLCJleHAiOjE2ODY4MTcwODJ9.9oDXYaYD05g5Af_M4dxPe4rDqUaHkwM2k6nLXLsJfrUx-bp4f8I2vWLdsyToY0jB_fFBqwzshL4QFtIOq9n-5g"
-            }),
-        });
-        const data = await response.json();
-        console.log(data.data);
-        
-        return response
-    }
-    const branchData = await getBranches();
-    console.log(branchData);
-    
-
-    const offers =  [
-        {
-            title: 'Save 15% with Late Escape Deals',
-            description: 'Check one more destination off your wishlist',
-            button: 'Explore',
-            image: '1.avif'
-        },
-        {
-            title: 'Escape for a while',
-            description: 'Enjoy the freedom of a monthly stay on Booking',
-            button: 'Discover',
-            image: '2.avif'
-        },
-        {
-            title: 'Easy trip planner',
-            description: 'Pick a vibe and explore the top destinations',
-            button: 'Discover',
-            image: '3.avif'
-        }
-    ]
-    
+const Offers = () => {
     const locations =  [
         {
             name: 'Sapa',
@@ -88,6 +49,59 @@ const Offers = async () => {
             image: 'https://images.unsplash.com/photo-1587730675685-f71bccb607d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
         }
     ]
+
+    const [data, setData] = useState(locations);
+
+    async function getBranches() {
+        const response: Response = await fetch("/api/branch/branch", {
+            method: "GET",
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODIwIiwiaWF0IjoxNjg2NzMwNjgyLCJleHAiOjE2ODY4MTcwODJ9.9oDXYaYD05g5Af_M4dxPe4rDqUaHkwM2k6nLXLsJfrUx-bp4f8I2vWLdsyToY0jB_fFBqwzshL4QFtIOq9n-5g"
+            }),
+        });
+        const data = await response.json();
+        return data.data
+    }
+
+    useEffect(() => {
+        getBranches()
+            .then(result => {
+                setData(result);
+            })
+            .catch(error => {
+            // Xử lý lỗi nếu có
+            });
+    }, []);
+    
+
+    // const branches = await getBranches();
+
+    
+
+    const offers =  [
+        {
+            title: 'Save 15% with Late Escape Deals',
+            description: 'Check one more destination off your wishlist',
+            button: 'Explore',
+            image: '1.avif'
+        },
+        {
+            title: 'Escape for a while',
+            description: 'Enjoy the freedom of a monthly stay on Booking',
+            button: 'Discover',
+            image: '2.avif'
+        },
+        {
+            title: 'Easy trip planner',
+            description: 'Pick a vibe and explore the top destinations',
+            button: 'Discover',
+            image: '3.avif'
+        }
+    ]
+    
+    
     
     return (
         <div className="mt-48 sm:mt-32 lg:mt-28 mb-20 w-full relative">
@@ -129,22 +143,22 @@ const Offers = async () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {/* Fix key index */}
-                {branchData.map((location: any, index: any) =>
-                    <Link href={`/search/${location.city}`} key={index}>
+                {data != null ? data.map((location: any, index: any) =>
+                    <Link href={`/search/${location.name}`} key={index}>
                         <div
                             className={`relative block overflow-hidden rounded-xl `}
                         >
-                            <Image className="absolute w-full h-full object-cover" src={location.image}
+                            <Image className="absolute w-full h-full object-cover" src="https://images.unsplash.com/photo-1584003654022-074f97adc1d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
                                 alt={location.name}
                                 width={200}
                                 height={100} />
                             <div className="relative p-8 pt-40 text-white hover:bg-black hover:bg-opacity-40">
                                 <h3 className="text-2xl font-bold">{location.name}</h3>
-                                <p className="text-xl">{getFlagEmoji(location.countryCode)}</p>
+                                <p className="text-xl">{getFlagEmoji(location.name)}</p>
                             </div>
                         </div>
                     </Link>
-                )}
+                ): <>No data</>} 
             </div>
 
         </div>
@@ -153,3 +167,20 @@ const Offers = async () => {
 
 
 export default Offers;
+
+// export async function getStaticProps() {
+//     // Fetch data from external API
+//     const res: Response = await fetch("/api/branch/branch", {
+//         method: "GET",
+//         headers: new Headers({
+//             "Content-Type": "application/json",
+//             Accept: "application/json",
+//             "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODIwIiwiaWF0IjoxNjg2NzMwNjgyLCJleHAiOjE2ODY4MTcwODJ9.9oDXYaYD05g5Af_M4dxPe4rDqUaHkwM2k6nLXLsJfrUx-bp4f8I2vWLdsyToY0jB_fFBqwzshL4QFtIOq9n-5g"
+//         }),
+//     });
+//     const data = await res.json()
+   
+//     // Pass data to the page via props
+//     return { props: { data } }
+// }
+
