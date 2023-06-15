@@ -27,7 +27,6 @@ function Branch() {
     const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODY4MTU1MTYsImV4cCI6MTY4NjkwMTkxNn0.lONZPTtdFXx2gsboi_vBh0jxrdafdNyg4b_w7AS1oC_qzH7ftk9CLYDv3hL4PU9RkddlqZzDgLWJ3k-wVc-k4A'
 
 
-
     useEffect(() => {
         setLoading(true);
         const timer = setTimeout(async () => {
@@ -41,8 +40,6 @@ function Branch() {
 
     const fetchBranches = async (): Promise<void> => {
         try {
-
-
             const queryParams = querystring.stringify({ status: -1 });
             const response = await fetch(`/api/branches?${queryParams}`, {
                 method: "GET",
@@ -51,13 +48,10 @@ function Branch() {
                     Accept: "application/json",
                     Authorization: token
                 }),
-
             });
 
             const data = await response.json();
             console.log('data:', data);
-
-
 
             setBranches(data.data);
             setLoading(false);
