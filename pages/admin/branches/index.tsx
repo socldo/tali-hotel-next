@@ -1,15 +1,18 @@
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { useEffect, useState } from 'react';
-import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
-
+import { ConfirmPopup } from 'primereact/confirmpopup';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import BranchForm from '../../../components/admin/branch/branch-form';
+import querystring from 'querystring';
+import { InputText } from 'primereact/inputtext';
+
+
+
 function Branch() {
 
     const [branches, setBranches] = useState<Model.Branch[]>([]);
@@ -20,17 +23,28 @@ function Branch() {
     const [renderCount, setRenderCount] = useState(0);
     const toast = useRef<Toast>(null);
     const buttonEl = useRef(null);
+    const [globalFilter, setGlobalFilter] = useState('');
+    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODY4MTU1MTYsImV4cCI6MTY4NjkwMTkxNn0.lONZPTtdFXx2gsboi_vBh0jxrdafdNyg4b_w7AS1oC_qzH7ftk9CLYDv3hL4PU9RkddlqZzDgLWJ3k-wVc-k4A'
 
-    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
+
 
     useEffect(() => {
-        fetchBranches();
+        setLoading(true);
+        const timer = setTimeout(async () => {
+            await fetchBranches();
+        }, 500);
+
+        return () => {
+            clearTimeout(timer); // Xóa bỏ timer nếu component unmount trước khi kết thúc thời gian chờ
+        };
     }, [renderCount]);
 
-    const fetchBranches = async () => {
-        setLoading(true);
+    const fetchBranches = async (): Promise<void> => {
         try {
-            const response = await fetch("/api/branches", {
+
+
+            const queryParams = querystring.stringify({ status: -1 });
+            const response = await fetch(`/api/branches?${queryParams}`, {
                 method: "GET",
                 headers: new Headers({
                     "Content-Type": "application/json",
@@ -42,6 +56,8 @@ function Branch() {
 
             const data = await response.json();
             console.log('data:', data);
+
+
 
             setBranches(data.data);
             setLoading(false);
@@ -59,17 +75,61 @@ function Branch() {
 
         return (
             <>
-                <span className={`branches-status status-${status}`}>{statusMessage}</span>
+                <span className={`branches-status status-${status}`} style={rowData.status ? {
+                    borderRadius: 'var(--border-radius)',
+                    padding: '.25em .5rem',
+                    textTransform: 'uppercase',
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    letterSpacing: '.3px',
+                    background: '#07f207',
+                    color: '#121111'
+                } : {
+                    borderRadius: 'var(--border-radius)',
+                    padding: '.25em .5rem',
+                    textTransform: 'uppercase',
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    letterSpacing: '.3px',
+                    background: '#e40f25',
+                    color: '#121111'
+                }
+
+                }
+                >{statusMessage}</span >
 
             </>
         );
     };
 
 
-    const actionBodyTemplate = (branches: Model.Branch) => {
+    const handleChangeStatus = async () => {
 
+        try {
 
-        const accept = () => {
+            const response = await fetch(`/api/branches/${branch?.id}/change-status`, {
+                method: "POST",
+                body: JSON.stringify({
+                }),
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: token
+                }),
+            });
+            const data = await response.json();
+            console.log('data:', data);
+            setRenderCount(renderCount + 1);
+        } catch (error) {
+            console.error('Error fetching branches:', error);
+        }
+    };
+
+    const actionBodyTemplate = (rowData: Model.Branch) => {
+
+        const accept = async () => {
+            setLoading(false);
+            await handleChangeStatus()
             toast.current?.show({ severity: 'success', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
         };
 
@@ -77,10 +137,15 @@ function Branch() {
             toast.current?.show({ severity: 'warn', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         };
 
-        const handleEditBranch = (branches: Model.Branch) => {
-            setBranch(branches);
+        const handleEditBranch = (branch: Model.Branch) => {
+
+            setBranch(branch);
             setVisible(true);
         };
+
+
+
+
 
         return (
             <>
@@ -90,34 +155,62 @@ function Branch() {
                     message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
                     rejectLabel="Không" />
 
-                {branches.status
-                    ? <span className="pi pi-times" onClick={() => setConfirmPopup(true)} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
-                    : <span className="pi pi-check" onClick={() => setConfirmPopup(true)} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
+                {rowData.status
+                    ? <span className="pi pi-times" onClick={() => { setConfirmPopup(true); setBranch(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
+                    : <span className="pi pi-check" onClick={() => { setConfirmPopup(true); setBranch(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
                 }
-                <span className="pi pi-pencil" onClick={() => handleEditBranch(branches)} style={{ marginRight: '0.5em', fontSize: '1rem' }}  ></span>
+                <span className="pi pi-pencil" onClick={() => handleEditBranch(rowData)} style={{ marginRight: '0.5em', fontSize: '1rem' }}  ></span>
             </>
         );
     };
 
-    const toolbarLeftTemplate = () => {
+    // const toolbarLeftTemplate = () => {
 
-        return (
-            <>
+    //     return (
+    //         <>
 
 
-                <Button label="New" icon="pi pi-plus" style={{ marginRight: '.5em' }} onClick={() => {
-                    setVisible(true);
-                    setBranch(null);
-                }} />
-            </>
-        );
-    };
+    //             <Button label="New" icon="pi pi-plus" style={{ marginRight: '.5em' }} onClick={() => {
+    //                 setVisible(true);
+    //                 setBranch(null);
+    //             }} />
+    //         </>
+    //     );
+    // };
 
     const showSuccess = () => {
+        setRenderCount(renderCount + 1);
         let message = !branch ? 'Tạo mới thành công' : 'Cập nhật thành công';
         toast.current?.show({ severity: 'success', summary: 'Thành công', detail: message, life: 3000 });
-        setRenderCount(renderCount + 1);
+
     }
+
+    const header = (
+        <div className="flex flex-column md:flex-row md:justify-between md:items-center">
+            <h5 className="m-0" style={{ fontWeight: 'bold', fontSize: '28px', textAlign: 'left' }}>
+                Chi nhánh
+            </h5>
+            <div className="text-right">
+                <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
+                    <i className="pi pi-search" />
+                    <InputText
+                        type="search"
+                        onInput={(e) => setGlobalFilter(e.currentTarget.value)}
+                        placeholder="Search..."
+                    />
+                </span>
+                <Button
+                    label="New"
+                    icon="pi pi-plus"
+                    style={{ marginRight: '.5em' }}
+                    onClick={() => {
+                        setVisible(true);
+                        setBranch(null);
+                    }}
+                />
+            </div>
+        </div>
+    );
 
 
     return (
@@ -126,9 +219,16 @@ function Branch() {
             <div className="col-12">
                 <div className="card">
 
-                    <Toolbar start={<h1 style={{ fontWeight: 'bold', fontSize: '24px' }}>Chi nhánh</h1>} end={() => toolbarLeftTemplate()}> </Toolbar>
+                    {/* <Toolbar start={<h1 style={{ fontWeight: 'bold', fontSize: '24px' }}>Chi nhánh</h1>} end={() => toolbarLeftTemplate()}> </Toolbar> */}
 
-                    <DataTable value={branches} scrollable scrollHeight="400px" loading={loading} className="mt-3">
+                    <DataTable
+                        value={branches}
+                        scrollable scrollHeight="400px"
+                        loading={loading}
+                        className="mt-3"
+                        globalFilter={globalFilter}
+                        header={header}
+                    >
                         <Column
                             header="STT"
                             body={(_, { rowIndex }) => rowIndex + 1}

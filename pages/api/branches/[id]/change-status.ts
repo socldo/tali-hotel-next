@@ -1,12 +1,9 @@
-
-
 import { NextApiRequest, NextApiResponse } from 'next';
 
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
-    const token = request.headers['authorization'];
     const { id } = request.query;
-    const fetchUrl = `http://localhost:1802/api/branches/${id}/change-status`;
+    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/branches/${id}/change-status`;
 
     const requestOptions = {
         method: request.method,
@@ -14,10 +11,18 @@ export default async function handler(request: NextApiRequest, response: NextApi
         headers: new Headers({
             "Content-Type": "application/json",
             Accept: "application/json",
-            Authorization: 'Bearer ' + `${token}`,
+            Authorization: 'Bearer ' + `${request.headers['authorization']}`
+
         }),
     };
-    return await fetch(fetchUrl, requestOptions);
+    try {
+        const apiResponse = await fetch(fetchUrl, requestOptions);
+        const data = await apiResponse.json();
+        response.status(apiResponse.status).json(data); // Gửi phản hồi về client
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        response.status(500).json({ error: 'Internal Server Error' }); // Gửi phản hồi lỗi về client
+    }
 }
 
 
