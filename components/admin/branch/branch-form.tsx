@@ -130,25 +130,27 @@ const BranchForm: React.FC<BranchFormProps> = ({
     };
 
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const newErrors = validate({ name, email, phone, address });
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
             setVisible(false);
             onSave();
+
+            await handleCreateUpdate();
+
+
+        }
+    };
+
+    const handleCreateUpdate = async () => {
+
+        try {
+            let token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
             //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-            id == 0 ? handleCreate() : handleUpdate();
-
-
-        }
-    };
-
-    const handleCreate = async () => {
-
-        try {
-            let token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
-            const response = await fetch("/api/branches/create", {
+            let url = id == 0 ? `/api/branches/create` : `/api/branches/${id}/update`;
+            const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify({
                     name: name,
@@ -162,7 +164,6 @@ const BranchForm: React.FC<BranchFormProps> = ({
                     Authorization: token
                 }),
             });
-
             const data = await response.json();
             console.log('data:', data);
 
@@ -171,37 +172,6 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
         }
     };
-
-
-    const handleUpdate = async () => {
-
-        try {
-            let token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
-            const response = await fetch(`/api/branches/${id}/update`, {
-                method: "POST",
-                body: JSON.stringify({
-                    id: id,
-                    name: name,
-                    address: address,
-                    phone: phone,
-                    email: email
-                }),
-                headers: new Headers({
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    Authorization: token
-                }),
-            });
-
-            const data = await response.json();
-            console.log('data:', data);
-
-        } catch (error) {
-            console.error('Error fetching branches:', error);
-
-        }
-    };
-
 
 
     return (
