@@ -28,6 +28,8 @@ const BranchForm: React.FC<BranchFormProps> = ({
     // toast
 }) => {
 
+
+    const [id, setId] = useState(0);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
@@ -46,6 +48,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
         if (currentBranch) {
 
             // Nếu currentBranch có giá trị, gán giá trị của các cột vào state tương ứng
+            setId(currentBranch.id);
             setName(currentBranch.name);
             setEmail(currentBranch.email);
             setPhone(currentBranch.phone);
@@ -54,6 +57,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
         } else {
 
             // Nếu currentBranch là null, reset state về giá trị ban đầu
+            setId(0);
             setName('');
             setEmail('');
             setPhone('');
@@ -61,28 +65,6 @@ const BranchForm: React.FC<BranchFormProps> = ({
         }
     }, [currentBranch]);
 
-
-    // const handleSubmit = (e: any) => {
-    //     e.preventDefault();
-    //     // Xử lý dữ liệu khi form được gửi api
-
-    //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //     if (!emailRegex.test(email)) {
-
-    //         // xữ lý giúp tôi nếu vào trường họp lỗi này sẽ ấn được nút save nhưng không ẩn đi form và hiện thông báo lỗi 
-
-    //         toast.current?.show({
-    //             severity: 'error',
-    //             summary: 'Invalid Email',
-    //             detail: 'Please enter a valid email address.',
-    //         });
-    //         return;
-    //     }
-
-    //     console.log('Name:', name);
-    //     console.log('Address:', address);
-
-    // };
 
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -155,6 +137,68 @@ const BranchForm: React.FC<BranchFormProps> = ({
         if (Object.keys(newErrors).length === 0) {
             setVisible(false);
             onSave();
+            //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
+            id == 0 ? handleCreate() : handleUpdate();
+
+
+        }
+    };
+
+    const handleCreate = async () => {
+
+        try {
+            let token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
+            const response = await fetch("/api/branches/create", {
+                method: "POST",
+                body: JSON.stringify({
+                    name: name,
+                    address: address,
+                    phone: phone,
+                    email: email
+                }),
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: token
+                }),
+            });
+
+            const data = await response.json();
+            console.log('data:', data);
+
+        } catch (error) {
+            console.error('Error fetching branches:', error);
+
+        }
+    };
+
+
+    const handleUpdate = async () => {
+
+        try {
+            let token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
+            const response = await fetch(`/api/branches/${id}/update`, {
+                method: "POST",
+                body: JSON.stringify({
+                    id: id,
+                    name: name,
+                    address: address,
+                    phone: phone,
+                    email: email
+                }),
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: token
+                }),
+            });
+
+            const data = await response.json();
+            console.log('data:', data);
+
+        } catch (error) {
+            console.error('Error fetching branches:', error);
+
         }
     };
 

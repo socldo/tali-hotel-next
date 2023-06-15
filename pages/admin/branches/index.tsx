@@ -9,8 +9,7 @@ import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
-import BranchForm from '../../../components/branch/branch-form';
-import handlerBranch from '../../api/branch/branch';
+import BranchForm from '../../../components/admin/branch/branch-form';
 function Branch() {
 
     const [branches, setBranches] = useState<Model.Branch[]>([]);
@@ -18,50 +17,39 @@ function Branch() {
     const [loading, setLoading] = useState(true);
     const [visible, setVisible] = useState(false);
     const [confirmPopup, setConfirmPopup] = useState(false);
+    const [renderCount, setRenderCount] = useState(0);
     const toast = useRef<Toast>(null);
     const buttonEl = useRef(null);
 
+    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
 
     useEffect(() => {
+        fetchBranches();
+    }, [renderCount]);
 
+    const fetchBranches = async () => {
         setLoading(true);
+        try {
+            const response = await fetch("/api/branches", {
+                method: "GET",
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: token
+                }),
 
-        const fetchData = async () => {
-            try {
+            });
 
-                // const response = await fetch('../api/branches');
+            const data = await response.json();
+            console.log('data:', data);
 
-                const response = await handlerBranch();
-
-                // const response = await fetch('http://localhost:1802/api/branches')
-                //     .then(response => response.json())
-                //     .then(json => console.log(json))
-
-
-
-                // const response = await fetch("http://localhost:1802/api/branches", {
-                //     method: "GET",
-                //     headers: new Headers({
-                //         "Content-Type": "application/json",
-                //         Accept: "application/json",
-                //     }),
-                // });
-
-                console.log(response);
-                // Xử lý dữ liệu response ở đây
-
-
-                setBranches(response.data);
-                setLoading(false);
-
-            } catch (error) {
-                console.error(error);
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
+            setBranches(data.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching branches:', error);
+            setLoading(false);
+        }
+    };
 
 
     const statusBodyTemplate = (rowData: Model.Branch) => {
@@ -128,6 +116,7 @@ function Branch() {
     const showSuccess = () => {
         let message = !branch ? 'Tạo mới thành công' : 'Cập nhật thành công';
         toast.current?.show({ severity: 'success', summary: 'Thành công', detail: message, life: 3000 });
+        setRenderCount(renderCount + 1);
     }
 
 
