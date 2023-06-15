@@ -73,7 +73,7 @@ const Offers = () => {
             .catch(error => {
             // Xử lý lỗi nếu có
             });
-    }, []);
+    });
     
 
     // const branches = await getBranches();
@@ -154,7 +154,7 @@ const Offers = () => {
                                 height={100} />
                             <div className="relative p-8 pt-40 text-white hover:bg-black hover:bg-opacity-40">
                                 <h3 className="text-2xl font-bold">{location.name}</h3>
-                                <p className="text-xl">{getFlagEmoji(location.name)}</p>
+                                <h5 className="text-xl">{location.address}</h5>
                             </div>
                         </div>
                     </Link>
@@ -167,20 +167,3 @@ const Offers = () => {
 
 
 export default Offers;
-
-// export async function getStaticProps() {
-//     // Fetch data from external API
-//     const res: Response = await fetch("/api/branch/branch", {
-//         method: "GET",
-//         headers: new Headers({
-//             "Content-Type": "application/json",
-//             Accept: "application/json",
-//             "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODIwIiwiaWF0IjoxNjg2NzMwNjgyLCJleHAiOjE2ODY4MTcwODJ9.9oDXYaYD05g5Af_M4dxPe4rDqUaHkwM2k6nLXLsJfrUx-bp4f8I2vWLdsyToY0jB_fFBqwzshL4QFtIOq9n-5g"
-//         }),
-//     });
-//     const data = await res.json()
-   
-//     // Pass data to the page via props
-//     return { props: { data } }
-// }
-
