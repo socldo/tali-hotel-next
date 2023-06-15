@@ -93,7 +93,7 @@ export default function SignIn() {
                                     <label
                                         htmlFor="email"
                                         className={`block font-bold text-sm mb-1${errors.phone ? "text-red-400" : "text-primary"
-                                            }`}
+                                        }`}
                                     >
                                         Phone
                                     </label>
@@ -104,20 +104,20 @@ export default function SignIn() {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
                                             ? "text-red-300 border-red-400"
                                             : "text-primary"
-                                            }`}
+                                        }`}
                                     />
-                                    {/* {errors.phone && 
+                                    {errors.phone && 
                                     (
                                         <p className="text-red-500 text-sm mt-1">
                       A valid phone is required.
                                         </p>
-                                    )} */}
+                                    )}
                                 </div>
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="password"
                                         className={`block font-bold text-sm mb-1 ${errors.password ? "text-red-400" : "text-primary"
-                                            }`}
+                                        }`}
                                     >
                                         Password
                                     </label>
@@ -128,7 +128,7 @@ export default function SignIn() {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
                                             ? "text-red-300 border-red-400"
                                             : "text-primary"
-                                            }`}
+                                        }`}
                                     />
                                     {errors.password && (
                                         <p className="text-red-500 text-sm mt-1">
@@ -170,4 +170,3 @@ export default function SignIn() {
     );
 };
 
-// export default SignIn;
