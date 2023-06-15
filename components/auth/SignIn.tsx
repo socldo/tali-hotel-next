@@ -16,7 +16,11 @@ import { Layout } from "../layout";
 import { deleteCookie, setCookie } from "cookies-next";
 import { HttpStatusCode } from "axios";
 
-export default function SignIn() {
+interface Props {
+    setIsSignIn: (arg: boolean) => void;
+}
+
+export default function SignIn({ setIsSignIn }: Props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
@@ -27,6 +31,12 @@ export default function SignIn() {
         resolver: yupResolver(signUpSchema)
     })
         ;
+
+    const handleSignUp = async () => {
+        // Sau khi đăng kí thành công, chuyển hướng đến trang login
+        setIsSignIn(false)
+        router.push("/auth");
+    };
 
     const handleRegister = async () => {
         // Sau khi đăng kí thành công, chuyển hướng đến trang login
@@ -59,8 +69,9 @@ export default function SignIn() {
 
             const data = json.data;
             const token = data.jwt_token;
-            setJwtToken(token);
-            setCookie("jwt_token", token);
+            
+
+            setCookie("jwt_token","Bearer "+ token);
         } else {
             toast.warning("Sai số điện thoại hoặc mật khẩu!");
             deleteCookie("jwt_token");
@@ -156,7 +167,7 @@ export default function SignIn() {
                         <p className="mb-2">
                             Fill up personal information and start journey with us.
                         </p>
-                        <div onClick={() => handleRegister()}>
+                        <div onClick={() => handleSignUp()}>
                             <Button
                                 text="Sign Up"
                                 textColor="text-secondary"
