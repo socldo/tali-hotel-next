@@ -71,7 +71,7 @@ export default function SignIn({ setIsSignIn }: Props) {
             const token = data.jwt_token;
             
 
-            setCookie("jwt_token","Bearer "+ token);
+            setCookie("jwt_token", token);
         } else {
             toast.warning("Sai số điện thoại hoặc mật khẩu!");
             deleteCookie("jwt_token");

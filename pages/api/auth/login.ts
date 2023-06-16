@@ -2,7 +2,7 @@ import { apiUrl } from "../../../utils/config";
 
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 type User = {
-    username?: string;
+    phone?: string;
     password?: string;
 };
 
@@ -12,8 +12,8 @@ export const config = {
 
 export default async function handler(request: Request, response: Response) {
     const data: User = await request.json();
-    console.log(data);
-    response = await fetch(apiUrl + "/auth/signin", {
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}api/auth/signin`);
+    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signin`, {
         method: request.method,
         body: JSON.stringify(data),
         headers: new Headers({
@@ -21,6 +21,7 @@ export default async function handler(request: Request, response: Response) {
             Accept: "application/json",
         }),
     });
+    
 
 
     return response;

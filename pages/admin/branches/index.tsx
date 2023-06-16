@@ -10,7 +10,7 @@ import { Toast } from 'primereact/toast';
 import BranchForm from '../../../components/admin/branch/branch-form';
 import querystring from 'querystring';
 import { InputText } from 'primereact/inputtext';
-
+import { getCookie } from "cookies-next";
 
 
 function Branch() {
@@ -24,9 +24,11 @@ function Branch() {
     const toast = useRef<Toast>(null);
     const buttonEl = useRef(null);
     const [globalFilter, setGlobalFilter] = useState('');
-    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODY4MTU1MTYsImV4cCI6MTY4NjkwMTkxNn0.lONZPTtdFXx2gsboi_vBh0jxrdafdNyg4b_w7AS1oC_qzH7ftk9CLYDv3hL4PU9RkddlqZzDgLWJ3k-wVc-k4A'
+    // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODY4MTU1MTYsImV4cCI6MTY4NjkwMTkxNn0.lONZPTtdFXx2gsboi_vBh0jxrdafdNyg4b_w7AS1oC_qzH7ftk9CLYDv3hL4PU9RkddlqZzDgLWJ3k-wVc-k4A'
 
-
+    const token = getCookie("jwt_token")
+    console.log(token);
+    
 
     useEffect(() => {
         setLoading(true);
@@ -49,7 +51,7 @@ function Branch() {
                 headers: new Headers({
                     "Content-Type": "application/json",
                     Accept: "application/json",
-                    Authorization: token
+                    // Authorization: token
                 }),
 
             });

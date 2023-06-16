@@ -3,9 +3,9 @@ import querystring from 'querystring';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
 
-    const { status } = request.query;
+    const { branch_id,check_in ,check_out, people_number,min_price,max_price,avarage_rate } = request.query;
 
-    const queryParams = querystring.stringify({ status });
+    const queryParams = querystring.stringify({ branch_id,check_in ,check_out, people_number,min_price,max_price,avarage_rate });
 
     const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/rooms`;
 
@@ -23,6 +23,9 @@ export default async function handler(request: NextApiRequest, response: NextApi
             Expires: "0",
 
         }),
+        queryParams: {
+
+        }
     };
 
     try {
@@ -30,6 +33,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
 
         const data = await apiResponse.json();
+        console.log(data);
         response.status(apiResponse.status).json(data); // Gửi phản hồi về client
     } catch (error) {
         console.error('Error fetching data:', error);

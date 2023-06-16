@@ -95,7 +95,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     <label
                                         htmlFor="name"
                                         className={`block font-bold text-sm mb-1 ${errors.name ? 'text-red-400' : 'text-primary'
-                                            }`}
+                                        }`}
                                     >
                                         Name
                                     </label>
@@ -105,7 +105,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.name
                                             ? 'text-red-300 border-red-400'
                                             : 'text-primary'
-                                            }`}
+                                        }`}
                                         {...register('name')}
                                     />
                                     {errors.name && (
@@ -118,7 +118,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     <label
                                         htmlFor="email"
                                         className={`block font-bold text-sm mb-1 ${errors.email ? 'text-red-400' : 'text-primary'
-                                            }`}
+                                        }`}
                                     >
                                         Email
                                     </label>
@@ -128,7 +128,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.email
                                             ? 'text-red-300 border-red-400'
                                             : 'text-primary'
-                                            }`}
+                                        }`}
                                         {...register('email')}
                                     />
                                     {errors.email && (
@@ -141,7 +141,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     <label
                                         htmlFor="phone"
                                         className={`block font-bold text-sm mb-1 ${errors.email ? 'text-red-400' : 'text-primary'
-                                            }`}
+                                        }`}
                                     >
                                         Phone
                                     </label>
@@ -151,7 +151,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
                                             ? 'text-red-300 border-red-400'
                                             : 'text-primary'
-                                            }`}
+                                        }`}
                                         {...register('phone')}
                                     />
                                     {errors.phone && (
@@ -164,7 +164,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     <label
                                         htmlFor="password"
                                         className={`block font-bold text-sm mb-1 ${errors.password ? 'text-red-400' : 'text-primary'
-                                            }`}
+                                        }`}
                                     >
                                         Password
                                     </label>
@@ -174,7 +174,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
                                             ? 'text-red-300 border-red-400'
                                             : 'text-primary'
-                                            }`}
+                                        }`}
                                         {...register('password')}
                                     />
                                     {errors.password && (
@@ -187,7 +187,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     <label
                                         htmlFor="password2"
                                         className={`block font-bold text-sm mb-1 ${errors.password2 ? 'text-red-400' : 'text-primary'
-                                            }`}
+                                        }`}
                                     >
                                         Confirm Password
                                     </label>
@@ -197,7 +197,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password2
                                             ? 'text-red-300 border-red-400'
                                             : 'text-primary'
-                                            }`}
+                                        }`}
                                         {...register('password2')}
                                     />
                                     {errors.password2 && (

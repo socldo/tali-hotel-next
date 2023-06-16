@@ -6,7 +6,7 @@ import { apiUrl } from '../utils/config'
 
 export const hotelApi = createApi({
     reducerPath: 'hotelApi',
-    tagTypes: ['hotels'],
+    tagTypes: ['rooms'],
     baseQuery: fetchBaseQuery({
         baseUrl: apiUrl,
         prepareHeaders: (headers, { getState, endpoint }) => {
@@ -21,7 +21,7 @@ export const hotelApi = createApi({
     endpoints: (builder) => ({
         getHotel: builder.query<IHotel, string>({
             query: (id) => `/hotels/search/${id}`,
-            providesTags: ['hotels']
+            providesTags: ['rooms']
         }),
         getHotels: builder.query<IHotel[], { city?: string; limit?: number; min?: number; max?: number }>({
             query: (arg) => {
@@ -31,7 +31,7 @@ export const hotelApi = createApi({
                     params: { city, limit, min, max }
                 }
             },
-            providesTags: ['hotels']
+            providesTags: ['rooms']
         }),
         postReview: builder.mutation({
             query: (body: {
@@ -39,13 +39,13 @@ export const hotelApi = createApi({
             }) => {
                 return { url: '/hotels/review', method: 'post', body }
             },
-            invalidatesTags: ['hotels']
+            invalidatesTags: ['rooms']
         }),
         deleteReview: builder.mutation({
             query: (id) => {
                 return { url: `/hotels/review/${id}`, method: 'delete' }
             },
-            invalidatesTags: ['hotels']
+            invalidatesTags: ['rooms']
         }),
         updateReview: builder.mutation({
             query: (body: {
@@ -53,7 +53,7 @@ export const hotelApi = createApi({
             }) => {
                 return { url: `/hotels/review/${body.id}`, method: 'put', body }
             },
-            invalidatesTags: ['hotels']
+            invalidatesTags: ['rooms']
         }),
     })
 })

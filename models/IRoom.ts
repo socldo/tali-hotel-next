@@ -1,11 +1,13 @@
 export interface IRoom {
-    _id?: string;
-    title: string;
-    desc: string;
+    _id?: number;
+    branch_id: number;
+    name: string;
+    description: string;
+    type: number;
     price: number;
-    maxPeople: number;
-    quantity: number;
+    status: number;
+    rate_count: number;
+    average_rate: number;
     createdAt?: Date;
     updatedAt?: Date;
-    __v?: number;
 }
