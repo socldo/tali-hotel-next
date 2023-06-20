@@ -4,6 +4,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Messages } from 'primereact/messages';
 import { Message } from 'primereact/message';
+import TemplateDemo from '../../../pages/admin/branches/test2';
 
 
 type FormErrors = {
@@ -34,6 +35,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
+    const [onClickSave, setOnClickSave] = useState(false);
     const toast = useRef<Toast>(null);
 
     const [errors, setErrors] = useState<FormErrors>({
@@ -99,7 +101,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
     const getFormErrorMessage = (name: keyof FormErrors) => {
         const error = errors[name];
-        return isFormFieldInvalid(name) ? (
+        return isFormFieldInvalid(name) && onClickSave ? (
             <small className="p-error">{error}</small>
         ) : (
             <small className="p-error">&nbsp;</small>
@@ -133,7 +135,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
     const handleSave = async () => {
         const newErrors = validate({ name, email, phone, address });
         setErrors(newErrors);
-
+        setOnClickSave(true);
         if (Object.keys(newErrors).length === 0) {
             setVisible(false);
             onSave();
@@ -178,9 +180,9 @@ const BranchForm: React.FC<BranchFormProps> = ({
         <div >
             {/* <Toast ref={toast} /> */}
 
-            <form onSubmit={(e) => { handleSubmit(e) }}  >
+            <form onSubmit={(e) => { handleSubmit(e) }} >
 
-                <div className="card p-fluid">
+                <div className="card p-fluid" >
                     <div className="field">
                         <label htmlFor="name" >Tên chi nhánh</label>
                         <InputText id="name" value={name} onChange={(e) => setName(e.target.value)} type="text" />
@@ -203,15 +205,21 @@ const BranchForm: React.FC<BranchFormProps> = ({
                         <InputText id="phone" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
                     </div>
                     {getFormErrorMessage('phone')}
+
+                    <div >
+                        <TemplateDemo></TemplateDemo>
+                        <br />
+                    </div>
+
                 </div>
 
 
                 <div style={{ textAlign: 'right' }}>
                     <Button label="Save" type="submit" icon="pi pi-check" style={{ marginRight: '.5em' }} onClick={() => handleSave()} />
-                    <Button label="Cancel" severity="danger" icon="pi pi-times" onClick={() => setVisible(false)} />
+                    <Button label="Cancel" severity="danger" icon="pi pi-times" onClick={() => { setVisible(false); setOnClickSave(false); }} />
                 </div>
 
-            </form>
+            </form >
 
         </div >
     );

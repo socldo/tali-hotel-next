@@ -21,11 +21,16 @@ const ImageUploader = () => {
     const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             setSelectedImage(event.target.files[0]);
+            console.log(selectedImage);
         }
+
     };
 
     const handleImageUpload = async () => {
         if (selectedImage) {
+
+
+
             const storageRef = ref(storage, selectedImage.name);
             const uploadTask = uploadBytesResumable(storageRef, selectedImage);
 
