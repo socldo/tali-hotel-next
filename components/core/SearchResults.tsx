@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import React from 'react'
-import { IHotel } from '../../models'
+import { IHotel, IRoom } from '../../models'
 import Button from './Button'
 import StarRating from './StarRating'
 import Image from 'next/image'
 import { MdLocationOn } from '../../utils/icons'
 
 interface Props {
-    data?: IHotel[];
+    data?: IRoom[];
     city?: string;
 }
 
@@ -26,35 +26,35 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                             className="w-full lg:w-1/4 object-cover"
                             width={500}
                             height={500}
-                            src={hotel.photos[0]}
+                            src="https://images.unsplash.com/photo-1620814153812-38115a7f0fbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
                             alt={hotel.name}
                         />
                         <div className="flex-1 flex flex-col justify-between lg:flex-row gap-1">
                             <div className="lg:mx-4">
                                 <div className="flex flex-wrap gap-1">
                                     <p className="text-xl font-bold text-secondary">
-                                        {hotel.title}
+                                        {hotel.description}
                                     </p>
-                                    <StarRating data={hotel.rating} />
+                                    <StarRating data={hotel.average_rate} />
                                 </div>
                                 <div className="text-sm underline text-secondary flex items-center flex-wrap gap-2">
                                     <MdLocationOn />
                                     <span className="cursor-pointer capitalize">
-                                        {hotel.address.name}
+                                        {hotel.description}
                                     </span>
                                     <span className="cursor-pointer">
                                         Show on map
                                     </span>
                                 </div>
 
-                                <p className="text-sm mt-2">{hotel.descShort}</p>
+                                <p className="text-sm mt-2">{hotel.description}</p>
                             </div>
                             <div
                                 className="font-semibold flex flex-row lg:flex-col justify-between items-center lg:items-end ">
                                 <div
                                     className="items-center p-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg float-right lg:mb-4"
                                 >
-                                    {hotel.score ? hotel.score : 'No score'}
+                                    {hotel.average_rate ? hotel.average_rate : 'No score'}
                                 </div>
                                 <Button
                                     text="Show prices"

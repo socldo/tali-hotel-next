@@ -1,3 +1,4 @@
+import { Cookies } from 'next/dist/server/web/spec-extension/cookies';
 import React from 'react'
 
 interface Props {
@@ -6,6 +7,7 @@ interface Props {
 
 const StarRating: React.FC<Props> = ({data}) => {
     if (data) {
+        
         const stars = Math.round(data)
 
         return <div>{Array.from(Array(stars)).map((item, index) =>

@@ -15,37 +15,37 @@ const Offers = () => {
         {
             name: 'Sapa',
             city: 'sapa',
-            countryCode: 'VN',
+            address: 'VN',
             image: 'https://images.unsplash.com/photo-1584003654022-074f97adc1d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
         },
         {
             name: 'Da Nang',
             city: 'danang',
-            countryCode: 'VN',
+            address: 'VN',
             image: 'https://images.unsplash.com/photo-1620976128192-7181e9f91342?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
         },
         {
             name: 'Nha Trang',
             city: 'nha trang',
-            countryCode: 'VN',
+            address: 'VN',
             image: 'https://images.unsplash.com/photo-1642864319140-f2f3c418c707?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=766&q=80'
         },
         {
             name: 'Da Lat',
             city: 'dalat',
-            countryCode: 'VN',
+            address: 'VN',
             image: 'https://images.unsplash.com/photo-1620814153812-38115a7f0fbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
         },
         {
             name: 'Hue',
             city: 'hue',
-            countryCode: 'VN',
+            address: 'VN',
             image: 'https://images.unsplash.com/photo-1568775791746-bcc117bcb312?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80'
         },
         {
             name: 'Phu Quoc',
             city: 'phuquoc',
-            countryCode: 'VN',
+            address: 'VN',
             image: 'https://images.unsplash.com/photo-1587730675685-f71bccb607d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
         }
     ]
@@ -144,7 +144,7 @@ const Offers = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {/* Fix key index */}
                 {data != null ? data.map((location: any, index: any) =>
-                    <Link href={`/search/${location.name}`} key={index}>
+                    <Link href={`/search/${location.id}`} key={index}>
                         <div
                             className={`relative block overflow-hidden rounded-xl `}
                         >

@@ -15,12 +15,12 @@ interface Branch {
 
 export default async function handlerBranch(response: Response) {
 
-    response = await fetch(apiUrl+"/branches", {
+    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/branches`, {
         method: "GET",
         headers: new Headers({
             "Content-Type": "application/json",
             Accept: "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODIwIiwiaWF0IjoxNjg2NzMwNjgyLCJleHAiOjE2ODY4MTcwODJ9.9oDXYaYD05g5Af_M4dxPe4rDqUaHkwM2k6nLXLsJfrUx-bp4f8I2vWLdsyToY0jB_fFBqwzshL4QFtIOq9n-5g"
+            "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODA3IiwiaWF0IjoxNjg2ODIxNTEwLCJleHAiOjE2ODY5MDc5MTB9.GCL2zuqwTDv22bTQDsNH_JMcf38pOZIHJr869RNzr95KakXgsuRcIrytWO_1XmypFrqsVN3KzePnDNMR91oZNA"
         }),
     });
 
