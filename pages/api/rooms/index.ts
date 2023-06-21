@@ -6,7 +6,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
     const { branch_id,check_in ,check_out, people_number,min_price,max_price,avarage_rate } = request.query;
 
     const queryParams = querystring.stringify({ branch_id,check_in ,check_out, people_number,min_price,max_price,avarage_rate });
-
+    
     const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/rooms`;
 
     const fetchUrl = `${baseUrl}?${queryParams}`;
@@ -16,7 +16,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
         headers: new Headers({
             "Content-Type": "application/json",
             Accept: "application/json",
-            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODA3IiwiaWF0IjoxNjg2ODIxNTEwLCJleHAiOjE2ODY5MDc5MTB9.GCL2zuqwTDv22bTQDsNH_JMcf38pOZIHJr869RNzr95KakXgsuRcIrytWO_1XmypFrqsVN3KzePnDNMR91oZNA',
+            Authorization: 'Bearer ' + `${request.headers['authorization']}`,
             // `${request.headers['authorization']}`,
             "Cache-Control": "no-cache, no-store, must-revalidate",
             Pragma: "no-cache",
@@ -33,7 +33,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
 
         const data = await apiResponse.json();
-        console.log(data);
+        // console.log(data);
         response.status(apiResponse.status).json(data); // Gửi phản hồi về client
     } catch (error) {
         console.error('Error fetching data:', error);

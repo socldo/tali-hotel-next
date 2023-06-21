@@ -36,7 +36,6 @@ const Room = () => {
             cancelRef.current?.click()
             toast.success('Create room success')
         } catch (e) {
-            console.log(e)
             toast.error('Something went wrong')
         }
     }
@@ -167,7 +166,6 @@ const RoomDetail = (room: IRoom) => {
             setIsEdit(false)
             toast.success('Update room success')
         } catch (e) {
-            console.log(e)
             toast.error('Something went wrong')
         }
     }
@@ -176,7 +174,6 @@ const RoomDetail = (room: IRoom) => {
             await deleteRoom(room._id as string).unwrap()
             toast.success('Delete room success')
         } catch (e) {
-            console.log(e)
             toast.error('Something went wrong')
         }
     }

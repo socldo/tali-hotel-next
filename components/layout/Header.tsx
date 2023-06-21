@@ -20,6 +20,7 @@ import { logout } from '../../features/authSlice'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { setBookings, setHotelWishList } from '../../features/appSlice'
+import { deleteCookie } from 'cookies-next'
 
 const Header = () => {
     const router = useRouter()
@@ -33,6 +34,10 @@ const Header = () => {
         dispatch(setBookings([]))
         toast.success('User logged out...')
         await router.push('/auth')
+    }
+
+    const handleSignOut = () => {
+        deleteCookie("jet_token");
     }
 
     const accountMenu = [
@@ -137,8 +142,8 @@ const Header = () => {
                             </div>
                         </>
                         : <>
-                            <Link href="/auth">
-                                <Button text="Sign In" textColor="text-primary" bgColor="bg-white" />
+                            <Link href="/auth" onClick={handleSignOut}>
+                                <Button text="Sign In" textColor="text-primary" bgColor="bg-white"/>
                             </Link>
                         </>}
                 </div>

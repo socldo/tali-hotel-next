@@ -12,7 +12,6 @@ export const config = {
 
 export default async function handler(request: Request, response: Response) {
     const data: User = await request.json();
-    console.log(`${process.env.NEXT_PUBLIC_API_URL}api/auth/signin`);
     response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signin`, {
         method: request.method,
         body: JSON.stringify(data),

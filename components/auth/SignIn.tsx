@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../core";
 import SocialsAuth from "./SocialsAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import { signUpSchema } from '../../utils/validationSchema'
-import { SignInForm, SignUpForm } from "../../interface/auth";
-import { signInSchema } from "../../utils/validationSchema";
-import { useAppDispatch } from "../../store/hooks";
-import { useLoginUserMutation } from "../../services/authApi";
-import { setUser } from "../../features/authSlice";
 import { useRouter } from "next/router";
-import { setHotelWishList } from "../../features/appSlice";
 import { Layout } from "../layout";
-import { deleteCookie, setCookie } from "cookies-next";
-import { HttpStatusCode } from "axios";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { SignUpForm } from "../../interface/auth";
 
 interface Props {
     setIsSignIn: (arg: boolean) => void;
@@ -58,7 +52,6 @@ export default function SignIn({ setIsSignIn }: Props) {
             }),
         });
         const json = await response.json();
-        console.log(json.status);
 
         if (json.status == 200) {
             toast.success("Đăng nhập thành công!");
@@ -72,6 +65,7 @@ export default function SignIn({ setIsSignIn }: Props) {
             
 
             setCookie("jwt_token", token);
+
         } else {
             toast.warning("Sai số điện thoại hoặc mật khẩu!");
             deleteCookie("jwt_token");
@@ -147,7 +141,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         </p>
                                     )}
                                 </div>
-                                <button type="submit" >
+                                <button type="submit" onClick={handleSubmit}>
                                     <Button
                                         text="Sign In"
                                         textColor="text-white"

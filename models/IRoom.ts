@@ -8,6 +8,7 @@ export interface IRoom {
     status: number;
     rate_count: number;
     average_rate: number;
+    address: string;
     createdAt?: Date;
     updatedAt?: Date;
 }

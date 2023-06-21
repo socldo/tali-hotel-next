@@ -27,8 +27,6 @@ function Branch() {
     // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODY4MTU1MTYsImV4cCI6MTY4NjkwMTkxNn0.lONZPTtdFXx2gsboi_vBh0jxrdafdNyg4b_w7AS1oC_qzH7ftk9CLYDv3hL4PU9RkddlqZzDgLWJ3k-wVc-k4A'
 
     const token = getCookie("jwt_token")
-    console.log(token);
-    
 
     useEffect(() => {
         setLoading(true);
@@ -57,8 +55,6 @@ function Branch() {
             });
 
             const data = await response.json();
-            console.log('data:', data);
-
 
 
             setBranches(data.data);
@@ -120,7 +116,6 @@ function Branch() {
                 }),
             });
             const data = await response.json();
-            console.log('data:', data);
             setRenderCount(renderCount + 1);
         } catch (error) {
             console.error('Error fetching branches:', error);

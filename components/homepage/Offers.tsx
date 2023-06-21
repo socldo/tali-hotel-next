@@ -6,6 +6,7 @@ import 'swiper/css'
 import { Autoplay } from 'swiper'
 import getFlagEmoji from '../../utils/getFLagEMoji'
 import Link from 'next/link'
+import { getCookie } from 'cookies-next'
 
 
 
@@ -51,6 +52,8 @@ const Offers = () => {
     ]
 
     const [data, setData] = useState(locations);
+    
+    let token = getCookie('jwt_token')?.toString();
 
     async function getBranches() {
         const response: Response = await fetch("/api/branch/branch", {
@@ -58,7 +61,7 @@ const Offers = () => {
             headers: new Headers({
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODIwIiwiaWF0IjoxNjg2NzMwNjgyLCJleHAiOjE2ODY4MTcwODJ9.9oDXYaYD05g5Af_M4dxPe4rDqUaHkwM2k6nLXLsJfrUx-bp4f8I2vWLdsyToY0jB_fFBqwzshL4QFtIOq9n-5g"
+                Authorization: token == undefined ? "" : token
             }),
         });
         const data = await response.json();
@@ -73,7 +76,7 @@ const Offers = () => {
             .catch(error => {
             // Xử lý lỗi nếu có
             });
-    });
+    }, []);
     
 
     // const branches = await getBranches();

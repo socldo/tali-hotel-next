@@ -40,7 +40,6 @@ const SignUp = ({ setIsSignIn }: Props) => {
 
 
     const onSubmit = async (data: SignUpForm) => {
-        console.log(data);
 
         return registerUser(data)
     };
