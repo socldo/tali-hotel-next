@@ -86,7 +86,6 @@ const ImageGallery = ({photos}: Props) => {
                 </Dialog>
             </Transition>
         </>
-
     )
 }
 

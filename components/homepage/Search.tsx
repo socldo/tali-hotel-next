@@ -10,7 +10,7 @@ const Search = () => {
     }
 
     return (
-        <div className="w-full bg-primary">
+        <div className="w-full bg-gradient-to-r from-cyan-500 to-blue-500" >
             <div className=" mx-auto container px-4 lg:px-6 relative ">
                 <div className="text-white mx-2 mt-16 mb-48 sm:mb-32 lg:mb-28">
                     <h1 className="text-5xl font-bold ">Find your next stay</h1>

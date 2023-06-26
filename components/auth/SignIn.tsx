@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../core";
 import SocialsAuth from "./SocialsAuth";
 import { useForm } from "react-hook-form";
@@ -9,12 +9,31 @@ import { useRouter } from "next/router";
 import { Layout } from "../layout";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { SignUpForm } from "../../interface/auth";
+import { useDispatch } from "react-redux";
+import { setUser } from "./auth";
 
 interface Props {
     setIsSignIn: (arg: boolean) => void;
 }
 
+
 export default function SignIn({ setIsSignIn }: Props) {
+
+    const handleDeleteCookie = async () => {
+        // Sau khi đăng kí thành công, chuyển hướng đến trang login
+        deleteCookie("jwt_token");
+        deleteCookie("email");
+        deleteCookie("phone");
+        deleteCookie("name");
+        deleteCookie("role");
+        deleteCookie("avatar");
+    };
+
+    useEffect(() => {
+        handleDeleteCookie();
+    },[])
+    
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
@@ -36,6 +55,8 @@ export default function SignIn({ setIsSignIn }: Props) {
         // Sau khi đăng kí thành công, chuyển hướng đến trang login
         router.push("/");
     };
+
+
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -62,10 +83,12 @@ export default function SignIn({ setIsSignIn }: Props) {
 
             const data = json.data;
             const token = data.jwt_token;
-            
-
             setCookie("jwt_token", token);
-
+            setCookie("email", data.email);
+            setCookie("phone", data.phone);
+            setCookie("name", data.name);
+            setCookie("role", data.role);
+            setCookie("avatar", data.avatar);
         } else {
             toast.warning("Sai số điện thoại hoặc mật khẩu!");
             deleteCookie("jwt_token");

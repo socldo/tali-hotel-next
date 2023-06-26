@@ -1,13 +1,8 @@
 export interface IUser {
-    _id: string;
-    name: string;
+    id: number;
+    first_name: string;
+    last_name: string;
     email: string;
-    username: string;
-    isAdmin: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    __v: number;
-    wishlist: string[];
-    phone?: string;
-    avatar?: string;
+    role: string;
+    jwt_token: string;
 }

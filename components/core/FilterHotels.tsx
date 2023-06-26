@@ -43,7 +43,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
     if (max) query += `&max=${max}`
 
     // const {width} = useWindowDimensions()
-    const [values, setValues] = useState([0, 10000000]); // Giá trị mặc định
+    const [values, setValues] = useState([0, 50000000]); // Giá trị mặc định
 
     const [rooms, setRooms] = useState(room)
     const [branchId, setBranchId] = useState(branchIdBf)
@@ -53,7 +53,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
     const [peopleNumber, setPeopleNumber] = useState('-1')
     const [bedNumber, setBedNumber] = useState('-1')
     const [minPrice, setMinPrice] = useState('0')
-    const [maxPrice, setMaxPrice] = useState('10000000')
+    const [maxPrice, setMaxPrice] = useState('500000000')
     
     const onChangeValues = (event: any) => {
         setValues(event.value);
@@ -71,7 +71,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
     const handleFilter = async () => {
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
 
-        let url = `/api/rooms?branch_id=${branchId}&check_in=${checkIn}&check_out=${checkOut}&people_number=${peopleNumber}&min_price=${minPrice}&max_price=${maxPrice}&avarage_rate=${rating}&bed_number=${bedNumber}`;
+        let url = `/api/hotels?branch_id=${branchId}&check_in=${checkIn}&check_out=${checkOut}&people_number=${peopleNumber}&min_price=${minPrice}&max_price=${maxPrice}&avarage_rate=${rating}&bed_number=${bedNumber}`;
 
         const response = await fetch(url, {
             method: "GET",
@@ -115,7 +115,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
     const {width} = useWindowDimensions()
 
     return (
-        <><div><form className="w-full h-full p-5 bg-blue-100 rounded-md drop-shadow-2xl" autoComplete='off'>
+        <><div><form className="shadow-xl w-full h-full p-5 bg-blue-100 rounded-md drop-shadow-2xl" autoComplete='off'>
             
             <Disclosure defaultOpen={(width > 1024)} >
                 <div className="w-full" >
@@ -155,13 +155,13 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
                             <InputNumber className="block w-full rounded-md border-none" defaultValue={2} inputId="border-0 minmax-buttons" value={bedNumber} onValueChange={(e) => setBedNumber(e.value.toString())} mode="decimal" showButtons min={1} max={20} />
                         </label>
                         <div className="w-full flex flex-wrap gap-x-5">
-                            <span className="text-sm">Chọn mức giá: {numberFormat(values[0])} - {numberFormat(values[1])}</span>
+                            <span className="text-sm">Ngân sách của bạn: {numberFormat(values[0])} - {numberFormat(values[1])}</span>
 
                             <Slider
                                 range
                                 value={values}
                                 min={0}
-                                max={10000000}
+                                max={50000000}
                                 onChange={onChangeValues}
                                 style={{ width: '100%' }}
                                 step={50000}
@@ -173,7 +173,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
                             href={query}
                             onClick={() =>handleFilter()}  
                         >
-                            <Button text={"Search"}></Button>
+                            <Button text={"Search"} bgColor="bg-lightPrimary"></Button>
                         </Link>
 
                     </div>
@@ -182,7 +182,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
             </Disclosure>
         </form>
         </div>
-        <div className="border-2 mt-4 p-4">
+        <div className="shadow-xl border-2 mt-4 p-4">
             <h3 className="mb-4 font-bold border-b pb-4 text-xl">Filter by:</h3>
             <div className="flex flex-col">
                 <div className="flex-1">

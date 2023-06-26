@@ -7,7 +7,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
     const queryParams = querystring.stringify({ branch_id,check_in ,check_out, people_number,min_price,max_price,avarage_rate });
     
-    const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/rooms`;
+    const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/hotels`;
 
     const fetchUrl = `${baseUrl}?${queryParams}`;
 

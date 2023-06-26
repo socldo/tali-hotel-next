@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { setHotelWishList } from '../../features/appSlice'
 import { Layout } from '../layout'
+import { deleteCookie } from 'cookies-next'
 
 interface Props {
     setIsSignIn: (arg: boolean) => void;
@@ -25,6 +26,21 @@ const SignUp = ({ setIsSignIn }: Props) => {
     })
         ;
     register('role_id', { value: 1 });
+
+    const handleDeleteCookie = async () => {
+        // Sau khi đăng kí thành công, chuyển hướng đến trang login
+        deleteCookie("jwt_token");
+        deleteCookie("email");
+        deleteCookie("phone");
+        deleteCookie("name");
+        deleteCookie("role");
+        deleteCookie("jwtavatartoken");
+    };
+
+    useEffect(() => {
+        handleDeleteCookie();
+    })
+    
 
     const router = useRouter()
     const dispatch = useAppDispatch()

@@ -25,9 +25,9 @@ export default async function handlerBranch(request :Request, response: Response
     });
 
     if ((response).ok) {
+
         
         return (response);
-
     } else {
         console.error("Error:", response.json().then( x => x.message));
     }
