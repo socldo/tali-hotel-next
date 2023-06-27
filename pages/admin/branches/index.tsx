@@ -10,7 +10,7 @@ import { Toast } from 'primereact/toast';
 import BranchForm from '../../../components/admin/branch/branch-form';
 import querystring from 'querystring';
 import { InputText } from 'primereact/inputtext';
-
+import { Image } from 'primereact/image';
 
 
 function Branch() {
@@ -24,7 +24,7 @@ function Branch() {
     const toast = useRef<Toast>(null);
     const buttonEl = useRef(null);
     const [globalFilter, setGlobalFilter] = useState('');
-    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODY4MTU1MTYsImV4cCI6MTY4NjkwMTkxNn0.lONZPTtdFXx2gsboi_vBh0jxrdafdNyg4b_w7AS1oC_qzH7ftk9CLYDv3hL4PU9RkddlqZzDgLWJ3k-wVc-k4A'
+    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODczMTcwOTcsImV4cCI6MTY4NzQwMzQ5N30.CWOWaErpIezVQSpzEH63RyuQ_cgKmHlYEFsaD6MFIQPFKZSWey-BYZbQIlk4EuaD4s3z-eSB62ygLTj3z6M6Tw'
 
 
     useEffect(() => {
@@ -94,6 +94,19 @@ function Branch() {
 
             </>
         );
+    };
+
+
+    const imageBodyTemplate = (rowData: Model.Branch) => {
+        let image = rowData.images ? rowData.images : "";
+
+
+        return (
+            <div className="card flex justify-content-center">
+                <Image src={image} zoomSrc={image} alt="Image" width="80" height="60" preview />
+                {/* <img src={`/Rebel_niner.png`} className="shadow-2" width="100" /> */}
+            </div>
+        )
     };
 
 
@@ -173,7 +186,8 @@ function Branch() {
     // };
 
     const showSuccess = () => {
-        setRenderCount(renderCount + 1);
+        setRenderCount(renderCount => renderCount + 1);
+
         let message = !branch ? 'Tạo mới thành công' : 'Cập nhật thành công';
         toast.current?.show({ severity: 'success', summary: 'Thành công', detail: message, life: 3000 });
 
@@ -229,6 +243,7 @@ function Branch() {
                             style={{ flexGrow: 1, flexBasis: '100px' }}
                         ></Column>
                         <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} className="font-bold"></Column>
+                        <Column field="images" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(branches) => imageBodyTemplate(branches)} className="font-bold"></Column>
                         <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                         <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                         <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>

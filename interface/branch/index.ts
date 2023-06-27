@@ -8,6 +8,7 @@ declare namespace Model {
         address: string;
         phone: string;
         status: boolean;
+        images: string;
     }
 
 

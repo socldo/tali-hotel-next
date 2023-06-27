@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import { Messages } from 'primereact/messages';
-import { Message } from 'primereact/message';
 import TemplateDemo from '../../../pages/admin/branches/test2';
-
+import { storage, analytics } from '../../../firebaseConfig';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 type FormErrors = {
     name?: string;
@@ -37,6 +37,9 @@ const BranchForm: React.FC<BranchFormProps> = ({
     const [address, setAddress] = useState('');
     const [onClickSave, setOnClickSave] = useState(false);
     const toast = useRef<Toast>(null);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+
 
     const [errors, setErrors] = useState<FormErrors>({
         name: '',
@@ -149,16 +152,23 @@ const BranchForm: React.FC<BranchFormProps> = ({
     const handleCreateUpdate = async () => {
 
         try {
-            let token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwOTMyMTIxMjQiLCJpYXQiOjE2ODY3Mjg1MzcsImV4cCI6MTY4NjgxNDkzN30.7dQ277H0QpGOJX1M6KHn_r-jVW4bKvhRB7k3CcKf1PzjoRCV3SGKaWvHBgHGrjgq6ZmybsjPRx26_ZV59zT_Qg'
+            let token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODc0ODg1ODUsImV4cCI6MTY4NzU3NDk4NX0.0TcCViEX_-HJOIr-e7jIDPCiXWj1x5-DUhZlZhgbFAhdb57K_VDGmSvnZe38aUz8EFOJh8Y9bMa62I8yGP2bkw'
             //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
             let url = id == 0 ? `/api/branches/create` : `/api/branches/${id}/update`;
+
+            let downloadURL = await handleImageUpload(selectedFiles[0]);
+
+            console.log(downloadURL);
+
+
             const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify({
                     name: name,
                     address: address,
                     phone: phone,
-                    email: email
+                    email: email,
+                    images: downloadURL,
                 }),
                 headers: new Headers({
                     "Content-Type": "application/json",
@@ -172,6 +182,29 @@ const BranchForm: React.FC<BranchFormProps> = ({
         } catch (error) {
             console.error('Error fetching branches:', error);
 
+        }
+    };
+
+    const handleSelectedFiles = async (files: File[]) => {
+        setSelectedFiles(files);
+
+    };
+
+    const handleImageUpload = async (images: File) => {
+        if (images) {
+
+            const fileExtension = images.name.split('.').pop();
+            const newFileName = `${uuidv4()}.${fileExtension}`;
+
+            const storageRef = ref(storage, `branches/${newFileName}`);
+            const uploadTask = uploadBytesResumable(storageRef, images);
+
+            try {
+                const snapshot = await uploadTask;
+                return await getDownloadURL(snapshot.ref);
+            } catch (error) {
+                console.log('Lỗi khi tải lên hình ảnh:', error);
+            }
         }
     };
 
@@ -207,7 +240,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
                     {getFormErrorMessage('phone')}
 
                     <div >
-                        <TemplateDemo></TemplateDemo>
+                        <TemplateDemo onSelectedFiles={(e) => handleSelectedFiles(e)}  ></TemplateDemo>
                         <br />
                     </div>
 
@@ -226,3 +259,5 @@ const BranchForm: React.FC<BranchFormProps> = ({
 };
 
 export default BranchForm;
+
+

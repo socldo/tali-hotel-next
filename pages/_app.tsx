@@ -16,9 +16,14 @@ import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.css';
 import 'primeicons/primeicons.css';
+import AdminLayout from './admin/AdminLayout'
 
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, router }: AppProps) {
+
+    const isAdminPage = router.pathname.startsWith('/admin');
+
+
     NProgress.configure({ showSpinner: false })
     useEffect(() => {
         Router.events.on('routeChangeStart', (url) => {
@@ -29,6 +34,14 @@ export default function App({ Component, pageProps }: AppProps) {
             NProgress.done(false)
         })
     }, [])
+
+    if (isAdminPage) {
+        return (
+            <AdminLayout>
+                <Component {...pageProps} />
+            </AdminLayout>
+        );
+    }
 
     return (
         <Provider store={store}>
