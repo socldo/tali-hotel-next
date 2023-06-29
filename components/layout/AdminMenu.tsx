@@ -12,15 +12,15 @@ const AppMenu = () => {
 
     const model: AppMenuItem[] = [
         {
-            label: 'Home',
+            label: 'Trang chủ',
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
         {
-            label: 'UI Components',
+            label: 'Quản lý',
             items: [
-                { label: 'Chi nhánh', icon: 'pi pi-fw pi-id-card', to: '/admin/branches' },
-                { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/uikit/formlayout' },
-                { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
+                { label: 'Khu Vực', icon: 'pi pi-fw pi-globe', to: '/admin/branches' },
+                { label: 'Khách Sạn', icon: 'pi pi-fw pi-building', to: '/admin/hotels' },
+                { label: 'Tài Khoản', icon: 'pi pi-fw pi-users', to: '/admin/users' },
                 { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
                 { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },
                 { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },

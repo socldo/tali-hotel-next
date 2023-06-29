@@ -6,6 +6,7 @@ import TemplateDemo from '../../../pages/admin/branches/test2';
 import { storage, analytics } from '../../../firebaseConfig';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+import { getCookie } from 'cookies-next'
 
 type FormErrors = {
     name?: string;
@@ -39,6 +40,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
     const toast = useRef<Toast>(null);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
+    const token = getCookie('jwt_token')?.toString();
 
 
     const [errors, setErrors] = useState<FormErrors>({
@@ -152,7 +154,6 @@ const BranchForm: React.FC<BranchFormProps> = ({
     const handleCreateUpdate = async () => {
 
         try {
-            let token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODc0ODg1ODUsImV4cCI6MTY4NzU3NDk4NX0.0TcCViEX_-HJOIr-e7jIDPCiXWj1x5-DUhZlZhgbFAhdb57K_VDGmSvnZe38aUz8EFOJh8Y9bMa62I8yGP2bkw'
             //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
             let url = id == 0 ? `/api/branches/create` : `/api/branches/${id}/update`;
 
@@ -173,7 +174,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
                 headers: new Headers({
                     "Content-Type": "application/json",
                     Accept: "application/json",
-                    Authorization: token
+                    Authorization: !token ? "" : token
                 }),
             });
             const data = await response.json();

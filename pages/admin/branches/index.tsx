@@ -11,7 +11,8 @@ import BranchForm from '../../../components/admin/branch/branch-form';
 import querystring from 'querystring';
 import { InputText } from 'primereact/inputtext';
 import { Image } from 'primereact/image';
-
+import { getCookie } from 'cookies-next'
+import { TabView, TabPanel } from 'primereact/tabview';
 
 function Branch() {
 
@@ -24,7 +25,8 @@ function Branch() {
     const toast = useRef<Toast>(null);
     const buttonEl = useRef(null);
     const [globalFilter, setGlobalFilter] = useState('');
-    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzEyMzEiLCJpYXQiOjE2ODczMTcwOTcsImV4cCI6MTY4NzQwMzQ5N30.CWOWaErpIezVQSpzEH63RyuQ_cgKmHlYEFsaD6MFIQPFKZSWey-BYZbQIlk4EuaD4s3z-eSB62ygLTj3z6M6Tw'
+
+    const token = getCookie('jwt_token')?.toString();
 
 
     useEffect(() => {
@@ -46,7 +48,7 @@ function Branch() {
                 headers: new Headers({
                     "Content-Type": "application/json",
                     Accept: "application/json",
-                    Authorization: token
+                    Authorization: !token ? "" : token
                 }),
             });
 
@@ -102,10 +104,11 @@ function Branch() {
 
 
         return (
-            <div className="card flex justify-content-center">
-                <Image src={image} zoomSrc={image} alt="Image" width="80" height="60" preview />
-                {/* <img src={`/Rebel_niner.png`} className="shadow-2" width="100" /> */}
-            </div>
+            <>
+                <div className=" flex justify-content-center">
+                    <Image src={image} zoomSrc={image} alt="Image" width="80" height="60" preview />
+                </div>
+            </>
         )
     };
 
@@ -121,7 +124,7 @@ function Branch() {
                 headers: new Headers({
                     "Content-Type": "application/json",
                     Accept: "application/json",
-                    Authorization: token
+                    Authorization: !token ? "" : token
                 }),
             });
             const data = await response.json();
@@ -149,10 +152,6 @@ function Branch() {
             setBranch(branch);
             setVisible(true);
         };
-
-
-
-
 
         return (
             <>
@@ -194,9 +193,9 @@ function Branch() {
     }
 
     const header = (
-        <div className="flex flex-column md:flex-row md:justify-between md:items-center">
-            <h5 className="m-0" style={{ fontWeight: 'bold', fontSize: '28px', textAlign: 'left' }}>
-                Chi nhánh
+        <div className="flex flex-column md:flex-row md:justify-between md:items-center" >
+            <h5 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
+                Khu Vực
             </h5>
             <div className="text-right">
                 <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
@@ -208,7 +207,7 @@ function Branch() {
                     />
                 </span>
                 <Button
-                    label="New"
+                    label="Thêm Mới"
                     icon="pi pi-plus"
                     style={{ marginRight: '.5em' }}
                     onClick={() => {
@@ -226,30 +225,68 @@ function Branch() {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
+                    <TabView >
+                        <TabPanel header="Đang hoạt động" >
+                            <DataTable
+                                value={branches.filter(branch => branch.status == true)}
+                                scrollable scrollHeight="400px"
+                                loading={loading}
+                                className="mt-3"
+                                globalFilter={globalFilter}
+                                header={header}
+                                paginator rows={10}
+                                rowsPerPageOptions={[10, 20, 50]}
+                                tableStyle={{ minWidth: '50rem' }}
+                                style={{ fontSize: '14px' }}
 
-                    {/* <Toolbar start={<h1 style={{ fontWeight: 'bold', fontSize: '24px' }}>Chi nhánh</h1>} end={() => toolbarLeftTemplate()}> </Toolbar> */}
+                            >
+                                <Column
+                                    header="STT"
+                                    body={(_, { rowIndex }) => rowIndex + 1}
+                                    style={{ flexGrow: 1, flexBasis: '100px' }}
+                                ></Column>
+                                <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
+                                <Column field="images" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(branches) => imageBodyTemplate(branches)} className="font-bold"></Column>
+                                <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                                <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                                <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                                {/* <Column field="status" header="Trạng thái" style={{ flexGrow: 1, flexBasis: '200px' }} body={(branches) => statusBodyTemplate(branches)}></Column> */}
+                                <Column body={(branches) => actionBodyTemplate(branches)}></Column>
 
-                    <DataTable
-                        value={branches}
-                        scrollable scrollHeight="400px"
-                        loading={loading}
-                        className="mt-3"
-                        globalFilter={globalFilter}
-                        header={header}
-                    >
-                        <Column
-                            header="STT"
-                            body={(_, { rowIndex }) => rowIndex + 1}
-                            style={{ flexGrow: 1, flexBasis: '100px' }}
-                        ></Column>
-                        <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} className="font-bold"></Column>
-                        <Column field="images" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(branches) => imageBodyTemplate(branches)} className="font-bold"></Column>
-                        <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                        <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                        <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                        <Column field="status" header="Trạng thái" style={{ flexGrow: 1, flexBasis: '200px' }} body={(branches) => statusBodyTemplate(branches)}></Column>
-                        <Column body={(branches) => actionBodyTemplate(branches)}></Column>
-                    </DataTable>
+                            </DataTable>
+
+                        </TabPanel>
+                        <TabPanel header="Tạm ngưng">
+                            <DataTable
+                                value={branches.filter(branch => branch.status == false)}
+                                scrollable scrollHeight="400px"
+                                loading={loading}
+                                className="mt-3"
+                                globalFilter={globalFilter}
+                                header={header}
+                                paginator rows={10}
+                                rowsPerPageOptions={[10, 20, 50]}
+                                tableStyle={{ minWidth: '50rem' }}
+                                style={{ fontSize: '16px' }}
+                            >
+                                <Column
+                                    header="STT"
+                                    body={(_, { rowIndex }) => rowIndex + 1}
+                                    style={{ flexGrow: 1, flexBasis: '100px' }}
+                                ></Column>
+                                <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
+                                <Column field="images" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(branches) => imageBodyTemplate(branches)} className="font-bold"></Column>
+                                <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                                <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                                <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                                {/* <Column field="status" header="Trạng thái" style={{ flexGrow: 1, flexBasis: '200px' }} body={(branches) => statusBodyTemplate(branches)}></Column> */}
+                                <Column body={(branches) => actionBodyTemplate(branches)}></Column>
+                            </DataTable>
+
+
+
+                        </TabPanel>
+                    </TabView>
 
                     <Dialog visible={visible} onHide={() => setVisible(false)} style={{ width: '50vw' }} header={!branch ? "Tạo mới" : "Cập nhật"}>
                         <BranchForm setVisible={setVisible} currentBranch={branch || null} onSave={() => showSuccess()} />

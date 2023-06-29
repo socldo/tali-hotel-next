@@ -18,4 +18,17 @@ declare namespace Model {
         data: Branch[];
     }
 
+    interface User {
+        id: number;
+        role_id: number;
+        birthday: string;
+        avatar: string;
+        name: string;
+        email: string;
+        address: string;
+        phone: string;
+        is_locked: boolean;
+    }
+
+
 }

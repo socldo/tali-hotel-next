@@ -18,7 +18,7 @@
     overflow: hidden;
     cursor: pointer;
     z-index: 999;
-    box-shadow: -.25rem 0 1rem rgba(0,0,0,.15);
+    box-shadow: -0.25rem 0 1rem rgba(0, 0, 0, 0.15);
 
     i {
         font-size: 2rem;
@@ -26,7 +26,7 @@
         transform: rotate(0deg);
         transition: transform 1s;
     }
-    
+
     &:hover {
         background: var(--primary-400);
     }
@@ -39,4 +39,7 @@
             padding-right: 2rem;
         }
     }
+}
+body {
+    font-size: 14px; /* Chỉnh kích thước chữ cho toàn bộ trang web */
 }
