@@ -66,7 +66,6 @@ const EditPage = () => {
                 toast.success('Update success')
             }
         } catch (e) {
-            console.log(e)
             toast.error('Something went wrong')
         }
     }
@@ -82,7 +81,7 @@ const EditPage = () => {
             >
                 <div className="flex justify-between items-center">
                     <BackButton text='Back to join page'/>
-                    <Link href={`${id}/room`}>
+                    <Link href={`${id}/hotels`}>
                         <Button text="Manager Room"/>
                     </Link>
                 </div>

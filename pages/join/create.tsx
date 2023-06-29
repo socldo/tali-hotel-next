@@ -51,7 +51,6 @@ const Create = () => {
             await router.push('/join')
             toast.success('Create to success')
         } catch (e) {
-            console.log(e)
             toast.error('Something went wrong')
         }
     }

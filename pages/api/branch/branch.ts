@@ -13,22 +13,21 @@ interface Branch {
     status: boolean;
 }
 
-export default async function handlerBranch(response: Response) {
+export default async function handlerBranch(request :Request, response: Response) {
 
     response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/branches`, {
         method: "GET",
         headers: new Headers({
             "Content-Type": "application/json",
             Accept: "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMzcyMjAyODA3IiwiaWF0IjoxNjg2ODIxNTEwLCJleHAiOjE2ODY5MDc5MTB9.GCL2zuqwTDv22bTQDsNH_JMcf38pOZIHJr869RNzr95KakXgsuRcIrytWO_1XmypFrqsVN3KzePnDNMR91oZNA"
+            "Authorization": 'Bearer ' + `${request.headers.get('authorization')}`,
         }),
     });
 
     if ((response).ok) {
-        console.log(1);
+
         
         return (response);
-
     } else {
         console.error("Error:", response.json().then( x => x.message));
     }

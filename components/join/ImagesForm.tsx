@@ -55,7 +55,6 @@ const ImagesForm = (
             const { url } = await uploadImages(formData).unwrap()
             return url
         } catch (e) {
-            console.log(e)
             toast.error(`Upload fail`)
         }
     }
@@ -65,7 +64,6 @@ const ImagesForm = (
             setFiles(newFiles)
             await deleteImage({ url: file }).unwrap()
         } catch (e) {
-            console.log(e)
         }
     }
     useEffect(() => {

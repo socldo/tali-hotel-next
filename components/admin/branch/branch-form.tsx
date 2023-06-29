@@ -177,8 +177,6 @@ const BranchForm: React.FC<BranchFormProps> = ({
                 }),
             });
             const data = await response.json();
-            console.log('data:', data);
-
         } catch (error) {
             console.error('Error fetching branches:', error);
 

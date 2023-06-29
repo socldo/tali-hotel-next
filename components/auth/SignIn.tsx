@@ -5,22 +5,35 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import { signUpSchema } from '../../utils/validationSchema'
-import { SignInForm, SignUpForm } from "../../interface/auth";
-import { signInSchema } from "../../utils/validationSchema";
-import { useAppDispatch } from "../../store/hooks";
-import { useLoginUserMutation } from "../../services/authApi";
-import { setUser } from "../../features/authSlice";
 import { useRouter } from "next/router";
-import { setHotelWishList } from "../../features/appSlice";
 import { Layout } from "../layout";
-import { deleteCookie, setCookie } from "cookies-next";
-import { HttpStatusCode } from "axios";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { SignUpForm } from "../../interface/auth";
+import { useDispatch } from "react-redux";
+import { setUser } from "./auth";
 
 interface Props {
     setIsSignIn: (arg: boolean) => void;
 }
 
+
 export default function SignIn({ setIsSignIn }: Props) {
+
+    const handleDeleteCookie = async () => {
+        // Sau khi đăng kí thành công, chuyển hướng đến trang login
+        deleteCookie("jwt_token");
+        deleteCookie("email");
+        deleteCookie("phone");
+        deleteCookie("name");
+        deleteCookie("role");
+        deleteCookie("avatar");
+    };
+
+    useEffect(() => {
+        handleDeleteCookie();
+    },[])
+    
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
@@ -43,6 +56,8 @@ export default function SignIn({ setIsSignIn }: Props) {
         router.push("/");
     };
 
+
+
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
@@ -58,7 +73,6 @@ export default function SignIn({ setIsSignIn }: Props) {
             }),
         });
         const json = await response.json();
-        console.log(json.status);
 
         if (json.status == 200) {
             toast.success("Đăng nhập thành công!");
@@ -69,9 +83,12 @@ export default function SignIn({ setIsSignIn }: Props) {
 
             const data = json.data;
             const token = data.jwt_token;
-            
-
             setCookie("jwt_token", token);
+            setCookie("email", data.email);
+            setCookie("phone", data.phone);
+            setCookie("name", data.name);
+            setCookie("role", data.role);
+            setCookie("avatar", data.avatar);
         } else {
             toast.warning("Sai số điện thoại hoặc mật khẩu!");
             deleteCookie("jwt_token");
@@ -147,7 +164,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         </p>
                                     )}
                                 </div>
-                                <button type="submit" >
+                                <button type="submit" onClick={handleSubmit}>
                                     <Button
                                         text="Sign In"
                                         textColor="text-white"

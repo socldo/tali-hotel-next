@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     useGetHotelRoomsQuery
 } from '../../services/roomApi'
@@ -9,6 +9,8 @@ import { Button } from '../core'
 import { IRoom } from '../../models'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
+import moment from 'moment'
+import { getCookie } from 'cookies-next'
 
 interface Props {
     hotelId: string;
@@ -19,6 +21,10 @@ interface RoomReserve extends IRoom {
 }
 
 const RoomHotel = ({ hotelId }: Props) => {
+
+    const [loading, setLoading] = useState(false);
+    const [rooms, setRoom] = useState();
+
     const services = [
         'Free toiletries',
         'Bidet',
@@ -44,7 +50,40 @@ const RoomHotel = ({ hotelId }: Props) => {
         'Clothes rack',
         'Toilet paper'
     ]
-    const { data: rooms, isLoading } = useGetHotelRoomsQuery(hotelId)
+
+    const handleDetailRoom = async () => {
+
+        let token = getCookie('jwt_token')?.toString();
+        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
+        let url = `/api/rooms/${hotelId}`;
+
+        
+        const response = await fetch(url, {
+            method: "GET",
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: token == undefined ? "" : token
+            }),
+        });
+        const data = await response.json();
+        setRoom(data.data)
+        // console.log( data);
+        return data;
+    }
+
+
+    useEffect(() => {
+        handleDetailRoom().then((res) => res.json()).catch((err) => {
+            console.log(err);
+        }).finally(() => {
+            setLoading(false);
+        });
+    }, [])
+
+
+
+    
     const [roomsReserve, setRoomsReserve] = useState<RoomReserve[]>([])
     const [total, setTotal] = useState<number>(0)
     const [price, setPrice] = useState<number>(0)
@@ -56,7 +95,7 @@ const RoomHotel = ({ hotelId }: Props) => {
     const onChangeSelect = (room: IRoom, quantity: number) => {
         if (quantity === 0) {
             roomsReserve.forEach((item, i) => {
-                if (item._id === room._id) {
+                if (item.id === room.id) {
                     roomsReserve.splice(i, 1)
                     setTotal(total - item.quantity)
                     setPrice(price - item.quantity * item.price)
@@ -64,7 +103,7 @@ const RoomHotel = ({ hotelId }: Props) => {
             })
         } else {
             const check = roomsReserve?.every((item) => {
-                return item._id !== room._id
+                return item.id !== room.id
             })
             if (check) {
                 setRoomsReserve([...roomsReserve, { ...room, quantity: quantity }])
@@ -72,7 +111,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                 setPrice(price + quantity * room.price)
             } else {
                 roomsReserve.forEach((item) => {
-                    if (item._id === room._id) {
+                    if (item.id === room.id) {
                         setTotal(total - item.quantity + quantity)
                         setPrice(
                             price - item.quantity * item.price + quantity * item.price
@@ -111,7 +150,7 @@ const RoomHotel = ({ hotelId }: Props) => {
 
     const bookingBody: any = {
         hotelId: hotelId,
-        roomId: roomsReserve[0]?._id,
+        roomId: roomsReserve[0]?.id,
         checkIn: checkIn,
         checkOut: checkOut,
         price: price,
@@ -139,7 +178,7 @@ const RoomHotel = ({ hotelId }: Props) => {
         )
     }
 
-    if (isLoading) {
+    if (loading) {
         return (
             <div className="w-screen flex justify-center">
                 <Loader />
@@ -153,7 +192,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                     <span>Check In</span>
                     <input
                         type="date"
-                        className="form-input block"
+                        className="form-input block rounded-md drop-shadow-lg"
                         onChange={(event: any) => setCheckIn(event.target.value)}
                         required
                     />
@@ -162,15 +201,16 @@ const RoomHotel = ({ hotelId }: Props) => {
                     <span>Check Out</span>
                     <input
                         type="date"
-                        className="form-input block"
+                        className="form-input block rounded-md drop-shadow-lg"
                         onChange={(event: any) => setCheckOut(event.target.value)}
                         required
+                        min={moment(checkIn).add(1, 'day').format('YYYY-MM-DD')}
                     />
                 </label>
             </div>
-            <div className="w-full flex flex-wrap">
-                <div className="w-full xl:w-4/5 lg:w-full">
-                    <div className="hidden md:grid grid-cols-12 bg-blue-400 text-white">
+            <div className="w-full flex flex-wrap rounded-md drop-shadow-lg">
+                <div className="w-full xl:w-4/5 lg:w-full rounded-md drop-shadow-lg">
+                    <div className="hidden md:grid grid-cols-12 bg-blue-400 text-white rounded-md drop-shadow-lg">
                         <div
                             className="xl:col-span-5 lg:col-span-6 md:col-span-7 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center"
                         >
@@ -195,14 +235,14 @@ const RoomHotel = ({ hotelId }: Props) => {
                     </div>
                     <div>
                         {rooms?.map((room) => (
-                            <div key={room._id} className="grid mt-2.5 md:mt-0 md:grid-cols-12">
+                            <div key={room.id} className="grid mt-2.5 md:mt-0 md:grid-cols-12">
                                 <div
                                     className="xl:col-span-5 lg:col-span-6 md:col-span-7 text-sm 2xl:text-base border md:border-l-0 border-blue-500 p-1.5 flex md:justify-center items-center">
                                     <div>
                                         <h2 className="w-full font-semibold underline text-base 2xl:text-xl text-secondary w-max cursor-pointer">
-                                            {room.title}
+                                            {room.name}
                                         </h2>
-                                        <p className="my-2 w-full">{room.desc}</p>
+                                        <p className="my-2 w-full">{room.description}</p>
                                         <ul className="text-xs lg:text-sm flex flex-wrap gap-x-1.5">
                                             {services.map((service, index) => (
                                                 <li key={index} className="mb-2">
@@ -216,7 +256,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 <div
                                     className="md:col-span-1 text-sm 2xl:text-base border md:border-l-0 border-blue-500 p-1.5 flex md:justify-center items-center">
                                     <div className="flex md:grid md:grid-cols-2 gap-y-1.5">
-                                        {[...Array(room.maxPeople)].map((_, index) => (
+                                        {[...Array(room.is_popular)].map((_, index) => (
                                             <div key={index} className="flex items-center justify-center">
                                                 <FaUser />
                                             </div>
@@ -241,7 +281,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                             – pay at the property
                                         </p>
                                         <p className="text-red-500">
-                                            Only {room.quantity} rooms left on our site
+                                            Only {'room.quantity'} rooms left on our site
                                         </p>
                                     </div>
                                 </div>
@@ -255,7 +295,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                         }}
                                     >
                                         <option value={0}>0</option>
-                                        {Array.from(Array(room.quantity)).map((_, index) => (
+                                        {Array.from(Array('room.quantity')).map((_, index) => (
                                             <option key={index} value={index + 1}>
                                                 {index + 1}
                                             </option>
