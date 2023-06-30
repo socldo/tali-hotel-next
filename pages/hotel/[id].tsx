@@ -18,13 +18,16 @@ import StarRating from '../../components/core/StarRating'
 import { getCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
 import { IRoom } from '../../models'
+import { RiCupFill, RiCupLine, RiHandSanitizerLine } from 'react-icons/ri'
+import { Galleria, GalleriaResponsiveOptions } from 'primereact/galleria';
+import { ImageGallery } from '../../components/hotel'
 
 const HotelDetailPage = () => {
     const router = useRouter()
     const queryUrl = router?.query
     const branchSlug = queryUrl?.id ? queryUrl?.id[0] : ''
     const [roomId, setRoomId] = useState(branchSlug)
-    
+    const [images, setImages] = useState<string[]>([]);
     const [branchId, setBranchId] = useState(0)
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -38,12 +41,27 @@ const HotelDetailPage = () => {
     const [isHaveFreeParking, setIsHaveFreePaking] = useState(0)
     const [shortDescription, setShortDescription] = useState('')
     const [highlightProperty, setHighlightProperty] = useState('')
+    const [totalReview, setTotalReview] = useState(0)
+    const responsiveOptions: GalleriaResponsiveOptions[] = [
+        {
+            breakpoint: '991px',
+            numVisible: 4
+        },
+        {
+            breakpoint: '767px',
+            numVisible: 3
+        },
+        {
+            breakpoint: '575px',
+            numVisible: 1
+        }
+    ];
 
     const handleDetailRoom = async () => {
 
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        let url = `/api/rooms/${branchSlug}`;
+        let url = `/api/hotels/${branchSlug}`;
 
         
         const response = await fetch(url, {
@@ -68,13 +86,25 @@ const HotelDetailPage = () => {
         setAddress(data.data.address)
         setShortDescription(data.data.short_description)
         setHighlightProperty(data.data.highlight_property)
+        setTotalReview(data.data.total_reviews)
+        setImages(data.data.images)
         return data;
     }
 
     useEffect(() => {
         handleDetailRoom()
-    })
-    
+        console.log("images : ",images);
+        
+    },[])
+    const itemTemplate = (item: any) => {
+        // eslint-disable-next-line @next/next/no-img-element
+        return <img src={item} alt={item} style={{ width: '100%', display: 'block' }} />;
+    }
+
+    const thumbnailTemplate = (item: any) => {
+        // eslint-disable-next-line @next/next/no-img-element
+        return <img src={item} alt={item} style={{ display: 'block' }} />;
+    }
     
     return (
         <Layout
@@ -84,7 +114,7 @@ const HotelDetailPage = () => {
             }}
         >
             <div
-                className="my-4 mx-auto container px-4 lg:px-6 overflow-hidden"
+                className="w-full my-4 mx-auto container px-4 lg:px-6 overflow-hidden"
                 // onClick={() => {
                 //     if (showModal) {
                 //         setShowModal(false)
@@ -95,7 +125,7 @@ const HotelDetailPage = () => {
                     {/* <div className="hidden lg:block w-1/5">
                         <SearchVertical />
                     </div> */}
-                    <div className="w-full lg:w-4/5">
+                    <div className="w-full ">
                         <div>
                             <div className="flex justify-between flex-wrap">
                                 <div className="flex gap-x-2">
@@ -125,7 +155,7 @@ const HotelDetailPage = () => {
                                     </div>
                                     <div>
                                         <Button
-                                            text="Reserve"
+                                            text="Đặt ngay"
                                             textColor="text-white"
                                             bgColor="bg-primary"
                                         />
@@ -134,7 +164,7 @@ const HotelDetailPage = () => {
                                     // onClick={() => setShowModal(true)}
                                     >
                                         <Button
-                                            text={`Guest reviews`}
+                                            text={'Đánh giá của khách'+ ' (' +totalReview + ')'}
                                             textColor="text-white"
                                             bgColor="bg-primary"
                                         />
@@ -159,17 +189,18 @@ const HotelDetailPage = () => {
                                     className="text-secondary cursor-pointer"
                                     // onClick={() => setShowMap(true)}
                                 >
-                                        Great location - Show Map
+                                        Địa điểm tuyệt vời - Xem bản đồ
                                 </p>
                             </div>
                         </div>
+
                         <div>
-                            {/* <ImageGallery photos={['hotel.photos']} /> */}
+                            {images != undefined ? <ImageGallery photos={images} /> : <ImageGallery photos={["/Users/taiminh/Documents/tali-hotel-next/public/assets/images/offer/1.avif"]} />}
                         </div>
                     </div>
                 </div>
                 <div className="flex flex-wrap">
-                    <div className="w-full lg:w-4/5 py-5 text-justify">
+                    <div className="w-4/5 lg:w-4/5 py-5 text-justify">
                         <p >{description}</p>
                         <p>
                                 Phù hợp cho các cặp đôi và hộ gia đình – Họ đã đánh giá
@@ -203,10 +234,22 @@ const HotelDetailPage = () => {
                                     <Ri24HoursFill />
                                     <p className="text-primary text-base">Hỗ trợ 24/24</p>
                                 </li>
+                                <li className="flex gap-x-1.5 items-center text-green-500 text-xl">
+                                    <RiCupLine />
+                                    <p className="text-primary text-base">Máy pha trà/cà phê trong tất cả các phòng</p>
+                                </li>
+                                <li className="flex gap-x-1.5 items-center text-green-500 text-xl">
+                                    <RiCupLine />
+                                    <p className="text-primary text-base">Bữa sáng rất tốt</p>
+                                </li>
+                                <li className="flex gap-x-1.5 items-center text-green-500 text-xl">
+                                    <RiHandSanitizerLine />
+                                    <p className="text-primary text-base">Trung tâm thể dục</p>
+                                </li>
                             </ul>
                         </div>
                     </div>
-                    <div className="w-full lg:w-1/5">
+                    <div className="rounded-lg bg-sky-200 mt-6 ml-12 w-full lg:w-1/6 inset-y-0 right-0">
                         <div className="text-black flex flex-col gap-y-2.5 p-2">
                             <h1 className="font-bold">Các tính năng nổi bật</h1>
                             <div className="flex items-center text-2xl">
@@ -220,7 +263,7 @@ const HotelDetailPage = () => {
                                 </h2>
                             </div>
                             <Button
-                                text="Reserve"
+                                text="Đặt ngay"
                                 textColor="text-white"
                                 bgColor="bg-primary"
                                 fullWidth={true}
