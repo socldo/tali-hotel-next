@@ -20,43 +20,67 @@ interface RoomReserve extends IRoom {
     quantity: number;
 }
 
+const numberFormat = (e: any) =>
+    new Intl.NumberFormat('it-IT', {
+        style: 'currency',
+        currency: 'VND'
+    }).format(e);
+
+
 const RoomHotel = ({ hotelId }: Props) => {
 
     const [loading, setLoading] = useState(false);
     const [rooms, setRoom] = useState();
 
     const services = [
-        'Free toiletries',
-        'Bidet',
+        'Phòng tắm thoải mái',
+        'Vòi xịt',
         'Toilet',
-        'Bathtub or shower',
-        'Towels',
-        'Linens',
-        'Hypoallergenic',
-        'Tile/Marble floor',
-        'Desk',
-        'Sitting area',
+        'Bồn tắm',
+        'Vòi sen',
+        'Khăn tắm',
+        'Vải',
+        'Không gây dị ứng',
+        'Sàn đá/gạch men',
+        'Bàn làm việc',
+        'Ghế ngồi',
         'TV',
-        'Slippers',
-        'Refrigerator',
-        'Telephone',
-        'Satellite channels',
-        'Hairdryer',
-        'Fan',
-        'Walk-in closet',
-        'Electric kettle',
-        'Wardrobe or closet',
-        'Dining table',
-        'Clothes rack',
-        'Toilet paper'
+        'Dép đi trong nhà',
+        'Tủ lạnh',
+        'Điện thoại bàn',
+        'Truyền hình cáp',
+        'Máy sấy',
+        'Điều hoà',
+        'Tủ âm tường',
+        'Ấm siêu tốc',
+        'Tủ quần áo',
+        'Bàn ăn',
+        'Giá treo quần áo',
+        'Giấy vệ sinh'
     ]
+
+
+
+    
+    const [roomsReserve, setRoomsReserve] = useState<RoomReserve[]>([])
+    const [total, setTotal] = useState<number>(0)
+    const [price, setPrice] = useState<number>(0)
+    const [checkIn, setCheckIn] = useState<Date | ''>()
+    const [checkOut, setCheckOut] = useState<Date | ''>()
+    const [peopleNumber, setPeopleNumber] = useState<number>(-1)
+    const [bedNumber, setBedNumber] = useState<number>(-1)
+
+    const router = useRouter()
+
+
+    
 
     const handleDetailRoom = async () => {
 
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        let url = `/api/rooms/${hotelId}`;
-
+        let url = `/api/rooms?hotel_id=${hotelId}&check_in=${checkIn != undefined ? checkIn : ''}&check_out=${checkOut!= undefined ? checkOut : ''}&people_number=${peopleNumber}&bed_number=${bedNumber}`;
+        console.log(url);
         
         const response = await fetch(url, {
             method: "GET",
@@ -79,18 +103,7 @@ const RoomHotel = ({ hotelId }: Props) => {
         }).finally(() => {
             setLoading(false);
         });
-    }, [])
-
-
-
-    
-    const [roomsReserve, setRoomsReserve] = useState<RoomReserve[]>([])
-    const [total, setTotal] = useState<number>(0)
-    const [price, setPrice] = useState<number>(0)
-    const [checkIn, setCheckIn] = useState<Date | null>()
-    const [checkOut, setCheckOut] = useState<Date | null>()
-
-    const router = useRouter()
+    }, [checkOut, checkIn, peopleNumber, bedNumber])
 
     const onChangeSelect = (room: IRoom, quantity: number) => {
         if (quantity === 0) {
@@ -187,13 +200,14 @@ const RoomHotel = ({ hotelId }: Props) => {
     }
     return (
         <div>
-            <div className="flex flex-wrap gap-x-2.5 p-2 mb-4">
+            <div className="flex flex-wrap gap-6 p-2 mb-4 text-center font-medium">
                 <label className="">
                     <span>Check In</span>
                     <input
                         type="date"
                         className="form-input block rounded-md drop-shadow-lg"
                         onChange={(event: any) => setCheckIn(event.target.value)}
+                        min={moment(new Date()).format('YYYY-MM-DD')}
                         required
                     />
                 </label>
@@ -204,8 +218,32 @@ const RoomHotel = ({ hotelId }: Props) => {
                         className="form-input block rounded-md drop-shadow-lg"
                         onChange={(event: any) => setCheckOut(event.target.value)}
                         required
-                        min={moment(checkIn).add(1, 'day').format('YYYY-MM-DD')}
+                        min={moment(checkIn).add(1, 'day').format('YYYY-MM-DD') || moment(new Date()).add(1, 'day').format('YYYY-MM-DD')}
                     />
+                </label>
+                <label className="">
+                    <span>Số người</span>
+                    <div className='flex flex-row'>
+                        <div className="input-group-prepend">
+                            <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" type="button" onClick={() =>setPeopleNumber(peopleNumber - 1)}>-</button>
+                        </div>
+                        <input type="text" className="rounded-md drop-shadow-lg text-center form-control w-32 " value={peopleNumber < 0 ? 2 : peopleNumber} onChange={(e) => setPeopleNumber(e.target.valueAsNumber)}/>
+                        <div className="input-group-prepend">
+                            <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" type="button" onClick={() =>setPeopleNumber(peopleNumber + 1)}>+</button>
+                        </div>
+                    </div>
+                </label>
+                <label className="">
+                    <span>Số giường</span>
+                    <div className='flex flex-row'>
+                        <div className="input-group-prepend">
+                            <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" type="button" onClick={() =>setBedNumber(bedNumber - 1)}>-</button>
+                        </div>
+                        <input type="text" className="rounded-md drop-shadow-lg text-center form-control w-32 " value={bedNumber < 0 ? 1 : bedNumber} onChange={(e) => setBedNumber(e.target.valueAsNumber)}/>
+                        <div className="input-group-prepend">
+                            <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" type="button" onClick={() =>setBedNumber(bedNumber + 1)}>+</button>
+                        </div>
+                    </div>
                 </label>
             </div>
             <div className="w-full flex flex-wrap rounded-md drop-shadow-lg">
@@ -214,23 +252,23 @@ const RoomHotel = ({ hotelId }: Props) => {
                         <div
                             className="xl:col-span-5 lg:col-span-6 md:col-span-7 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center"
                         >
-                            Room Type
+                            Loại phòng
                         </div>
                         <div
                             className="col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-                            Sleeps
+                            Số người
                         </div>
                         <div
                             className="xl:col-span-2 lg:col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-                            Today&apos;s Price
+                            Giá 1 đêm
                         </div>
                         <div
                             className="col-span-2 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-                            Your Choices
+                            Các lựa chọn
                         </div>
                         <div
                             className="xl:col-span-2 lg:col-span-2 md:col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-                            Select amount
+                            Chọn số lượng
                         </div>
                     </div>
                     <div>
@@ -266,36 +304,36 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 <div
                                     className="xl:col-span-2 lg:col-span-1 text-sm 2xl:text-base border md:border-l-0 border-blue-500 p-1.5 flex md:justify-center items-center">
                                     <div>
-                                        <p className="font-semibold text-base 2xl:text-xl break-all">US${room.price}</p>
-                                        <p className="text-primary">Includes taxes and fees</p>
+                                        <p className="font-semibold text-base 2xl:text-xl break-all">{numberFormat(room.price)}</p>
+                                        <p className="text-primary">Đã bao gồm thuế và phí</p>
                                     </div>
                                 </div>
                                 <div
                                     className="md:col-span-2 text-sm 2xl:text-base border md:border-l-0 border-blue-500 p-1.5 flex md:justify-center items-center">
                                     <div>
-                                        <h2 className="font-semibold">50% required to cancel</h2>
+                                        <h2 className="font-semibold">Miễn phí huỷ trước 2 ngày</h2>
                                         <p>
                                             <span className="font-semibold uppercase">
-                                                NO PREPAYMENT NEEDED{' '}
+                                                HOÀN TRẢ 100%{' '}
                                             </span>
-                                            – pay at the property
+                                            – thanh toán ngay
                                         </p>
                                         <p className="text-red-500">
-                                            Only {'room.quantity'} rooms left on our site
+                                            Chỉ còn {room.quantity} phòng trống theo yêu cầu của bạn
                                         </p>
                                     </div>
                                 </div>
                                 <div
-                                    className="xl:col-span-2 lg:col-span-2 md:col-span-1 text-sm 2xl:text-base border md:border-l-0 border-blue-500 p-1.5 flex md:justify-center items-center">
+                                    className=" xl:col-span-2 lg:col-span-2 md:col-span-1 text-sm 2xl:text-base border md:border-l-0 border-blue-500 p-1.5 flex md:justify-center items-center">
                                     <select
-                                        className="w-full"
+                                        className="w-full rounded-md drop-shadow-lg"
                                         defaultValue={0}
                                         onChange={(event) => {
                                             onChangeSelect(room, Number(event.target.value))
                                         }}
                                     >
                                         <option value={0}>0</option>
-                                        {Array.from(Array('room.quantity')).map((_, index) => (
+                                        {Array.from(Array(room.quantity)).map((_, index) => (
                                             <option key={index} value={index + 1}>
                                                 {index + 1}
                                             </option>
@@ -323,20 +361,20 @@ const RoomHotel = ({ hotelId }: Props) => {
                         <Reserve />
                         <div onClick={() => booking()}>
                             <Button
-                                text={"I'll reserve"}
+                                text={"Tôi sẽ đặt"}
                                 textColor="text-white"
                                 bgColor="bg-primary"
                                 fullWidth={true}
                             />
                         </div>
                         <div className="text-primary text-sm xl:text-base mt-2.5">
-                            <h2>Let&apos;s go to the next step</h2>
+                            <h2></h2>
                             <ul className="list-inside list-disc">
-                                <li>Confirmation is immediate</li>
-                                <li>No booking or credit card fees!</li>
+                                <li>Xác nhận tức thời</li>
+                                <li>Không mất phí đặt phòng hay phí thẻ tín dụng!</li>
                             </ul>
-                            <h2 className="text-green-500 font-medium text-xs lg:text-base border-2 border-green-500 mt-2.5 px-1.5 py-0.5">
-                                No credit card needed!
+                            <h2 className="text-center rounded-md text-green-500 font-medium text-xs lg:text-base border-2 border-green-500 mt-2.5 px-1.5 py-0.5">
+                                Thanh toán nhanh!
                             </h2>
                         </div>
                     </div>
