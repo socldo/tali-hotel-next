@@ -8,6 +8,7 @@ declare namespace Model {
         address: string;
         phone: string;
         status: boolean;
+        images: string;
     }
 
 
@@ -16,5 +17,18 @@ declare namespace Model {
         message: string;
         data: Branch[];
     }
+
+    interface User {
+        id: number;
+        role_id: number;
+        birthday: string;
+        avatar: string;
+        name: string;
+        email: string;
+        address: string;
+        phone: string;
+        is_locked: boolean;
+    }
+
 
 }
