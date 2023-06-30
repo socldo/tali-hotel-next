@@ -27,7 +27,10 @@ declare namespace Model {
         email: string;
         address: string;
         phone: string;
+        gender: number;
         is_locked: boolean;
+        created_at: string;
+        updated_at: string;
     }
 
 

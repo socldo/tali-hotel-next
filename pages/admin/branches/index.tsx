@@ -193,6 +193,7 @@ function Branch() {
     }
 
     const header = (
+
         <div className="flex flex-column md:flex-row md:justify-between md:items-center" >
             <h5 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
                 Khu Vực
@@ -217,6 +218,7 @@ function Branch() {
                 />
             </div>
         </div>
+
     );
 
 
@@ -224,11 +226,11 @@ function Branch() {
 
         <div className="grid">
             <div className="col-12">
-                <div className="card">
+                <div className="card" style={{ padding: '0.5rem' }}>
                     <TabView >
                         <TabPanel header="Đang hoạt động" >
                             <DataTable
-                                value={branches.filter(branch => branch.status == true)}
+                                value={branches?.filter(branch => branch.status)}
                                 scrollable scrollHeight="400px"
                                 loading={loading}
                                 className="mt-3"
@@ -236,9 +238,7 @@ function Branch() {
                                 header={header}
                                 paginator rows={10}
                                 rowsPerPageOptions={[10, 20, 50]}
-                                tableStyle={{ minWidth: '50rem' }}
-                                style={{ fontSize: '14px' }}
-
+                                tableStyle={{ minWidth: '30rem' }}
                             >
                                 <Column
                                     header="STT"
@@ -258,7 +258,7 @@ function Branch() {
                         </TabPanel>
                         <TabPanel header="Tạm ngưng">
                             <DataTable
-                                value={branches.filter(branch => branch.status == false)}
+                                value={branches?.filter(branch => !branch.status)}
                                 scrollable scrollHeight="400px"
                                 loading={loading}
                                 className="mt-3"
@@ -288,7 +288,7 @@ function Branch() {
                         </TabPanel>
                     </TabView>
 
-                    <Dialog visible={visible} onHide={() => setVisible(false)} style={{ width: '50vw' }} header={!branch ? "Tạo mới" : "Cập nhật"}>
+                    <Dialog visible={visible} maximizable onHide={() => setVisible(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={!branch ? "Tạo mới" : "Cập nhật"}>
                         <BranchForm setVisible={setVisible} currentBranch={branch || null} onSave={() => showSuccess()} />
 
                     </Dialog>

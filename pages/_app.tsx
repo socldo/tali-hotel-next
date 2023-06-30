@@ -9,9 +9,9 @@ import { store, persistor } from '../store/store'
 import { Header, Layout } from '../components/layout'
 
 import '../styles/globals.css'
+import '../styles/badges.scss'
 import 'react-toastify/dist/ReactToastify.css'
 import '../styles/CubeLoader.css'
-
 import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.css';
@@ -20,10 +20,12 @@ import Footer from '../components/layout/Footer'
 import { RecoilRoot } from 'recoil'
 import { LayoutProvider } from '../components/layout/context/layoutcontext'
 import AdminLayout from '../components/layout/AdminLayout'
-import '../styles/layout/layout.scss';
+import { Page } from '../types/layout'
 
-
-export default function App({ Component, pageProps, router }: AppProps) {
+type Props = AppProps & {
+    Component: Page;
+};
+export default function App({ Component, pageProps, router }: Props) {
     const isAdminPage = router.pathname.startsWith('/admin');
 
 
@@ -39,49 +41,61 @@ export default function App({ Component, pageProps, router }: AppProps) {
         })
     }, [])
 
-    if (isAdminPage) {
+    if (Component.getLayout) {
+
+        return (
+            <LayoutProvider>
+                {Component.getLayout(<Component {...pageProps} />)}
+            </LayoutProvider>
+        )
+    }
+    else {
+        if (isAdminPage) {
+            require('../styles/layout/layout.scss');
+            return (
+
+                <RecoilRoot>
+                    <Provider store={store}>
+                        <PersistGate loading={null} persistor={persistor}>
+                            <LayoutProvider>
+                                <AdminLayout>
+                                    <Component {...pageProps} />
+                                    <ToastContainer
+                                        position="top-right"
+                                        autoClose={3000}
+                                        hideProgressBar={false}
+                                        newestOnTop={false}
+                                        draggable={false}
+                                        closeOnClick
+                                        pauseOnHover
+                                    />
+                                </AdminLayout>
+                            </LayoutProvider>
+                        </PersistGate>
+                    </Provider>
+                </RecoilRoot>
+            );
+        }
+
         return (
             <RecoilRoot>
                 <Provider store={store}>
                     <PersistGate loading={null} persistor={persistor}>
-                        <LayoutProvider>
-                            <AdminLayout>
-                                <Component {...pageProps} />
-                                <ToastContainer
-                                    position="top-right"
-                                    autoClose={3000}
-                                    hideProgressBar={false}
-                                    newestOnTop={false}
-                                    draggable={false}
-                                    closeOnClick
-                                    pauseOnHover
-                                />
-                            </AdminLayout>
-                        </LayoutProvider>
+                        <Header />
+                        <Component {...pageProps} />
+                        <ToastContainer
+                            position="top-right"
+                            autoClose={3000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            draggable={false}
+                            closeOnClick
+                            pauseOnHover
+                        />
+                        <Footer></Footer>
                     </PersistGate>
                 </Provider>
             </RecoilRoot>
-        );
+        )
     }
-
-    return (
-        <RecoilRoot>
-            <Provider store={store}>
-                <PersistGate loading={null} persistor={persistor}>
-                    <Header />
-                    <Component {...pageProps} />
-                    <ToastContainer
-                        position="top-right"
-                        autoClose={3000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        draggable={false}
-                        closeOnClick
-                        pauseOnHover
-                    />
-                    <Footer></Footer>
-                </PersistGate>
-            </Provider>
-        </RecoilRoot>
-    )
 }
