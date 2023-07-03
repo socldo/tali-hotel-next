@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
     MdLocationOn,
     AiFillHeart,
@@ -24,8 +24,11 @@ import { ImageGallery } from '../../components/hotel'
 
 const HotelDetailPage = () => {
     const router = useRouter()
+
+    
     const queryUrl = router?.query
     const branchSlug = queryUrl?.id ? queryUrl?.id[0] : ''
+
     const [roomId, setRoomId] = useState(branchSlug)
     const [images, setImages] = useState<string[]>([]);
     const [branchId, setBranchId] = useState(0)
@@ -87,15 +90,25 @@ const HotelDetailPage = () => {
         setShortDescription(data.data.short_description)
         setHighlightProperty(data.data.highlight_property)
         setTotalReview(data.data.total_reviews)
-        setImages(data.data.images)
+        setImages(data.data.images)   
+  
         return data;
     }
 
     useEffect(() => {
         handleDetailRoom()
-        console.log("images : ",images);
+        console.log();
         
     },[])
+
+    const scrollRef = useRef(null);
+
+    const scrollToSection = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     const itemTemplate = (item: any) => {
         // eslint-disable-next-line @next/next/no-img-element
         return <img src={item} alt={item} style={{ width: '100%', display: 'block' }} />;
@@ -153,11 +166,12 @@ const HotelDetailPage = () => {
                                     <div className="text-xl cursor-pointer">
                                         <BsFillShareFill />
                                     </div>
-                                    <div>
+                                    <div onClick={scrollToSection}>
                                         <Button
                                             text="Đặt ngay"
                                             textColor="text-white"
                                             bgColor="bg-primary"
+                                            
                                         />
                                     </div>
                                     <div 
@@ -195,7 +209,7 @@ const HotelDetailPage = () => {
                         </div>
 
                         <div>
-                            {images != undefined ? <ImageGallery photos={images} /> : <ImageGallery photos={["/Users/taiminh/Documents/tali-hotel-next/public/assets/images/offer/1.avif"]} />}
+                            <ImageGallery photos={images} />
                         </div>
                     </div>
                 </div>
@@ -262,16 +276,19 @@ const HotelDetailPage = () => {
                                     {highlightProperty}
                                 </h2>
                             </div>
-                            <Button
-                                text="Đặt ngay"
-                                textColor="text-white"
-                                bgColor="bg-primary"
-                                fullWidth={true}
-                            />
+                            <div onClick={scrollToSection}>
+                                <Button
+                                    text="Đặt ngay"
+                                    textColor="text-white"
+                                    bgColor="bg-primary"
+                                    fullWidth={true}
+                                />
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
-                <div className="mt-5 border-t border-current">
+                <div ref={scrollRef} className="mt-5 border-t border-current">
                     <div className="my-2.5 w-full">
                         <h1 className="font-bold text-2xl mb-4">Phòng trống</h1>
                         <RoomHotel hotelId={roomId} />

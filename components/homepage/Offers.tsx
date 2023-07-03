@@ -18,7 +18,7 @@ const Offers = () => {
     let token = getCookie('jwt_token')?.toString();
 
     async function getBranches() {
-        const response: Response = await fetch("/api/branch/branch", {
+        const response: Response = await fetch("/api/branches", {
             method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",

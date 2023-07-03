@@ -20,7 +20,6 @@ import Footer from '../components/layout/Footer'
 import { RecoilRoot } from 'recoil'
 import { LayoutProvider } from '../components/layout/context/layoutcontext'
 import AdminLayout from '../components/layout/AdminLayout'
-import '../styles/layout/layout.scss';
 
 
 export default function App({ Component, pageProps, router }: AppProps) {
