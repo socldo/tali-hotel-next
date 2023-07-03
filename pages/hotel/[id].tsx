@@ -20,7 +20,7 @@ import { useRouter } from 'next/router'
 import { IRoom } from '../../models'
 import { RiCupFill, RiCupLine, RiHandSanitizerLine } from 'react-icons/ri'
 import { Galleria, GalleriaResponsiveOptions } from 'primereact/galleria';
-import { ImageGallery } from '../../components/hotel'
+import { HotelReview, ImageGallery } from '../../components/hotel'
 
 const HotelDetailPage = () => {
     const router = useRouter()
@@ -31,6 +31,7 @@ const HotelDetailPage = () => {
 
     const [roomId, setRoomId] = useState(branchSlug)
     const [images, setImages] = useState<string[]>([]);
+    const [hotelId, setHotelId] = useState(0)
     const [branchId, setBranchId] = useState(0)
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -45,6 +46,7 @@ const HotelDetailPage = () => {
     const [shortDescription, setShortDescription] = useState('')
     const [highlightProperty, setHighlightProperty] = useState('')
     const [totalReview, setTotalReview] = useState(0)
+    const [showModal, setShowModal] = useState(false)
     const responsiveOptions: GalleriaResponsiveOptions[] = [
         {
             breakpoint: '991px',
@@ -78,6 +80,7 @@ const HotelDetailPage = () => {
         const data = await response.json();
 
         // console.log( data);
+        setHotelId(data.data.id)
         setBranchId(data.data.branch_id)
         setName(data.data.name)
         setDescription(data.data.description)
@@ -175,7 +178,7 @@ const HotelDetailPage = () => {
                                         />
                                     </div>
                                     <div 
-                                    // onClick={() => setShowModal(true)}
+                                        onClick={() => setShowModal(true)}
                                     >
                                         <Button
                                             text={'Đánh giá của khách'+ ' (' +totalReview + ')'}
@@ -183,13 +186,13 @@ const HotelDetailPage = () => {
                                             bgColor="bg-primary"
                                         />
                                     </div>
-                                    {/* {showModal ? (
+                                    {showModal ? (
                                         <HotelReview
                                             reviews={hotel?.reviews}
-                                            id={id}
+                                            id={hotelId}
                                             setShowModal={setShowModal}
                                         />
-                                    ) : null} */}
+                                    ) : null}
                                 </div>
                             </div>
 
