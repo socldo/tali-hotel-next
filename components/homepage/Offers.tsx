@@ -10,11 +10,11 @@ import { getCookie } from 'cookies-next'
 
 
 
-  
+
 const Offers = () => {
 
     const [data, setData] = useState();
-    
+
     let token = getCookie('jwt_token')?.toString();
 
     async function getBranches() {
@@ -28,7 +28,7 @@ const Offers = () => {
         });
         const data = await response.json();
         console.log(data.data);
-        
+
         return data.data
     }
 
@@ -38,9 +38,9 @@ const Offers = () => {
                 setData(result);
             })
     }, []);
-    
 
-    const offers =  [
+
+    const offers = [
         {
             title: 'Save 15% with Late Escape Deals',
             description: 'Check one more destination off your wishlist',
@@ -60,9 +60,9 @@ const Offers = () => {
             image: '3.avif'
         }
     ]
-    
-    
-    
+
+
+
     return (
         <div className="mt-48 sm:mt-32 lg:mt-28 mb-20 w-full relative">
             <div className="mb-5">
@@ -108,16 +108,16 @@ const Offers = () => {
                         <div
                             className={`relative block overflow-hidden rounded-xl `}
                         >
-                            <Image className="absolute w-full h-full object-cover" 
+                            <Image className="absolute w-full h-full object-cover"
                                 src={location.images}
-                                alt={location.name}/>
+                                alt={location.name} />
                             <div className="relative p-8 pt-40 text-white hover:bg-black hover:bg-opacity-40">
                                 <h3 className="text-2xl font-bold">{location.name}</h3>
                                 <h5 className="text-xl">{location.address}</h5>
                             </div>
                         </div>
                     </Link>
-                ): <>No data</>} 
+                ) : <>No data</>}
             </div>
 
         </div>

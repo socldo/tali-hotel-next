@@ -12,6 +12,7 @@ import AdminHeader from './AdminHeader';
 import { LayoutContext } from './context/layoutcontext';
 import PrimeReact from 'primereact/api';
 import { ChildContainerProps, LayoutState, AppTopbarRef } from '../../types/types';
+import AdminConfig from './AdminConfig';
 
 const Layout = ({ children }: ChildContainerProps) => {
     const { layoutConfig, layoutState, setLayoutState } = useContext(LayoutContext);
@@ -144,7 +145,7 @@ const Layout = ({ children }: ChildContainerProps) => {
                     <div className="layout-main">{children}</div>
                     <AdminFooter />
                 </div>
-                {/* <AppConfig /> */}
+                <AdminConfig />
                 <div className="layout-mask"></div>
             </div>
         </React.Fragment>

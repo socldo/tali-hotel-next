@@ -10,16 +10,33 @@ import { Avatar } from 'primereact/avatar';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { toast } from 'react-toastify'
 import { ConfirmPopup } from 'primereact/confirmpopup';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { Dialog } from 'primereact/dialog';
+import UserDetail from '../../../components/admin/user/user-detail';
+
+
 function User() {
 
     const [users, setUsers] = useState<Model.User[]>([]);
+    const [usersFilter, setUsersFilter] = useState<Model.User[]>([]);
     const [user, setUser] = useState<Model.User | null>();
     const [loading, setLoading] = useState(true);
     const [renderCount, setRenderCount] = useState(0);
     const [globalFilter, setGlobalFilter] = useState('');
     const [confirmPopup, setConfirmPopup] = useState(false);
     const buttonEl = useRef(null);
+    const [sortKey, setSortKey] = useState(null);
+    const [visible, setVisible] = useState<boolean>(false);
 
+
+
+    const sortOptions = [
+        { label: 'Tất cả', value: 0 },
+        { label: 'Khách hàng', value: 1 },
+        { label: 'Quản lý', value: 2 },
+        { label: 'Nhân viên', value: 3 },
+        { label: 'Admin', value: 4 }
+    ];
 
     const token = getCookie('jwt_token')?.toString();
 
@@ -27,11 +44,15 @@ function User() {
         setLoading(true);
         const timer = setTimeout(async () => {
             await fetchUsers();
+
         }, 500);
+
+
 
         return () => {
             clearTimeout(timer); // Xóa bỏ timer nếu component unmount trước khi kết thúc thời gian chờ
         };
+
     }, [renderCount]);
 
     const fetchUsers = async (): Promise<void> => {
@@ -50,11 +71,26 @@ function User() {
             console.log('data:', data);
 
             setUsers(data.data);
+            setUsersFilter(data.data);
             setLoading(false);
         } catch (error) {
             console.error('Error:', error);
             setLoading(false);
         }
+    };
+
+    const onSortChange = (event: DropdownChangeEvent) => {
+        const value = event.value;
+        console.log(value);
+
+        setSortKey(value);
+        if (value != 0) {
+            setUsersFilter(users?.filter(users => users.role_id == value));
+        }
+        else {
+            setUsersFilter(users)
+        }
+
     };
 
     const header = (
@@ -64,8 +100,9 @@ function User() {
                 Danh Sách Tài Khoản
             </h4>
 
-
             <div className="text-right">
+                <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Bộ phận" onChange={onSortChange} style={{ marginRight: '.5em' }} />
+
                 <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
                     <i className="pi pi-search" />
                     <InputText
@@ -144,8 +181,6 @@ function User() {
 
         return (
             <>
-
-
                 <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup} onHide={() => setConfirmPopup(false)}
                     message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
                     rejectLabel="Không" />
@@ -154,19 +189,38 @@ function User() {
                     ? <span className="pi pi-times" onClick={() => { setConfirmPopup(true); setUser(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
                     : <span className="pi pi-check" onClick={() => { setConfirmPopup(true); setUser(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
                 }
-                {/* <span className="pi pi-pencil" onClick={() => handleEditBranch(rowData)} style={{ marginRight: '0.5em', fontSize: '1rem' }}  ></span> */}
+                <span className="pi pi-eye" style={{ marginRight: '0.5em', fontSize: '1rem' }} onClick={() => { setVisible(true); setUser(rowData) }} ></span>
             </>
         );
 
 
     };
 
-
+    const roleBodyTemplate = (rowData: Model.User) => {
+        let roleName = '';
+        switch (rowData.role_id) {
+            case 1:
+                roleName = 'user'
+                break;
+            case 2:
+                roleName = 'manager'
+                break;
+            case 3:
+                roleName = 'employee'
+                break;
+            case 4:
+                roleName = 'admin'
+                break;
+            default:
+                break;
+        }
+        return <span className={`role-badge role-${roleName}`}>{roleName}</span>;
+    };
 
     return (
         <>
             <DataTable
-                value={users}
+                value={usersFilter}
                 scrollable scrollHeight="400px"
                 loading={loading}
                 className="mt-3"
@@ -184,12 +238,19 @@ function User() {
                 ></Column>
                 <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
                 <Column field="avatar" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(users) => avatarBodyTemplate(users)} className="font-bold"></Column>
+                <Column field="role_id" header="Bộ phận" style={{ flexGrow: 1, flexBasis: '200px' }} body={(users) => roleBodyTemplate(users)}></Column>
                 <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                 <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                {/* <Column field="status" header="Trạng thái" style={{ flexGrow: 1, flexBasis: '200px' }} body={(branches) => statusBodyTemplate(branches)}></Column> */}
                 <Column body={(users) => actionBodyTemplate(users)}></Column>
             </DataTable>
+
+            <Dialog header="Chi tiết" visible={visible} onHide={() => setVisible(false)}
+                style={{ width: '60vw' }} maximizable breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+                <p className="m-0">
+                    <UserDetail user={user || null} />
+
+                </p>
+            </Dialog>
 
         </>
     );
