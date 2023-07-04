@@ -20,6 +20,7 @@ import Footer from '../components/layout/Footer'
 import { RecoilRoot } from 'recoil'
 import { LayoutProvider } from '../components/layout/context/layoutcontext'
 import AdminLayout from '../components/layout/AdminLayout'
+import { Page } from '../types/layout'
 
 
 type Props = AppProps & {
