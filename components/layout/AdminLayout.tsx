@@ -122,7 +122,7 @@ const Layout = ({ children }: ChildContainerProps) => {
     return (
         <React.Fragment>
             <Head>
-                <title>Taili Hotel Admin</title>
+                <title>Tali Hotel Admin</title>
                 <meta charSet="UTF-8" />
                 <meta name="description" content="Trang web quản lý đặt phòng khách sạn." />
                 <meta name="robots" content="index, follow" />

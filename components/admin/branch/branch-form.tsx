@@ -138,6 +138,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
 
     const handleSave = async () => {
+
         const newErrors = validate({ name, email, phone, address });
         setErrors(newErrors);
         setOnClickSave(true);
@@ -247,8 +248,8 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
 
                 <div style={{ textAlign: 'right' }}>
-                    <Button label="Save" type="submit" icon="pi pi-check" style={{ marginRight: '.5em' }} onClick={() => handleSave()} />
-                    <Button label="Cancel" severity="danger" icon="pi pi-times" onClick={() => { setVisible(false); setOnClickSave(false); }} />
+                    <Button label="Lưu" type="submit" icon="pi pi-check" style={{ marginRight: '.5em' }} onClick={() => handleSave()} />
+                    <Button label="Hủy" severity="danger" icon="pi pi-times" onClick={() => { setVisible(false); setOnClickSave(false); }} />
                 </div>
 
             </form >

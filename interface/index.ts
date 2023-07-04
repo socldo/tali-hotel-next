@@ -15,7 +15,7 @@ declare namespace Model {
     interface APIResponse {
         status: number;
         message: string;
-        data: Branch[];
+        data: null | string;
     }
 
     interface User {

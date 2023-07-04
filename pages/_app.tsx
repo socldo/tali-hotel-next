@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { AppProps } from 'next/app'
 import { Router } from 'next/router'
 import { Provider } from 'react-redux'
@@ -22,12 +22,13 @@ import { LayoutProvider } from '../components/layout/context/layoutcontext'
 import AdminLayout from '../components/layout/AdminLayout'
 import { Page } from '../types/layout'
 
+
 type Props = AppProps & {
     Component: Page;
 };
+
 export default function App({ Component, pageProps, router }: Props) {
     const isAdminPage = router.pathname.startsWith('/admin');
-
 
 
     NProgress.configure({ showSpinner: false })
@@ -39,7 +40,11 @@ export default function App({ Component, pageProps, router }: Props) {
         Router.events.on('routeChangeComplete', (url) => {
             NProgress.done(false)
         })
+
+
+
     }, [])
+
 
     if (Component.getLayout) {
 
@@ -51,6 +56,7 @@ export default function App({ Component, pageProps, router }: Props) {
     }
     else {
         if (isAdminPage) {
+
             require('../styles/layout/layout.scss');
             return (
 

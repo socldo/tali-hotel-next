@@ -13,22 +13,36 @@ import { ConfirmPopup } from 'primereact/confirmpopup';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Dialog } from 'primereact/dialog';
 import UserDetail from '../../../components/admin/user/user-detail';
+import { useRouter } from 'next/router';
+import adminAuthMiddleware from '../../../components/admin/middleware/adminAuthMiddleware';
+import UserCreate from '../../../components/admin/user/user-create';
+import { status } from 'nprogress';
 
 
 function User() {
 
+    const router = useRouter();
     const [users, setUsers] = useState<Model.User[]>([]);
     const [usersFilter, setUsersFilter] = useState<Model.User[]>([]);
+
     const [user, setUser] = useState<Model.User | null>();
+
     const [loading, setLoading] = useState(true);
     const [renderCount, setRenderCount] = useState(0);
-    const [globalFilter, setGlobalFilter] = useState('');
     const [confirmPopup, setConfirmPopup] = useState(false);
     const buttonEl = useRef(null);
-    const [sortKey, setSortKey] = useState(null);
+
     const [visible, setVisible] = useState<boolean>(false);
+    const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
+
+    const [sortKey, setSortKey] = useState(null);
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [visibleError, setVisibleError] = useState<boolean>(false);
 
 
+    const token = getCookie('jwt_token')?.toString();
 
     const sortOptions = [
         { label: 'Tất cả', value: 0 },
@@ -38,22 +52,34 @@ function User() {
         { label: 'Admin', value: 4 }
     ];
 
-    const token = getCookie('jwt_token')?.toString();
+
 
     useEffect(() => {
         setLoading(true);
+
         const timer = setTimeout(async () => {
             await fetchUsers();
-
-        }, 500);
-
-
+        }, 300);
 
         return () => {
             clearTimeout(timer); // Xóa bỏ timer nếu component unmount trước khi kết thúc thời gian chờ
         };
 
     }, [renderCount]);
+
+
+
+    useEffect(() => {
+        if (responseAPI?.status != 200) {
+            setVisibleError(true);
+        } else
+            setVisibleError(false);
+
+    }, [responseAPI]);
+
+
+
+
 
     const fetchUsers = async (): Promise<void> => {
         try {
@@ -70,9 +96,17 @@ function User() {
             const data = await response.json();
             console.log('data:', data);
 
+
             setUsers(data.data);
             setUsersFilter(data.data);
             setLoading(false);
+
+            setResponseAPI({
+                status: data.status,
+                message: data.message,
+                data: data.data,
+            });
+
         } catch (error) {
             console.error('Error:', error);
             setLoading(false);
@@ -81,24 +115,56 @@ function User() {
 
     const onSortChange = (event: DropdownChangeEvent) => {
         const value = event.value;
-        console.log(value);
 
         setSortKey(value);
+
         if (value != 0) {
-            setUsersFilter(users?.filter(users => users.role_id == value));
+            setUsersFilter(users?.filter(users => users.role_id == value && users.is_locked == (activeIndex == 1)));
         }
         else {
-            setUsersFilter(users)
+            setUsersFilter(users?.filter(users => users.is_locked == (activeIndex == 1)))
         }
 
     };
+    // useEffect(() => {
+
+    //     setUsersFilter(users);
+
+    // }, []);
+
+    const handleTabChange = (event: any) => {
+        setActiveIndex(event.index);
+
+        console.log('TabPanel clicked:', event.index);
+
+        console.log('sortKey:', sortKey);
+        console.log('TusersFilter:', usersFilter);
+
+        if (event.index == 0) {
+
+            setUsersFilter(users?.filter(users => sortKey != 0 && sortKey != null ? users.role_id == sortKey && users.is_locked == false : users.is_locked == false));
+            // setRenderCount(renderCount + 1);
+        } else {
+
+            setUsersFilter(users?.filter(users => sortKey != 0 && sortKey != null ? users.role_id == sortKey && users.is_locked == true : users.is_locked == true))
+
+        }
+    }
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-between md:items-center">
 
-            <h4 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
+            <TabView activeIndex={activeIndex} onTabChange={handleTabChange}>
+                <TabPanel header="Đang hoạt động" rightIcon="pi pi-check-circle ml-2" >
+                </TabPanel>
+                <TabPanel header="Bị Khóa" rightIcon="pi pi-ban ml-2">
+                </TabPanel>
+            </TabView>
+
+
+            {/* <h4 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
                 Danh Sách Tài Khoản
-            </h4>
+            </h4> */}
 
             <div className="text-right">
                 <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Bộ phận" onChange={onSortChange} style={{ marginRight: '.5em' }} />
@@ -116,7 +182,7 @@ function User() {
                     icon="pi pi-plus"
                     style={{ marginRight: '.5em' }}
                     onClick={() => {
-                        // setVisible(true);
+                        setVisibleCreate(true);
                         // setBranch(null);
                     }}
                 />
@@ -152,9 +218,21 @@ function User() {
             });
             const data = await response.json();
             console.log('data:', data);
-            setRenderCount(renderCount + 1);
+
+
+            setResponseAPI({
+                status: data.status,
+                message: data.message,
+                data: data.data,
+            });
+
+            if (data.status == 200) {
+
+                setRenderCount(renderCount + 1);
+            }
+            return data;
         } catch (error) {
-            console.error('Error fetching branches:', error);
+            console.error('Error fetching:', error);
         }
     };
 
@@ -162,9 +240,12 @@ function User() {
     const actionBodyTemplate = (rowData: Model.User) => {
 
         const accept = async () => {
-            setLoading(false);
-            await handleChangeStatus()
-            toast.success('Cập nhật thành công')
+
+            let changeStatus = await handleChangeStatus();
+
+            if (changeStatus?.status === 200) {
+                toast.success('Cập nhật thành công');
+            }
         };
 
         const reject = () => {
@@ -217,6 +298,14 @@ function User() {
         return <span className={`role-badge role-${roleName}`}>{roleName}</span>;
     };
 
+
+    const showSuccess = () => {
+        setRenderCount(renderCount => renderCount + 1);
+
+        toast.success('Tạo mới thành công')
+    }
+
+
     return (
         <>
             <DataTable
@@ -252,8 +341,26 @@ function User() {
                 </p>
             </Dialog>
 
+            <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Tạo mới">
+
+                <UserCreate setVisibleCreate={setVisibleCreate} currentUser={user || null} onSave={() => showSuccess()}></UserCreate>
+
+            </Dialog>
+
+
+            {responseAPI?.status != 200 ?
+                <>
+
+                    <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Lỗi rồi">
+
+                        <div>Lỗi rồi:  {responseAPI?.message}</div>
+
+                    </Dialog>
+                </>
+                : null
+            }
         </>
     );
 }
 
-export default User;
+export default adminAuthMiddleware(User);

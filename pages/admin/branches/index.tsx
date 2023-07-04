@@ -13,6 +13,7 @@ import { InputText } from 'primereact/inputtext';
 import { Image } from 'primereact/image';
 import { getCookie } from 'cookies-next'
 import { TabView, TabPanel } from 'primereact/tabview';
+import adminAuthMiddleware from '../../../components/admin/middleware/adminAuthMiddleware';
 
 function Branch() {
 
@@ -301,4 +302,4 @@ function Branch() {
     );
 }
 
-export default Branch;
+export default adminAuthMiddleware(Branch);

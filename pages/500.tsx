@@ -2,7 +2,7 @@ import React from 'react';
 import { Page } from '../types/types';
 import { useRouter } from 'next/router';
 import 'primeicons/primeicons.css';
-const Custom404Page: Page = () => {
+const Custom500Page: Page = () => {
     const router = useRouter();
 
     const goBack = () => {
@@ -13,11 +13,11 @@ const Custom404Page: Page = () => {
         <div className='flex items-center justify-center w-full min-h-[70vh] text-gray-900 my-12 px-4'>
             <div className='flex flex-col items-center w-full gap-8'>
                 <h1 className='text-9xl md:text-16xl w-full select-none text-center font-black text-gray-400'>
-                    404
+                    500
                 </h1>
-                <p className='text-3xl font-semibold text-center'>Không tìm thấy trang! {'\uD83D\uDE1E'}</p>
+                <p className='text-3xl font-semibold text-center'>Có lỗi xảy ra! {'\uD83D\uDE1E'}</p>
                 <p className='text-2xl md:px-12 text-center'>
-                    Vui lòng kiểm tra đường dẫn trang web của bạn
+                    Vui lòng quay trở lại sau.
                 </p>
                 <div className='flex flex-row justify-between gap-8'>
                     <div >
@@ -43,8 +43,8 @@ const Custom404Page: Page = () => {
     );
 };
 
-Custom404Page.getLayout = function getLayout(page) {
+Custom500Page.getLayout = function getLayout(page) {
     return page;
 };
 
-export default Custom404Page;
+export default Custom500Page;
