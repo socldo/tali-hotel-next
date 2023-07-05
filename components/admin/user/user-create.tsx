@@ -41,7 +41,7 @@ const UserCreate: React.FC<UserProps> = ({
     const [role, setRole] = useState(0);
     const [onClickSave, setOnClickSave] = useState(false);
 
-    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>();
+    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
     const [visibleError, setVisibleError] = useState<boolean>(false);
 
     const token = getCookie('jwt_token')?.toString();
@@ -56,24 +56,15 @@ const UserCreate: React.FC<UserProps> = ({
 
 
     useEffect(() => {
-        if (currentUser) {
 
-            // Nếu currentUser có giá trị, gán giá trị của các cột vào state tương ứng
-            setId(currentUser.id);
-            setName(currentUser.name);
-            setEmail(currentUser.email);
-            setPhone(currentUser.phone);
 
-        } else {
+        setId(0);
+        setName('');
+        setEmail('');
+        setPhone('');
+        setRole(0);
 
-            // Nếu currentUser là null, reset state về giá trị ban đầu
-            setId(0);
-            setName('');
-            setEmail('');
-            setPhone('');
-            setRole(0);
-        }
-    }, [currentUser]);
+    }, []);
 
 
 
@@ -103,6 +94,7 @@ const UserCreate: React.FC<UserProps> = ({
                 roleId: 0
             });
         }
+
     };
 
     const isFormFieldInvalid = (name: keyof FormErrors) => !!errors[name];
@@ -151,13 +143,21 @@ const UserCreate: React.FC<UserProps> = ({
         setOnClickSave(true);
 
         if (Object.keys(newErrors).length === 0) {
-            setVisibleCreate(false);
-            onSave();
-
-            await handleCreate();
 
 
+            let data = await handleCreate();
+
+            if (data?.status == 200) {
+                setVisibleCreate(false);
+                onSave();
+            } else {
+
+                setVisibleError(true);
+
+
+            }
         }
+
     };
 
     const handleCreate = async () => {
@@ -182,6 +182,14 @@ const UserCreate: React.FC<UserProps> = ({
             const data = await response.json();
             console.log(data);
 
+
+            setResponseAPI({
+                status: data.status,
+                message: data.message,
+                data: data.data,
+            });
+
+            return data;
         } catch (error) {
             console.error('Error fetching:', error);
 
@@ -247,11 +255,14 @@ const UserCreate: React.FC<UserProps> = ({
             </form >
 
             {responseAPI?.status != 200 ?
-                <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Tạo mới">
+                <>
 
-                    <div>Lỗi rồi  {responseAPI?.message}</div>
+                    <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Lỗi rồi">
 
-                </Dialog>
+                        <div>Lỗi rồi:  {responseAPI?.message}</div>
+
+                    </Dialog>
+                </>
                 : null
             }
         </div >

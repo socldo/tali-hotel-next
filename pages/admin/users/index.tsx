@@ -98,7 +98,7 @@ function User() {
 
 
             setUsers(data.data);
-            setUsersFilter(data.data);
+            setUsersFilter(data.data.filter((user: { is_locked: boolean; }) => user.is_locked == false));
             setLoading(false);
 
             setResponseAPI({
@@ -162,9 +162,9 @@ function User() {
             </TabView>
 
 
-            {/* <h4 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
-                Danh Sách Tài Khoản
-            </h4> */}
+            <h4 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
+                Tài Khoản
+            </h4>
 
             <div className="text-right">
                 <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Bộ phận" onChange={onSortChange} style={{ marginRight: '.5em' }} />
