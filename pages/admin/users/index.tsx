@@ -21,7 +21,6 @@ import { status } from 'nprogress';
 
 function User() {
 
-    const router = useRouter();
     const [users, setUsers] = useState<Model.User[]>([]);
     const [usersFilter, setUsersFilter] = useState<Model.User[]>([]);
 
@@ -62,7 +61,7 @@ function User() {
         }, 300);
 
         return () => {
-            clearTimeout(timer); // Xóa bỏ timer nếu component unmount trước khi kết thúc thời gian chờ
+            clearTimeout(timer);
         };
 
     }, [renderCount]);
@@ -126,11 +125,6 @@ function User() {
         }
 
     };
-    // useEffect(() => {
-
-    //     setUsersFilter(users);
-
-    // }, []);
 
     const handleTabChange = (event: any) => {
         setActiveIndex(event.index);

@@ -217,27 +217,27 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
                 <div className="card p-fluid" >
                     <div className="field">
-                        <label htmlFor="name" >Tên chi nhánh</label>
+                        <label htmlFor="name" >Tên Khu Vực</label>
                         <InputText id="name" value={name} onChange={(e) => setName(e.target.value)} type="text" />
                     </div>
                     {getFormErrorMessage('name')}
-                    <div className="field">
+                    {/* <div className="field">
                         <label htmlFor="email">Email</label>
                         <InputText id="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
 
-                    {getFormErrorMessage('email')}
+                    {getFormErrorMessage('email')} */}
                     <div className="field">
                         <label htmlFor="address">Địa chỉ</label>
                         <InputText id="address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
                     </div>
                     {getFormErrorMessage('address')}
 
-                    <div className="field">
+                    {/* <div className="field">
                         <label htmlFor="phone">Số điện thoại</label>
                         <InputText id="phone" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
                     </div>
-                    {getFormErrorMessage('phone')}
+                    {getFormErrorMessage('phone')} */}
 
                     <div >
                         <TemplateDemo onSelectedFiles={(e) => handleSelectedFiles(e)}  ></TemplateDemo>

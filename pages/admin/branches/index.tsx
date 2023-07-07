@@ -65,7 +65,7 @@ function Branch() {
 
             setBranchFilters(data.data.filter((branch: { status: boolean; }) => branch.status == true));
         } catch (error) {
-            console.error('Error fetching branches:', error);
+            console.error('Error fetching:', error);
             setLoading(false);
         }
     };
@@ -255,9 +255,9 @@ function Branch() {
 
     return (
         <>
-            {/* // <div className="grid">
-        //     <div className="col-12">
-        //         <div className="card" > */}
+            {/* <div className="grid">
+                <div className="col-12"> */}
+            {/* <div className="card" > */}
 
             <DataTable
                 value={branchFilters}
@@ -277,8 +277,8 @@ function Branch() {
                 ></Column>
                 <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
                 <Column field="images" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(branches) => imageBodyTemplate(branches)} className="font-bold"></Column>
-                <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                {/* <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column> */}
+                {/* <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column> */}
                 <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                 {/* <Column field="status" header="Trạng thái" style={{ flexGrow: 1, flexBasis: '200px' }} body={(branches) => statusBodyTemplate(branches)}></Column> */}
                 <Column body={(branches) => actionBodyTemplate(branches)}></Column>
@@ -291,10 +291,9 @@ function Branch() {
 
             </Dialog>
 
-            {/* //         </div >
-        //     </div >
-
-        // </div > */}
+            {/* </div > */}
+            {/* </div >
+            </div > */}
         </>
     );
 }

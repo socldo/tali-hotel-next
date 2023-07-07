@@ -33,5 +33,23 @@ declare namespace Model {
         updated_at: string;
     }
 
-
+    interface Hotel {
+        id: number;
+        branch_id: number;
+        name: string;
+        branch_name: string;
+        email: string;
+        address: string;
+        phone: string;
+        images: [string];
+        description: string;
+        status: boolean;
+        is_popular: boolean;
+        is_have_wifi: boolean;
+        is_have_parking: boolean;
+        short_description: string;
+        higlight_property: string;
+        created_at: string;
+        updated_at: string;
+    }
 }
