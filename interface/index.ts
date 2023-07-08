@@ -49,7 +49,19 @@ declare namespace Model {
         is_have_parking: boolean;
         short_description: string;
         higlight_property: string;
+        type: number;
+        type_name: string;
         created_at: string;
         updated_at: string;
+    }
+
+    interface RatingRate {
+        rate_count: number;
+        average_rate: number;
+        total_one_star: number;
+        total_two_star: number;
+        total_three_star: number;
+        total_four_star: number;
+        total_five_star: number;
     }
 }

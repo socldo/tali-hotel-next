@@ -11,6 +11,7 @@ import { ConfirmPopup } from "primereact/confirmpopup";
 import { toast } from 'react-toastify'
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import HotelDetail from "../../../components/admin/hotel/hotel-detail";
+import CustomErrorPage from "../../../components/admin/custom-error";
 
 function Hotel() {
 
@@ -51,7 +52,32 @@ function Hotel() {
 
     }, [renderCount]);
 
+    useEffect(() => {
+        filter()
+    }, [sortKey, activeIndex, hotels]);
 
+
+    const filter = () => {
+        if (activeIndex == 0) {
+            if (!sortKey) {
+                setHotelFilters(hotels.filter((hotel: { status: boolean; }) => hotel.status));
+            }
+            else {
+                setHotelFilters(hotels?.filter(hotel => hotel.branch_id == sortKey && hotel.status));
+
+            }
+        }
+        else {
+            if (!sortKey) {
+                console.log(sortKey);
+                setHotelFilters(hotels.filter((hotel: { status: boolean; }) => !hotel.status));
+            }
+            else {
+                setHotelFilters(hotels?.filter(hotel => hotel.branch_id == sortKey && !hotel.status));
+
+            }
+        }
+    };
 
     const fetchHotels = async (): Promise<void> => {
         try {
@@ -68,9 +94,7 @@ function Hotel() {
             const data = await response.json();
             console.log('data:', data);
 
-
             setHotels(data.data);
-            setHotelFilters(data.data.filter((hotel: { status: boolean; }) => hotel.status));
             setLoading(false);
 
             setResponseAPI({
@@ -78,7 +102,6 @@ function Hotel() {
                 message: data.message,
                 data: data.data,
             });
-
         } catch (error) {
             console.error('Error:', error);
             setLoading(false);
@@ -111,37 +134,10 @@ function Hotel() {
     };
 
 
-    const onSortChange = (event: DropdownChangeEvent) => {
-        const value = event.value;
-
-        setSortKey(value);
-
-        if (value != 0) {
-            setHotelFilters(hotels?.filter(hotel => hotel.branch_id == value && hotel.status == (activeIndex == 0)));
-        }
-        else {
-            setHotelFilters(hotels?.filter(hotel => hotel.status == (activeIndex == 0)))
-        }
-
-    };
-
-    const handleTabChange = (event: any) => {
-        setActiveIndex(event.index);
-
-
-        if (event.index == 0) {
-
-            setHotelFilters(hotels?.filter(hotel => hotel.status));
-        } else {
-
-            setHotelFilters(hotels?.filter(hotel => !hotel.status));
-
-        }
-    }
     const header = (
         <div className="flex flex-column md:flex-row md:justify-between md:items-center">
 
-            <TabView activeIndex={activeIndex} onTabChange={handleTabChange}>
+            <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                 <TabPanel header="Đang hoạt động" rightIcon="pi pi-check-circle ml-2" >
                 </TabPanel>
                 <TabPanel header="Tạm ngưng" rightIcon="pi pi-ban ml-2">
@@ -158,7 +154,7 @@ function Hotel() {
                     { label: 'Tất cả', value: 0 },
                     ...branches.map(branch => ({ label: branch.name, value: branch.id }))
                 ]} optionLabel="label" placeholder="Khu vực"
-                    onChange={onSortChange}
+                    onChange={(e) => setSortKey(e.value)}
                     style={{ marginRight: '.5em' }} />
 
                 <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
@@ -302,9 +298,9 @@ function Hotel() {
         {responseAPI?.status != 200 ?
             <>
 
-                <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Lỗi rồi">
+                <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} >
 
-                    <div>Lỗi rồi:  {responseAPI?.message}</div>
+                    <CustomErrorPage props={responseAPI} />
 
                 </Dialog>
             </>

@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import adminAuthMiddleware from '../../../components/admin/middleware/adminAuthMiddleware';
 import UserCreate from '../../../components/admin/user/user-create';
 import { status } from 'nprogress';
+import CustomErrorPage from '../../../components/admin/custom-error';
 
 
 function User() {
@@ -345,9 +346,9 @@ function User() {
             {responseAPI?.status != 200 ?
                 <>
 
-                    <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Lỗi rồi">
+                    <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} >
 
-                        <div>Lỗi rồi:  {responseAPI?.message}</div>
+                        <CustomErrorPage props={responseAPI} />
 
                     </Dialog>
                 </>

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Galleria, GalleriaResponsiveOptions } from 'primereact/galleria';
 import { Rating } from "primereact/rating";
+import { getCookie } from 'cookies-next';
+import { Checkbox } from "primereact/checkbox";
 
 interface HotelDetailProps {
 
@@ -11,15 +13,51 @@ interface HotelDetailProps {
 const UserDetail: React.FC<HotelDetailProps> = ({
     hotel
 }) => {
+    const token = getCookie('jwt_token')?.toString();
 
     const [images, setImages] = useState<string[]>([]);
     const galleria = useRef<any>(null);
+    const [ratingRate, setRatingRate] = useState<Model.RatingRate | null>();
 
 
 
     useEffect(() => {
         setImages((hotel?.images || []).map(image => image.replace(/"/g, "")));
+        console.log(hotel?.is_have_parking);
+
+
+        let isMounted = true; // Biến cờ
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`/api/hotels/${hotel?.id}/get-rating-rate`, {
+                    method: "GET",
+                    headers: new Headers({
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        Authorization: !token ? "" : token
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (isMounted) {
+                    console.log('data:', data);
+                    setRatingRate(data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching branches:', error);
+            }
+        };
+
+        fetchData();
+
+        return () => {
+            isMounted = false; // Đánh dấu component đã unmount
+        };
     }, []);
+
+
 
 
     const statusBodyTemplate = (rowData: Model.Hotel) => {
@@ -79,8 +117,8 @@ const UserDetail: React.FC<HotelDetailProps> = ({
     return (
         <>
             <div className="card p-fluid" >
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div style={{ marginRight: '1em', }}>
+                <div style={{ display: 'flex' }}>
+                    <div style={{ float: 'left', width: '50%' }}>
                         <div className="field">
                             <label style={{ fontWeight: 'bold' }}>Tên: </label>
                             <span>{hotel?.name}</span>
@@ -94,9 +132,17 @@ const UserDetail: React.FC<HotelDetailProps> = ({
                             <label style={{ fontWeight: 'bold' }}>Trạng thái: </label>
                             {statusBodyTemplate(hotel)}
                         </div>
+                        <div className="field">
+                            <label style={{ fontWeight: 'bold' }}>Loại: </label>
+                            <span>{hotel?.type_name}</span>
+                        </div>
+                        <div className="field">
+                            <span> <Checkbox checked={hotel.is_popular == true}></Checkbox> </span>
+                            <label style={{ fontWeight: 'bold' }}>Phổ biến </label>
+                        </div>
                     </div>
 
-                    <div>
+                    <div style={{ float: 'left', width: '50%' }}>
                         <div className="field">
                             <label style={{ fontWeight: 'bold' }}>Khu vực: </label>
                             <span>{hotel?.branch_name}</span>
@@ -111,29 +157,86 @@ const UserDetail: React.FC<HotelDetailProps> = ({
                             <label style={{ fontWeight: 'bold' }}>Ngày tạo: </label>
                             <span>{hotel?.created_at}</span>
                         </div>
+                        <div className="field">
+                            <span> <Checkbox checked={hotel.is_have_parking == true}></Checkbox> </span>
+                            <label style={{ fontWeight: 'bold' }}>Bãi đỗ xe </label>
 
+                        </div>
+                        <div className="field">
+                            <span> <Checkbox checked={hotel.is_have_wifi == true}></Checkbox> </span>
+                            <label style={{ fontWeight: 'bold' }}>Wifi: </label>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div className="card p-fluid" >
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div style={{ marginRight: '1em' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                    <div style={{ float: 'left', width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                         <div className="field">
                             <label style={{ fontWeight: 'bold' }}>Số bài viết đánh giá: </label>
-                            <span>{100}</span>
+                            <span>{ratingRate?.rate_count}</span>
                         </div>
-                        <div className="card flex justify-content-center">
-                            <Rating value={4.8} readOnly cancel={false} />
+                        <div className="flex justify-content-center">
+
+                            <Rating value={5} readOnly cancel={false} /><div>:</div>
+                        </div>
+                        <div className="flex justify-content-center">
+                            <Rating value={4} readOnly cancel={false} /><div>:</div>
+                        </div>
+                        <div className="flex justify-content-center">
+                            <Rating value={3} readOnly cancel={false} /><div>:</div>
+                        </div>
+                        <div className="flex justify-content-center">
+                            <Rating value={2} readOnly cancel={false} /><div>:</div>
+                        </div>
+                        <div className="flex justify-content-center">
+                            <Rating value={1} readOnly cancel={false} /><div>:</div>
                         </div>
                     </div>
-                    <div className="field">
-                        <label style={{ fontWeight: 'bold' }}>Số sao trung bình: </label>
-                        <span>{4.8}</span>
+                    <div style={{ float: 'left', width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div className="field">
+                            <label style={{ fontWeight: 'bold' }}>Số sao trung bình: </label>
+                            <span>{Number(ratingRate?.average_rate.toFixed(1))}</span>
+                        </div>
+
+                        <div className="field">
+                            <span>{ratingRate?.total_five_star}</span>
+                        </div>
+                        <div className="field">
+                            <span>{ratingRate?.total_four_star}</span>
+                        </div>
+                        <div className="flex justify-content-center">
+                            <span>{ratingRate?.total_three_star}</span>
+                        </div>
+                        <div className="flex justify-content-center">
+                            <span>{ratingRate?.total_two_star}</span>
+                        </div>
+                        <div className="field">
+                            <span>{ratingRate?.total_one_star}</span>
+                        </div>
+
                     </div>
 
                 </div>
-            </div>
 
+            </div>
+            <div className="card p-fluid" >
+
+                <div className="field">
+                    <label style={{ fontWeight: 'bold' }}>Mô tả: </label>
+                    <span>{hotel?.description}</span>
+                </div>
+                <div className="field">
+                    <label style={{ fontWeight: 'bold' }}>Mô tả ngắn gọn: </label>
+                    <span>{hotel?.description}</span>
+                </div>
+
+                <div className="field">
+                    <label style={{ fontWeight: 'bold' }}>Tính năng đặt biệt: </label>
+                    <span>{hotel?.description}</span>
+                </div>
+            </div>
             {imageBodyTemplate(hotel)}
 
         </>
