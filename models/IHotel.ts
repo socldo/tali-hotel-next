@@ -6,24 +6,19 @@ export interface Address {
 }
 
 export interface IHotel {
-    _id?: string;
-    title: string;
-    type: string;
-    desc: string;
-    descShort: string;
-    address: Address;
-    distance: string;
-    photos: string[];
-    cheapestPrice?: number;
-    featured: boolean;
-    rating?: number;
-    score?: number;
-    rooms?: string[];
-    __v?: number;
+    id?: number;
+    branch_id?: number;
     name: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-    user?: string;
-    published: boolean;
-    reviews: object[];
+    number: string;
+    images: string;
+    type: string;
+    price?: number;
+    status?: number;
+    rate_count: number;
+    average_rate?: number;
+    is_popular?: number;
+    is_have_wifi: number;
+    is_have_parking?: number;
+    short_description: string;
+    highlight_property: string;
 }

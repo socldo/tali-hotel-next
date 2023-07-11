@@ -17,19 +17,23 @@ import { RoomHotel } from '../../components/room'
 import StarRating from '../../components/core/StarRating'
 import { getCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
-import { IRoom } from '../../models'
-import { RiCupFill, RiCupLine, RiHandSanitizerLine } from 'react-icons/ri'
-import { Galleria, GalleriaResponsiveOptions } from 'primereact/galleria';
+import {  RiCupLine, RiHandSanitizerLine } from 'react-icons/ri'
+import {  GalleriaResponsiveOptions } from 'primereact/galleria';
 import { HotelReview, ImageGallery } from '../../components/hotel'
 
 const HotelDetailPage = () => {
     const router = useRouter()
 
-    
+    const currentPath = window.location.href;
+    const lastChar = currentPath.substring(currentPath.lastIndexOf('/') + 1);
     const queryUrl = router?.query
     const branchSlug = queryUrl?.id ? queryUrl?.id[0] : ''
+    console.log('slug id',lastChar);
+    
 
     const [roomId, setRoomId] = useState(branchSlug)
+    const url = `/api/hotels/${lastChar}`;
+    
     const [images, setImages] = useState<string[]>([]);
     const [hotelId, setHotelId] = useState(0)
     const [branchId, setBranchId] = useState(0)
@@ -47,6 +51,8 @@ const HotelDetailPage = () => {
     const [highlightProperty, setHighlightProperty] = useState('')
     const [totalReview, setTotalReview] = useState(0)
     const [showModal, setShowModal] = useState(false)
+    const [reviews, setReviews] = useState()
+
     const responsiveOptions: GalleriaResponsiveOptions[] = [
         {
             breakpoint: '991px',
@@ -61,12 +67,52 @@ const HotelDetailPage = () => {
             numVisible: 1
         }
     ];
-
-    const handleDetailRoom = async () => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleDetailRoom = async ( ) => {
 
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        let url = `/api/hotels/${branchSlug}`;
+
+
+        
+        const response = await fetch(url, {
+            method: "GET",
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: token == undefined ? "" : token
+            }),
+        });
+        const data = await response.json();
+        console.log('data id', url);
+        
+        if (data.data) {
+            setHotelId( data.data.id)
+            setBranchId(data.data.branch_id)
+            setName(data.data.name)
+            setDescription(data.data.description)
+            setType(data.data.type)
+            setPrice(data.data.price)
+            setStatus(data.data.status)
+            setRateCount(data.data.rate_count)
+            setAverageRate(data.data.average_rate)
+            setAddress(data.data.address)
+            setShortDescription(data.data.short_description)
+            setHighlightProperty(data.data.highlight_property)
+            setTotalReview(data.data.total_reviews)
+            setImages(data.data.images) 
+        }
+  
+  
+        return data;
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleReviews = async () => {
+
+        let token = getCookie('jwt_token')?.toString();
+        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
+        let url = `/api/reviews?hotel_id=${branchSlug}`;
 
         
         const response = await fetch(url, {
@@ -79,29 +125,15 @@ const HotelDetailPage = () => {
         });
         const data = await response.json();
 
-        // console.log( data);
-        setHotelId(data.data.id)
-        setBranchId(data.data.branch_id)
-        setName(data.data.name)
-        setDescription(data.data.description)
-        setType(data.data.type)
-        setPrice(data.data.price)
-        setStatus(data.data.status)
-        setRateCount(data.data.rate_count)
-        setAverageRate(data.data.average_rate)
-        setAddress(data.data.address)
-        setShortDescription(data.data.short_description)
-        setHighlightProperty(data.data.highlight_property)
-        setTotalReview(data.data.total_reviews)
-        setImages(data.data.images)   
-  
+        setReviews(data.data);
         return data;
     }
 
     useEffect(() => {
-        handleDetailRoom()
+        setRoomId(branchSlug);
+        handleDetailRoom();
+        handleReviews();
         console.log();
-        
     },[])
 
     const scrollRef = useRef(null);
@@ -128,14 +160,14 @@ const HotelDetailPage = () => {
                 title: `${name} - Booking`,
                 description: `${name} - Booking`
             }}
-        >
+        >2
             <div
                 className="w-full my-4 mx-auto container px-4 lg:px-6 overflow-hidden"
-                // onClick={() => {
-                //     if (showModal) {
-                //         setShowModal(false)
-                //     }
-                // }}
+                onClick={() => {
+                    if (showModal) {
+                        setShowModal(false)
+                    }
+                }}
             >
                 <div className="flex pt-2 gap-x-5">
                     {/* <div className="hidden lg:block w-1/5">
@@ -188,7 +220,7 @@ const HotelDetailPage = () => {
                                     </div>
                                     {showModal ? (
                                         <HotelReview
-                                            reviews={hotel?.reviews}
+                                            reviews={reviews}
                                             id={hotelId}
                                             setShowModal={setShowModal}
                                         />
@@ -212,7 +244,7 @@ const HotelDetailPage = () => {
                         </div>
 
                         <div>
-                            <ImageGallery photos={images} />
+                            {images ? <ImageGallery photos={images} /> : <></>}
                         </div>
                     </div>
                 </div>
@@ -281,6 +313,7 @@ const HotelDetailPage = () => {
                             </div>
                             <div onClick={scrollToSection}>
                                 <Button
+                                    
                                     text="Đặt ngay"
                                     textColor="text-white"
                                     bgColor="bg-primary"

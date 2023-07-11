@@ -7,8 +7,6 @@ import { Image } from 'primereact/image';
 import { MdLocationOn } from '../../utils/icons'
 import { Tag } from 'primereact/tag';
 import { atom, useRecoilState } from 'recoil';
-import { cartState } from '../cart/cartState'
-
 interface Props {
     data?: IRoom[];
     city?: string;
@@ -22,9 +20,6 @@ const numberFormat = (e: any) =>
 
 
 const SearchResults: React.FC<Props> = ({ data, city }) => {
-
-    const [cartItem, setCartItem] = useRecoilState(cartState);
-    console.log(cartItem);
     
 
     return (

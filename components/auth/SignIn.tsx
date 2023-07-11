@@ -84,6 +84,7 @@ export default function SignIn({ setIsSignIn }: Props) {
             const data = json.data;
             const token = data.jwt_token;
             setCookie("jwt_token", token);
+            setCookie("id", data.id);
             setCookie("email", data.email);
             setCookie("phone", data.phone);
             setCookie("name", data.name);
