@@ -52,7 +52,7 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     const bookingData = Array.isArray(router.query.roomsReserve)
         ? router.query.roomsReserve.map((item) => JSON.parse(item))
         : JSON.parse(router.query.roomsReserve || '[]');
-        console.log(router.query);
+    console.log(router.query);
         
     const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn : ""))) ;
 
@@ -216,7 +216,7 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                             </div>
                             <div>
                                 <p className="mt-4 text-sm font-bold">Bạn đã chọn</p>
-                                {bookingData?.map((bookingData: RoomReserve) => (<p className="mt-2 text-sm">{bookingData.quantity} x {bookingData.name} </p>))}
+                                {bookingData?.map((bookingData: RoomReserve) => (<p key={bookingData.id} className="mt-2 text-sm">{bookingData.quantity} x {bookingData.name} </p>))}
                                 <div className="mb-2 mt-2 text-sm font-bold text-sky-500" onClick={changeOption}>
                                     <Button                                   
                                         text="Đổi lựa chọn của bạn"

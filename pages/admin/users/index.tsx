@@ -199,20 +199,20 @@ function User() {
     const roleBodyTemplate = (rowData: Model.User) => {
         let roleName = '';
         switch (rowData.role_id) {
-            case 1:
-                roleName = 'user'
-                break;
-            case 2:
-                roleName = 'manager'
-                break;
-            case 3:
-                roleName = 'employee'
-                break;
-            case 4:
-                roleName = 'admin'
-                break;
-            default:
-                break;
+        case 1:
+            roleName = 'user'
+            break;
+        case 2:
+            roleName = 'manager'
+            break;
+        case 3:
+            roleName = 'employee'
+            break;
+        case 4:
+            roleName = 'admin'
+            break;
+        default:
+            break;
         }
         return <span className={`role-badge role-${roleName}`}>{roleName}</span>;
     };
