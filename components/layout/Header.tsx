@@ -142,8 +142,7 @@ const Header = () => {
                                     className=" w-full px-2 flex items-center text-black gap-1 ">
                                     {avatar 
                                         ?<>
-                                        
-                                            <img className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" src={avatar} alt="Bordered avatar"></img>
+                                            <img className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" src={avatar.toString()} alt="Bordered avatar"></img>
                                         </>
                                         :
                                         <div
