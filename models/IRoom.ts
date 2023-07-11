@@ -14,6 +14,7 @@ export interface IRoom {
     is_popular: number;
     total_reviews: number;
     quantity:number;
+    average_rate: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
