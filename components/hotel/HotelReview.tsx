@@ -174,7 +174,6 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                             text="Đánh giá"
                                             textColor="text-white"
                                             bgColor="bg-primary"
-                                            fullWidth={true}
                                         />
                                     </div>
                                 </div>

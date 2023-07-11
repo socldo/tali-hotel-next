@@ -54,11 +54,11 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
         : JSON.parse(router.query.roomsReserve || '[]');
     console.log(router.query);
         
-    const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn : ""))) ;
+    const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn[0] : ""))) ;
 
-    const checkOut =formatBookingDate(new Date(JSON.parse(router.query.checkOut ? router.query.checkOut  : ""))) ;
+    const checkOut =formatBookingDate(new Date(JSON.parse(router.query.checkOut ? router.query.checkOut[0]  : ""))) ;
 
-    const totalDate = differentDate(new Date(JSON.parse(router.query.checkIn)), new Date(JSON.parse(router.query.checkOut)));
+    const totalDate = differentDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn[0] : '')), new Date(JSON.parse(router.query.checkOut ? router.query.checkOut[0] : '')));
 
     const hotelId = router.query.hotel_id;
 
