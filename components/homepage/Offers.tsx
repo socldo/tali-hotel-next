@@ -13,7 +13,7 @@ import { getCookie } from 'cookies-next'
 
 const Offers = () => {
 
-    const [data, setData] = useState();
+    const [data, setData] = useState([]);
 
     let token = getCookie('jwt_token')?.toString();
 

@@ -15,7 +15,7 @@ const MapContainer = ({ hotel }: { hotel: IHotel }) => {
 
     return (
         <>
-            <Map
+            {/* <Map
                 initialViewState={{
                     longitude: hotel.address.lng,
                     latitude: hotel.address.lat,
@@ -69,7 +69,7 @@ const MapContainer = ({ hotel }: { hotel: IHotel }) => {
                         </div>
                     </Popup>
                 )}
-            </Map>
+            </Map> */}
         </>
     )
 }
