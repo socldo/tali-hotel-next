@@ -46,7 +46,7 @@ const Hotels = ({type}: Props) => {
             modules={[Navigation]}
             className="select-none"
         >
-            {hotelsType?.map((hotel) => (
+            {/* {hotelsType?.map((hotel) => (
                 // <SwiperSlide key={hotel._id}>
                 //     <HotelPreview
                 //         id={hotel.id!}
@@ -55,7 +55,7 @@ const Hotels = ({type}: Props) => {
                 //         title={hotel.title}
                 //     />
                 // </SwiperSlide>
-            ))}
+            ))} */}
         </Swiper>
     )
 }
