@@ -28,10 +28,10 @@ const NotFoundPage: Page = () => {
                         className='flex justiy-center items-center px-5 py-2 text-xl rounded-md text-black border border-indigo-500 hover:bg-indigo-500 hover:text-white'>
                         Previous Page
                     </a>
-                    <a href="/"
+                    {/* <a href="/"
                         className='flex justiy-center items-center px-5 py-2 text-xl rounded-md text-black border border-green-500 hover:bg-green-500 hover:text-white'>
                         Home Page
-                    </a>
+                    </a> */}
                 </div>
             </div>
         </div>
