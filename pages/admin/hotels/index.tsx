@@ -166,8 +166,8 @@ function Hotel() {
                     { label: 'Tất cả', value: 0 },
                     ...branches.map(branch => ({ label: branch.name, value: branch.id }))
                 ]} optionLabel="label" placeholder="Khu vực"
-                    onChange={(e) => setSortKey(e.value)}
-                    style={{ marginRight: '.5em' }} />
+                onChange={(e) => setSortKey(e.value)}
+                style={{ marginRight: '.5em' }} />
 
                 <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
                     <i className="pi pi-search" />

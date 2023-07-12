@@ -124,7 +124,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                     <label
                                         htmlFor="email"
                                         className={`block font-bold text-sm mb-1${errors.phone ? "text-red-400" : "text-primary"
-                                            }`}
+                                        }`}
                                     >
                                         Phone
                                     </label>
@@ -135,7 +135,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
                                             ? "text-red-300 border-red-400"
                                             : "text-primary"
-                                            }`}
+                                        }`}
                                     />
                                     {errors.phone &&
                                         (
@@ -148,7 +148,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                     <label
                                         htmlFor="password"
                                         className={`block font-bold text-sm mb-1 ${errors.password ? "text-red-400" : "text-primary"
-                                            }`}
+                                        }`}
                                     >
                                         Password
                                     </label>
@@ -159,7 +159,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
                                             ? "text-red-300 border-red-400"
                                             : "text-primary"
-                                            }`}
+                                        }`}
                                     />
                                     {errors.password && (
                                         <p className="text-red-500 text-sm mt-1">
