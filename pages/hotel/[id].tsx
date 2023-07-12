@@ -136,7 +136,7 @@ const HotelDetailPage = () => {
         console.log();
     },[])
 
-    const scrollRef = useRef(null);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     const scrollToSection = () => {
         if (scrollRef.current) {
@@ -317,7 +317,6 @@ const HotelDetailPage = () => {
                                     text="Đặt ngay"
                                     textColor="text-white"
                                     bgColor="bg-primary"
-                                    fullWidth={true}
                                 />
                             </div>
                             
