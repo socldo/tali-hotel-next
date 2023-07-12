@@ -2,6 +2,7 @@ import React from 'react';
 import { Page } from '../types/types';
 import { useRouter } from 'next/router';
 import 'primeicons/primeicons.css';
+import Link from 'next/link';
 const Custom500Page: Page = () => {
     const router = useRouter();
 
@@ -31,12 +32,12 @@ const Custom500Page: Page = () => {
 
                     </div>
 
-                    <a
+                    <Link
                         href="/"
                         className='flex justiy-center items-center px-5 py-2 text-xl rounded-md text-black border border-green-500 hover:bg-green-500 hover:text-white'>
                         Trang chủ
                         <i className="pi pi-home" style={{ paddingLeft: '10px', color: 'var(--primary-color)' }}></i>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>
