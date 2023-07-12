@@ -89,7 +89,6 @@ const SearchVertical = () => {
                                         text="Search"
                                         textColor="text-white"
                                         bgColor="bg-lightPrimary"
-                                        fullWidth={true}
                                     />
                                 </div>
                             </Link>

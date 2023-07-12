@@ -31,8 +31,8 @@ export default function SignIn({ setIsSignIn }: Props) {
 
     useEffect(() => {
         handleDeleteCookie();
-    },[])
-    
+    }, [])
+
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -88,8 +88,10 @@ export default function SignIn({ setIsSignIn }: Props) {
             setCookie("email", data.email);
             setCookie("phone", data.phone);
             setCookie("name", data.name);
-            setCookie("role", data.role);
+            setCookie("role_name", data.role);
             setCookie("avatar", data.avatar);
+            setCookie("role_id", data.role_id);
+
         } else {
             toast.warning("Sai số điện thoại hoặc mật khẩu!");
             deleteCookie("jwt_token");
@@ -135,12 +137,12 @@ export default function SignIn({ setIsSignIn }: Props) {
                                             : "text-primary"
                                         }`}
                                     />
-                                    {errors.phone && 
-                                    (
-                                        <p className="text-red-500 text-sm mt-1">
-                      A valid phone is required.
-                                        </p>
-                                    )}
+                                    {errors.phone &&
+                                        (
+                                            <p className="text-red-500 text-sm mt-1">
+                                                A valid phone is required.
+                                            </p>
+                                        )}
                                 </div>
                                 <div className="mb-2.5 w-full">
                                     <label

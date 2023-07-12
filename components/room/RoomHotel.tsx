@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useGetHotelRoomsQuery } from "../../services/roomApi";
 import { useBookingRoomMutation } from "../../services/bookingApi";
 import { FaUser } from "../../utils/icons";
 import { Loader } from "../layout";
@@ -27,7 +26,7 @@ const numberFormat = (e: any) =>
 
 const RoomHotel = ({ hotelId }: Props) => {
     const [loading, setLoading] = useState(false);
-    const [rooms, setRoom] = useState();
+    const [rooms, setRoom] = useState([]);
     const services = [
         "Phòng tắm thoải mái",
         "Vòi xịt",
@@ -253,7 +252,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 dateFormat="dd/mm/yy"
                                 inputId="Check out"
                                 value={checkOut}
-                                onChange={(e: CalendarChangeEvent) => setCheckOut(e.value)}
+                                onChange={(e: CalendarChangeEvent) => setCheckOut(e.value ? new Date(e.value.toString()[0]) : new Date())}
                                 minDate={minimumcheckOut}
                             />
                             <label htmlFor="check_out">Check out</label>
@@ -337,7 +336,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                         </div>
                     </div>
                     <div>
-                        {rooms?.map((room) => (
+                        {rooms?.map((room: IRoom) => (
                             <div
                                 key={room.id}
                                 className="grid mt-2.5 md:mt-0 md:grid-cols-12"
@@ -430,7 +429,6 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 text={"Tôi sẽ đặt"}
                                 textColor="text-white"
                                 bgColor="bg-primary"
-                                fullWidth={true}
                             />
                         </div>
                         <div className="text-primary text-sm xl:text-base mt-2.5">

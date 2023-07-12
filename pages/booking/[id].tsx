@@ -54,11 +54,11 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
         : JSON.parse(router.query.roomsReserve || '[]');
     console.log(router.query);
         
-    const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn : ""))) ;
+    const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn[0] : ""))) ;
 
-    const checkOut =formatBookingDate(new Date(JSON.parse(router.query.checkOut ? router.query.checkOut  : ""))) ;
+    const checkOut =formatBookingDate(new Date(JSON.parse(router.query.checkOut ? router.query.checkOut[0]  : ""))) ;
 
-    const totalDate = differentDate(new Date(JSON.parse(router.query.checkIn)), new Date(JSON.parse(router.query.checkOut)));
+    const totalDate = differentDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn[0] : '')), new Date(JSON.parse(router.query.checkOut ? router.query.checkOut[0] : '')));
 
     const hotelId = router.query.hotel_id;
 
@@ -216,7 +216,7 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                             </div>
                             <div>
                                 <p className="mt-4 text-sm font-bold">Bạn đã chọn</p>
-                                {bookingData?.map((bookingData: RoomReserve) => (<p className="mt-2 text-sm">{bookingData.quantity} x {bookingData.name} </p>))}
+                                {bookingData?.map((bookingData: RoomReserve) => (<p key={bookingData.id} className="mt-2 text-sm">{bookingData.quantity} x {bookingData.name} </p>))}
                                 <div className="mb-2 mt-2 text-sm font-bold text-sky-500" onClick={changeOption}>
                                     <Button                                   
                                         text="Đổi lựa chọn của bạn"

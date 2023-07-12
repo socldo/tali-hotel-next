@@ -7,7 +7,7 @@ const WishListPage = () => {
     const {hotels} = useAppSelector((state) => state.persistedReducer.hotel)
     const {wishList} = useAppSelector((state) => state.persistedReducer.app)
 
-    const wishListHotels = hotels?.filter((hotel) => wishList.includes(hotel._id!))
+    const wishListHotels = hotels?.filter((hotel) => wishList.includes(hotel.id!.toString()))
 
     return (
         <Layout
@@ -25,12 +25,12 @@ const WishListPage = () => {
             >
                 {wishListHotels && wishListHotels.length > 0 ? (
                     wishListHotels?.map((hotel) => (
-                        <div key={hotel._id} className="w-full border rounded-xl">
+                        <div key={hotel.id} className="w-full border rounded-xl">
                             <HotelPreview
-                                id={hotel._id!}
-                                image={hotel.photos[0]}
+                                id={hotel.id!.toString()}
+                                image={hotel.images[0]}
                                 name={hotel.name}
-                                title={hotel.title}
+                                title={hotel.short_description}
                                 large={true}
                             />
                         </div>

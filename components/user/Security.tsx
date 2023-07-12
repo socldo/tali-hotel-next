@@ -1,5 +1,4 @@
 import React, {useRef} from 'react'
-import {useChangePasswordMutation, useDeleteUserMutation} from '../../services/userApi'
 import {useAppDispatch, useAppSelector} from '../../store/hooks'
 import {logout} from '../../features/authSlice'
 import {toast} from 'react-toastify'
@@ -15,21 +14,19 @@ const Security = () => {
     const {user} = useAppSelector((state) => state.persistedReducer.auth)
 
     // Delete Account
-    const [deleteUser, {isLoading: isDeleting}] = useDeleteUserMutation()
-    const handleDeleteMyAccount = async () => {
-        try {
-            const result = await deleteUser(user?._id as string).unwrap()
-            toast.success(result.message || 'Delete success')
-            dispatch(logout())
-            // Fix error toast
-            setTimeout(() => router.push('/'), 1)
-        } catch (error: any) {
-            toast.error(error.data?.message || 'Something went wrong')
-        }
-    }
+    // const handleDeleteMyAccount = async () => {
+    //     try {
+    //         const result = await deleteUser(user?.id as string).unwrap()
+    //         toast.success(result.message || 'Delete success')
+    //         dispatch(logout())
+    //         // Fix error toast
+    //         setTimeout(() => router.push('/'), 1)
+    //     } catch (error: any) {
+    //         toast.error(error.data?.message || 'Something went wrong')
+    //     }
+    // }
 
     // Change Password
-    const [changePassword] = useChangePasswordMutation()
     const formSchema = yup.object().shape({
         password: yup.string()
             .required('Password is required'),
@@ -48,18 +45,18 @@ const Security = () => {
         resolver: yupResolver(formSchema)
     })
     const passwordRef = useRef<HTMLDivElement>(null)
-    const onSubmitChangePassword = handleSubmit(async (dataForm) => {
-        try {
-            const data = await changePassword(dataForm).unwrap()
-            toast.success(data.message)
-            setValue('password', '')
-            setValue('newPassword', '')
-            passwordRef.current?.click()
-        } catch (error: any) {
-            toast.error(error.data?.message || 'Something went wrong')
-        }
-    }
-    )
+    // const onSubmitChangePassword = handleSubmit(async (dataForm) => {
+    //     try {
+    //         const data = await changePassword(dataForm).unwrap()
+    //         toast.success(data.message)
+    //         setValue('password', '')
+    //         setValue('newPassword', '')
+    //         passwordRef.current?.click()
+    //     } catch (error: any) {
+    //         toast.error(error.data?.message || 'Something went wrong')
+    //     }
+    // }
+    // )
 
     return (
         <div>
@@ -119,7 +116,7 @@ const Security = () => {
                             <button
                                 className={`float-right w-max text-white ${isValid ? 'bg-lightPrimary' : 'bg-gray-400'} px-2.5 py-2 rounded-md`}
                                 disabled={!isValid}
-                                onClick={onSubmitChangePassword}
+                                // onClick={onSubmitChangePassword}
                             >
                                 Save
                             </button>
@@ -157,10 +154,10 @@ const Security = () => {
                             </div>
                             <button
                                 className="float-right w-max text-white bg-lightPrimary px-2.5 py-2 rounded-md"
-                                onClick={handleDeleteMyAccount}
-                                disabled={isDeleting}
+                                // onClick={handleDeleteMyAccount}
+                                // disabled={isDeleting}
                             >
-                                {isDeleting ? 'Deleting...' : 'Delete account'}
+                                {/* {isDeleting ? 'Deleting...' : 'Delete account'} */}
                             </button>
                         </nav>
                     </details>

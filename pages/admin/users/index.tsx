@@ -13,22 +13,37 @@ import { ConfirmPopup } from 'primereact/confirmpopup';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Dialog } from 'primereact/dialog';
 import UserDetail from '../../../components/admin/user/user-detail';
+import { useRouter } from 'next/router';
+import adminAuthMiddleware from '../../../components/admin/middleware/adminAuthMiddleware';
+import UserCreate from '../../../components/admin/user/user-create';
+import { status } from 'nprogress';
+import CustomErrorPage from '../../../components/admin/custom-error';
+import { User, APIResponse } from '../../../interface/index'
 
 
 function User() {
 
-    const [users, setUsers] = useState<Model.User[]>([]);
-    const [usersFilter, setUsersFilter] = useState<Model.User[]>([]);
-    const [user, setUser] = useState<Model.User | null>();
+    const [users, setUsers] = useState<User[]>([]);
+    const [usersFilter, setUsersFilter] = useState<User[]>([]);
+
+    const [user, setUser] = useState<User | null>();
+
     const [loading, setLoading] = useState(true);
     const [renderCount, setRenderCount] = useState(0);
-    const [globalFilter, setGlobalFilter] = useState('');
     const [confirmPopup, setConfirmPopup] = useState(false);
     const buttonEl = useRef(null);
-    const [sortKey, setSortKey] = useState(null);
+
     const [visible, setVisible] = useState<boolean>(false);
+    const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
+
+    const [sortKey, setSortKey] = useState(null);
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [responseAPI, setResponseAPI] = useState<APIResponse>({ status: 200, message: 'OK', data: null });
+    const [visibleError, setVisibleError] = useState<boolean>(false);
 
 
+    const token = getCookie('jwt_token')?.toString();
 
     const sortOptions = [
         { label: 'Tất cả', value: 0 },
@@ -38,22 +53,56 @@ function User() {
         { label: 'Admin', value: 4 }
     ];
 
-    const token = getCookie('jwt_token')?.toString();
+
 
     useEffect(() => {
         setLoading(true);
+
         const timer = setTimeout(async () => {
             await fetchUsers();
-
-        }, 500);
-
-
+        }, 300);
 
         return () => {
-            clearTimeout(timer); // Xóa bỏ timer nếu component unmount trước khi kết thúc thời gian chờ
+            clearTimeout(timer);
         };
 
     }, [renderCount]);
+
+
+
+    useEffect(() => {
+        if (responseAPI?.status != 200) {
+            setVisibleError(true);
+        } else
+            setVisibleError(false);
+
+    }, [responseAPI]);
+
+
+    useEffect(() => {
+        filter()
+    }, [sortKey, activeIndex, users]);
+
+    const filter = () => {
+        if (activeIndex == 0) {
+            if (!sortKey) {
+                setUsersFilter(users.filter((user: { is_locked: boolean; }) => !user.is_locked));
+            }
+            else {
+                setUsersFilter(users?.filter(users => users.role_id == sortKey && !user?.is_locked));
+
+            }
+        }
+        else {
+            if (!sortKey) {
+                setUsersFilter(users.filter((user: { is_locked: boolean; }) => user.is_locked));
+            }
+            else {
+                setUsersFilter(users?.filter(user => user.role_id == sortKey && user.is_locked));
+
+            }
+        }
+    };
 
     const fetchUsers = async (): Promise<void> => {
         try {
@@ -70,38 +119,40 @@ function User() {
             const data = await response.json();
             console.log('data:', data);
 
+
             setUsers(data.data);
-            setUsersFilter(data.data);
             setLoading(false);
+
+            setResponseAPI({
+                status: data.status,
+                message: data.message,
+                data: data.data,
+            });
+
         } catch (error) {
             console.error('Error:', error);
             setLoading(false);
         }
     };
 
-    const onSortChange = (event: DropdownChangeEvent) => {
-        const value = event.value;
-        console.log(value);
-
-        setSortKey(value);
-        if (value != 0) {
-            setUsersFilter(users?.filter(users => users.role_id == value));
-        }
-        else {
-            setUsersFilter(users)
-        }
-
-    };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-between md:items-center">
 
+            <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
+                <TabPanel header="Đang hoạt động" rightIcon="pi pi-check-circle ml-2" >
+                </TabPanel>
+                <TabPanel header="Bị Khóa" rightIcon="pi pi-ban ml-2">
+                </TabPanel>
+            </TabView>
+
+
             <h4 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
-                Danh Sách Tài Khoản
+                Tài Khoản
             </h4>
 
             <div className="text-right">
-                <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Bộ phận" onChange={onSortChange} style={{ marginRight: '.5em' }} />
+                <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Bộ phận" onChange={(e) => setSortKey(e.value)} style={{ marginRight: '.5em' }} />
 
                 <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
                     <i className="pi pi-search" />
@@ -116,15 +167,15 @@ function User() {
                     icon="pi pi-plus"
                     style={{ marginRight: '.5em' }}
                     onClick={() => {
-                        // setVisible(true);
-                        // setBranch(null);
+                        setVisibleCreate(true);
+                        setUser(null);
                     }}
                 />
             </div>
         </div >
     );
 
-    const avatarBodyTemplate = (rowData: Model.User) => {
+    const avatarBodyTemplate = (rowData: User) => {
         let image = rowData.avatar ? rowData.avatar : "";
 
         return (
@@ -152,19 +203,34 @@ function User() {
             });
             const data = await response.json();
             console.log('data:', data);
-            setRenderCount(renderCount + 1);
+
+
+            setResponseAPI({
+                status: data.status,
+                message: data.message,
+                data: data.data,
+            });
+
+            if (data.status == 200) {
+
+                setRenderCount(renderCount + 1);
+            }
+            return data;
         } catch (error) {
-            console.error('Error fetching branches:', error);
+            console.error('Error fetching:', error);
         }
     };
 
 
-    const actionBodyTemplate = (rowData: Model.User) => {
+    const actionBodyTemplate = (rowData: User) => {
 
         const accept = async () => {
-            setLoading(false);
-            await handleChangeStatus()
-            toast.success('Cập nhật thành công')
+
+            let changeStatus = await handleChangeStatus();
+
+            if (changeStatus?.status === 200) {
+                toast.success('Cập nhật thành công');
+            }
         };
 
         const reject = () => {
@@ -173,7 +239,7 @@ function User() {
 
         };
 
-        // const handleEditBranch = (branch: Model.Branch) => {
+        // const handleEditBranch = (branch: Branch) => {
 
         //     setBranch(branch);
         //     setVisible(true);
@@ -185,37 +251,53 @@ function User() {
                     message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
                     rejectLabel="Không" />
 
-                {rowData.is_locked
+                {/* {rowData.is_locked
                     ? <span className="pi pi-times" onClick={() => { setConfirmPopup(true); setUser(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
                     : <span className="pi pi-check" onClick={() => { setConfirmPopup(true); setUser(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
+                } */}
+                {!rowData.is_locked
+                    ?
+                    <Button icon="pi pi-times" onClick={() => { setConfirmPopup(true); setUser(rowData); }} rounded outlined severity="danger" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                    :
+                    <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setUser(rowData);; }} rounded outlined severity="success" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
                 }
-                <span className="pi pi-eye" style={{ marginRight: '0.5em', fontSize: '1rem' }} onClick={() => { setVisible(true); setUser(rowData) }} ></span>
+                <Button icon="pi pi-eye" onClick={() => { setVisible(true); setUser(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+
+                {/* <span className="pi pi-eye" style={{ marginRight: '0.5em', fontSize: '1rem' }} onClick={() => { setVisible(true); setUser(rowData) }} ></span> */}
             </>
         );
 
 
     };
 
-    const roleBodyTemplate = (rowData: Model.User) => {
+    const roleBodyTemplate = (rowData: User) => {
         let roleName = '';
         switch (rowData.role_id) {
-            case 1:
-                roleName = 'user'
-                break;
-            case 2:
-                roleName = 'manager'
-                break;
-            case 3:
-                roleName = 'employee'
-                break;
-            case 4:
-                roleName = 'admin'
-                break;
-            default:
-                break;
+        case 1:
+            roleName = 'user'
+            break;
+        case 2:
+            roleName = 'manager'
+            break;
+        case 3:
+            roleName = 'employee'
+            break;
+        case 4:
+            roleName = 'admin'
+            break;
+        default:
+            break;
         }
         return <span className={`role-badge role-${roleName}`}>{roleName}</span>;
     };
+
+
+    const showSuccess = () => {
+        setRenderCount(renderCount => renderCount + 1);
+
+        toast.success('Tạo mới thành công')
+    }
+
 
     return (
         <>
@@ -252,8 +334,26 @@ function User() {
                 </p>
             </Dialog>
 
+            <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Tạo mới">
+
+                <UserCreate setVisibleCreate={setVisibleCreate} currentUser={user || null} onSave={() => showSuccess()}></UserCreate>
+
+            </Dialog>
+
+
+            {responseAPI?.status != 200 ?
+                <>
+
+                    <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} >
+
+                        <CustomErrorPage props={responseAPI} />
+
+                    </Dialog>
+                </>
+                : null
+            }
         </>
     );
 }
 
-export default User;
+export default adminAuthMiddleware(User);

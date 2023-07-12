@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useGetUserQuery, useUpdateUserMutation } from '../../services/userApi'
 import { Loader } from '../layout'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { useForm } from 'react-hook-form'
@@ -15,65 +14,65 @@ type FormValues = {
 };
 
 const PersonalDetails = () => {
-    const { user, token } = useAppSelector((state) => state.persistedReducer.auth)
-    const { data: userData, isLoading: getLoading, isSuccess } = useGetUserQuery(user?._id as string)
-    const dispatch = useAppDispatch()
-    useEffect(() => {
-        if (isSuccess) {
-            dispatch(
-                setUser({ user: userData, token })
-            )
-        }
-    }, [dispatch, userData, isSuccess, token])
+    // const { user, token } = useAppSelector((state) => state.persistedReducer.auth)
+    // const { data: userData, isLoading: getLoading, isSuccess } = useGetUserQuery(user?._id as string)
+    // const dispatch = useAppDispatch()
+    // useEffect(() => {
+    //     if (isSuccess) {
+    //         dispatch(
+    //             setUser({ user: userData, token })
+    //         )
+    //     }
+    // }, [dispatch, userData, isSuccess, token])
 
-    const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation()
+    // const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation()
 
-    const { register, handleSubmit, watch } = useForm<FormValues>({
-        defaultValues: {
-            name: user?.name,
-            email: user?.email,
-            phone: user?.phone
-        }
-    })
+    // const { register, handleSubmit, watch } = useForm<FormValues>({
+    //     defaultValues: {
+    //         name: user?.name,
+    //         email: user?.email,
+    //         phone: user?.phone
+    //     }
+    // })
 
-    const onSubmit = handleSubmit(async (dataForm) => {
-        if (user) {
-            try {
-                const result = await updateUser({ _id: user._id, ...dataForm }).unwrap()
-                dispatch(setUser(
-                    {
-                        user: result,
-                        token
-                    }
-                ))
-                toast.success('Update success')
-            } catch (error: any) {
-                toast.error(`Something went wrong`)
-            }
-        }
-    })
+    // const onSubmit = handleSubmit(async (dataForm) => {
+    //     if (user) {
+    //         try {
+    //             const result = await updateUser({ _id: user._id, ...dataForm }).unwrap()
+    //             dispatch(setUser(
+    //                 {
+    //                     user: result,
+    //                     token
+    //                 }
+    //             ))
+    //             toast.success('Update success')
+    //         } catch (error: any) {
+    //             toast.error(`Something went wrong`)
+    //         }
+    //     }
+    // })
 
-    // Check is change to enable button Submit
-    const [isChange, setIsChange] = useState<boolean>(false)
-    useEffect(() => {
-        if (watch().name !== user?.name || watch().email !== user?.email || watch().phone !== user?.phone) {
-            setIsChange(true)
-        } else {
-            setIsChange(false)
-        }
-    }, [watch(), user])
+    // // Check is change to enable button Submit
+    // const [isChange, setIsChange] = useState<boolean>(false)
+    // useEffect(() => {
+    //     if (watch().name !== user?.name || watch().email !== user?.email || watch().phone !== user?.phone) {
+    //         setIsChange(true)
+    //     } else {
+    //         setIsChange(false)
+    //     }
+    // }, [watch(), user])
 
-    if (getLoading) {
-        return (
-            <div className="w-full mt-20 flex items-center justify-center">
-                <Loader />
-            </div>
-        )
-    }
+    // if (getLoading) {
+    //     return (
+    //         <div className="w-full mt-20 flex items-center justify-center">
+    //             <Loader />
+    //         </div>
+    //     )
+    // }
 
     return (
         <div>
-            <div>
+            {/* <div>
                 <h1 className="font-bold text-2xl">Personal details</h1>
                 <h2>Update your info and find out how it&apos;s used.</h2>
             </div>
@@ -126,7 +125,7 @@ const PersonalDetails = () => {
                     )
                 }
 
-            </div>
+            </div> */}
 
         </div>
     )

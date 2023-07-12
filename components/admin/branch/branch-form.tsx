@@ -7,6 +7,7 @@ import { storage, analytics } from '../../../firebaseConfig';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { getCookie } from 'cookies-next'
+import { Branch } from '../../../interface';
 
 type FormErrors = {
     name?: string;
@@ -17,7 +18,7 @@ type FormErrors = {
 
 interface BranchFormProps {
 
-    currentBranch: Model.Branch | null;
+    currentBranch: Branch | null;
     setVisible: React.Dispatch<React.SetStateAction<boolean>>;
     onSave: () => void;
     // toast: React.RefObject<Toast>;
@@ -138,6 +139,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
 
     const handleSave = async () => {
+
         const newErrors = validate({ name, email, phone, address });
         setErrors(newErrors);
         setOnClickSave(true);
@@ -179,7 +181,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
             });
             const data = await response.json();
         } catch (error) {
-            console.error('Error fetching branches:', error);
+            console.error('Error fetching:', error);
 
         }
     };
@@ -216,27 +218,27 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
                 <div className="card p-fluid" >
                     <div className="field">
-                        <label htmlFor="name" >Tên chi nhánh</label>
+                        <label htmlFor="name" >Tên Khu Vực</label>
                         <InputText id="name" value={name} onChange={(e) => setName(e.target.value)} type="text" />
                     </div>
                     {getFormErrorMessage('name')}
-                    <div className="field">
+                    {/* <div className="field">
                         <label htmlFor="email">Email</label>
                         <InputText id="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
 
-                    {getFormErrorMessage('email')}
+                    {getFormErrorMessage('email')} */}
                     <div className="field">
                         <label htmlFor="address">Địa chỉ</label>
                         <InputText id="address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
                     </div>
                     {getFormErrorMessage('address')}
 
-                    <div className="field">
+                    {/* <div className="field">
                         <label htmlFor="phone">Số điện thoại</label>
                         <InputText id="phone" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
                     </div>
-                    {getFormErrorMessage('phone')}
+                    {getFormErrorMessage('phone')} */}
 
                     <div >
                         <TemplateDemo onSelectedFiles={(e) => handleSelectedFiles(e)}  ></TemplateDemo>
@@ -247,8 +249,8 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
 
                 <div style={{ textAlign: 'right' }}>
-                    <Button label="Save" type="submit" icon="pi pi-check" style={{ marginRight: '.5em' }} onClick={() => handleSave()} />
-                    <Button label="Cancel" severity="danger" icon="pi pi-times" onClick={() => { setVisible(false); setOnClickSave(false); }} />
+                    <Button label="Lưu" type="submit" icon="pi pi-check" style={{ marginRight: '.5em' }} onClick={() => handleSave()} />
+                    <Button label="Hủy" severity="danger" icon="pi pi-times" onClick={() => { setVisible(false); setOnClickSave(false); }} />
                 </div>
 
             </form >
