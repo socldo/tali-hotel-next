@@ -14,7 +14,7 @@ interface Props {
 
 const ImageGallery = ({photos}: Props) => {
     let [showImage, setShowImage] = useState(false)
-    let [imageFocus, setImageFocus] = useState(photos[0])
+    let [imageFocus, setImageFocus] = useState(photos ? photos[0]: "")
     return (
         <>
             <div className="h-96">

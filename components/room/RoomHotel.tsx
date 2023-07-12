@@ -28,7 +28,6 @@ const numberFormat = (e: any) =>
 const RoomHotel = ({ hotelId }: Props) => {
     const [loading, setLoading] = useState(false);
     const [rooms, setRoom] = useState();
-
     const services = [
         "Phòng tắm thoải mái",
         "Vòi xịt",
@@ -71,9 +70,9 @@ const RoomHotel = ({ hotelId }: Props) => {
         let token = getCookie("jwt_token")?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         let url = `/api/rooms?hotel_id=${hotelId}&check_in=${
-            checkIn != undefined ? checkIn : ""
+            checkIn != undefined ? moment(checkIn).format("YYYY-MM-DD") : ""
         }&check_out=${
-            checkOut != undefined ? checkOut : ""
+            checkOut != undefined ? moment(checkOut).format("YYYY-MM-DD") : ""
         }&people_number=${peopleNumber}&bed_number=${bedNumber}`;
         console.log(url);
 
@@ -159,7 +158,7 @@ const RoomHotel = ({ hotelId }: Props) => {
             {total > 0 ? (
                 <div className="text-sm lg:text-base text-primary flex flex-col gap-y-0.5">
                     <p>
-                        <span className="font-semibold ">{total}</span> phòng:
+                        <span className="font-semibold ">{total}</span> phòng (Giá 1 đêm):
                     </p>
                     <h2 className="text-xl lg:text-3xl font-semibold">
                         {numberFormat(price)}
@@ -194,14 +193,22 @@ const RoomHotel = ({ hotelId }: Props) => {
         if (!checkIn || !checkOut || !bookingBody.roomId || !price) {
             toast.error("Please enter your check in, check out dates and room");
         } else {
-            await bookingRoom(bookingBody);
+            router.push({
+                pathname: `/booking/${bookingBody.hotel_id}`,
+                query: { roomsReserve: JSON.stringify(roomsReserve) ,
+                    checkIn: JSON.stringify(checkIn),
+                    hotel_id: hotelId,
+                    checkOut: JSON.stringify(checkOut),
+                    price: price},
+            });
+            console.log(roomsReserve);
         }
     };
 
     if (isBookingSuccess) {
-        router
-            .push("/user/booking")
-            .then(() => toast.success("Booking Successfully"));
+        console.log(isBookingSuccess);
+
+        router.push("/booking").then(() => toast.success("Booking Successfully"));
     }
 
     if (isBookingError) {
@@ -274,7 +281,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                             <button
                                 className="bg-transparent hover:bg-blue-300 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded"
                                 type="button"
-                                onClick={() => setPeopleNumber(peopleNumber - 1)}
+                                onClick={() => setPeopleNumber(peopleNumber + 1)}
                             >
                 +
                             </button>

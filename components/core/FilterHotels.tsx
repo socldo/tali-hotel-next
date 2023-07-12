@@ -96,7 +96,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
 
 
     async function getBranches() {
-        const response: Response = await fetch("/api/branch/branch", {
+        const response: Response = await fetch("/api/branches", {
             method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
