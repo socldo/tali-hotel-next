@@ -1,4 +1,4 @@
-import {Action, ThunkAction, configureStore, combineReducers} from '@reduxjs/toolkit'
+import { Action, ThunkAction, configureStore, combineReducers } from '@reduxjs/toolkit'
 import {
     persistReducer,
     persistStore,
@@ -13,7 +13,7 @@ import storage from 'redux-persist/lib/storage'
 import authReducer from '../features/authSlice'
 import hotelReducer from '../features/hotelSlice'
 import appReducer from '../features/appSlice'
-import {authApi, hotelApi, roomApi, uploadApi, userApi, bookingApi} from '../services'
+import { authApi, hotelApi, roomApi, uploadApi, userApi, bookingApi } from '../services'
 
 const persistConfig = {
     key: 'root',

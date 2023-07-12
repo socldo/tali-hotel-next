@@ -31,8 +31,8 @@ export default function SignIn({ setIsSignIn }: Props) {
 
     useEffect(() => {
         handleDeleteCookie();
-    },[])
-    
+    }, [])
+
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -88,8 +88,10 @@ export default function SignIn({ setIsSignIn }: Props) {
             setCookie("email", data.email);
             setCookie("phone", data.phone);
             setCookie("name", data.name);
-            setCookie("role", data.role);
+            setCookie("role_name", data.role);
             setCookie("avatar", data.avatar);
+            setCookie("role_id", data.role_id);
+
         } else {
             toast.warning("Sai số điện thoại hoặc mật khẩu!");
             deleteCookie("jwt_token");
@@ -122,7 +124,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                     <label
                                         htmlFor="email"
                                         className={`block font-bold text-sm mb-1${errors.phone ? "text-red-400" : "text-primary"
-                                        }`}
+                                            }`}
                                     >
                                         Phone
                                     </label>
@@ -133,20 +135,20 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
                                             ? "text-red-300 border-red-400"
                                             : "text-primary"
-                                        }`}
+                                            }`}
                                     />
-                                    {errors.phone && 
-                                    (
-                                        <p className="text-red-500 text-sm mt-1">
-                      A valid phone is required.
-                                        </p>
-                                    )}
+                                    {errors.phone &&
+                                        (
+                                            <p className="text-red-500 text-sm mt-1">
+                                                A valid phone is required.
+                                            </p>
+                                        )}
                                 </div>
                                 <div className="mb-2.5 w-full">
                                     <label
                                         htmlFor="password"
                                         className={`block font-bold text-sm mb-1 ${errors.password ? "text-red-400" : "text-primary"
-                                        }`}
+                                            }`}
                                     >
                                         Password
                                     </label>
@@ -157,7 +159,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
                                             ? "text-red-300 border-red-400"
                                             : "text-primary"
-                                        }`}
+                                            }`}
                                     />
                                     {errors.password && (
                                         <p className="text-red-500 text-sm mt-1">
