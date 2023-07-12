@@ -52,7 +52,7 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     const bookingData = Array.isArray(router.query.roomsReserve)
         ? router.query.roomsReserve.map((item) => JSON.parse(item))
         : JSON.parse(router.query.roomsReserve || '[]');
-        console.log(router.query);
+    console.log(router.query);
         
     const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn : ""))) ;
 
@@ -369,10 +369,21 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                             :
                             <div className="mt-4 border container">
                                 <div className="m-4">
-                                    <p className="text-lg font-bold">Thanh toán bằng VNPAY</p>
+                                    <p className="text-lg font-bold">Chọn phương thức thanh toán</p>
                                     <div className="mt-2 flex flex-row bg-green-100 w-80 items-center">
                                         <p className="ml-2 text-xs text-green-700 ">Thanh toán ngay! Chúng tôi cam kết hoàn tiền 100%</p>
                                     </div>
+                                    
+                                    <div>                                        
+                                        <div className="items-center flex flex-row text-sm">
+                                            <Checkbox color="blue" defaultChecked={false} checked={bookingFor == 1 ? true : false} onResize={undefined} onResizeCapture={undefined} onChange={() => setBookingFor(1)}/>
+                                            <p className="items-center text-sm">Chuyển khoản ngân hàng</p>
+                                        </div>
+                                        <div className="items-center flex flex-row text-sm">
+                                            <Checkbox color="blue" defaultChecked={false} onResize={undefined} checked={bookingFor == 2 ? true : false} onResizeCapture={undefined} onChange={() => setBookingFor(2)}/>
+                                            <p className="items-center">Thanh toán bằng momo</p>
+                                        </div>
+                                    </div> 
                                     <div className="mt-4 w-120 grid justify-items-start">
                                         <div onClick={() => handlePayment()}>
                                             <Button text="Thanh toán ngay" textColor="text-white" bgColor="bg-blue-500" focusHandle="hover:bg-gray-300"/>
