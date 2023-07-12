@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useGetUserQuery, useUpdateUserMutation } from '../../services/userApi'
 import { Loader } from '../layout'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { useForm } from 'react-hook-form'

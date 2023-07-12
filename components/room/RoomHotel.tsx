@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useGetHotelRoomsQuery } from "../../services/roomApi";
 import { useBookingRoomMutation } from "../../services/bookingApi";
 import { FaUser } from "../../utils/icons";
 import { Loader } from "../layout";
