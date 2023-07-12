@@ -23,7 +23,7 @@ const UserDetail: React.FC<HotelDetailProps> = ({
 
     useEffect(() => {
         setImages((hotel?.images || []).map(image => image.replace(/"/g, "")));
-        console.log(hotel?.is_have_parking);
+
 
 
         let isMounted = true; // Biến cờ
@@ -89,7 +89,7 @@ const UserDetail: React.FC<HotelDetailProps> = ({
         ];
 
         const itemTemplate = (item: any) => {
-            console.log(item);
+
 
             return <img src={item} alt='image' style={{ width: '100%', display: 'block' }} />;
         }
@@ -229,12 +229,12 @@ const UserDetail: React.FC<HotelDetailProps> = ({
                 </div>
                 <div className="field">
                     <label style={{ fontWeight: 'bold' }}>Mô tả ngắn gọn: </label>
-                    <span>{hotel?.description}</span>
+                    <span>{hotel?.short_description}</span>
                 </div>
 
                 <div className="field">
                     <label style={{ fontWeight: 'bold' }}>Tính năng đặt biệt: </label>
-                    <span>{hotel?.description}</span>
+                    <span>{hotel?.highlight_property}</span>
                 </div>
             </div>
             {imageBodyTemplate(hotel)}

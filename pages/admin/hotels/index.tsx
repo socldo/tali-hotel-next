@@ -12,6 +12,7 @@ import { toast } from 'react-toastify'
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import HotelDetail from "../../../components/admin/hotel/hotel-detail";
 import CustomErrorPage from "../../../components/admin/custom-error";
+import HotelCreate from "../../../components/admin/hotel/hotel-create";
 
 function Hotel() {
 
@@ -29,6 +30,8 @@ function Hotel() {
 
     const [sortKey, setSortKey] = useState(null);
     const [visibleError, setVisibleError] = useState<boolean>(false);
+    const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
+
     const [visible, setVisible] = useState<boolean>(false);
 
     const [loading, setLoading] = useState(true);
@@ -57,6 +60,15 @@ function Hotel() {
     }, [sortKey, activeIndex, hotels]);
 
 
+    useEffect(() => {
+        if (responseAPI?.status != 200) {
+            setVisibleError(true);
+        } else
+            setVisibleError(false);
+
+    }, [responseAPI]);
+
+
     const filter = () => {
         if (activeIndex == 0) {
             if (!sortKey) {
@@ -69,7 +81,6 @@ function Hotel() {
         }
         else {
             if (!sortKey) {
-                console.log(sortKey);
                 setHotelFilters(hotels.filter((hotel: { status: boolean; }) => !hotel.status));
             }
             else {
@@ -169,9 +180,10 @@ function Hotel() {
                     label="Thêm Mới"
                     icon="pi pi-plus"
                     style={{ marginRight: '.5em' }}
+
                     onClick={() => {
-                        // setVisibleCreate(true);
-                        // setBranch(null);
+                        setVisibleCreate(true);
+                        setHotel(undefined);
                     }}
                 />
             </div>
@@ -227,30 +239,42 @@ function Hotel() {
 
 
         };
-
-        // const handleEditBranch = (branch: Model.Branch) => {
-
-        //     setBranch(branch);
-        //     setVisible(true);
-
-
         return (
             <>
-                <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup} onHide={() => setConfirmPopup(false)}
-                    message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
-                    rejectLabel="Không" />
+                <div>
+                    <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup} onHide={() => setConfirmPopup(false)}
+                        message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
+                        rejectLabel="Không" />
 
-                {rowData.status
-                    ? <span className="pi pi-times" onClick={() => { setConfirmPopup(true); setHotel(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
-                    : <span className="pi pi-check" onClick={() => { setConfirmPopup(true); setHotel(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
-                }
-                <span className="pi pi-eye" style={{ marginRight: '0.5em', fontSize: '1rem' }} onClick={() => { setVisible(true); setHotel(rowData) }} ></span>
+
+                    {rowData.status
+                        ?
+                        <Button icon="pi pi-times" onClick={() => { setConfirmPopup(true); setHotel(rowData); }} rounded outlined severity="danger" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                        :
+                        <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setHotel(rowData); }} rounded outlined severity="success" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                    }
+                    <Button icon="pi pi-eye" onClick={() => { setVisible(true); setHotel(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                    <Button icon="pi pi-pencil" onClick={() => { setVisibleCreate(true); setHotel(rowData) }} rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                    <Button icon="pi pi-images" rounded outlined severity="help" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
+
+                </div>
+
             </>
         );
 
 
     };
+    const showSuccess = () => {
+        setRenderCount(renderCount => renderCount + 1);
+        if (hotel) {
 
+            toast.success('Cập nhật thành công!');
+
+        } else {
+            toast.success('Tạo mới thành công!');
+        }
+
+    };
 
     return (<>
 
@@ -261,9 +285,10 @@ function Hotel() {
             className="mt-3"
             globalFilter={globalFilter}
             header={header}
-            paginator rows={10}
+            paginator
+            rows={10}
             rowsPerPageOptions={[10, 20, 50]}
-            tableStyle={{ minWidth: '50rem' }}
+            tableStyle={{ minWidth: '20rem' }}
             style={{ fontSize: '14px' }}
         >
             <Column
@@ -288,11 +313,11 @@ function Hotel() {
             </p>
         </Dialog>
 
-        {/* <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Tạo mới">
+        <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={hotel ? 'Cập nhật' : 'Tạo mới'}>
 
-                <UserCreate setVisibleCreate={setVisibleCreate} currentUser={user || null} onSave={() => showSuccess()}></UserCreate>
+            <HotelCreate setVisibleCreate={setVisibleCreate} currentHotel={hotel || null} onSave={() => showSuccess()} branches={branches.filter(branch => branch?.status)}></HotelCreate>
 
-            </Dialog> */}
+        </Dialog>
 
 
         {responseAPI?.status != 200 ?

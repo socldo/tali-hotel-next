@@ -41,14 +41,14 @@ declare namespace Model {
         email: string;
         address: string;
         phone: string;
-        images: [string];
+        images: string[];
         description: string;
         status: boolean;
         is_popular: boolean;
         is_have_wifi: boolean;
         is_have_parking: boolean;
         short_description: string;
-        higlight_property: string;
+        highlight_property: string;
         type: number;
         type_name: string;
         created_at: string;

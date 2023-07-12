@@ -78,8 +78,30 @@ function User() {
     }, [responseAPI]);
 
 
+    useEffect(() => {
+        filter()
+    }, [sortKey, activeIndex, users]);
 
+    const filter = () => {
+        if (activeIndex == 0) {
+            if (!sortKey) {
+                setUsersFilter(users.filter((user: { is_locked: boolean; }) => !user.is_locked));
+            }
+            else {
+                setUsersFilter(users?.filter(users => users.role_id == sortKey && !user?.is_locked));
 
+            }
+        }
+        else {
+            if (!sortKey) {
+                setUsersFilter(users.filter((user: { is_locked: boolean; }) => user.is_locked));
+            }
+            else {
+                setUsersFilter(users?.filter(user => user.role_id == sortKey && user.is_locked));
+
+            }
+        }
+    };
 
     const fetchUsers = async (): Promise<void> => {
         try {
@@ -98,7 +120,6 @@ function User() {
 
 
             setUsers(data.data);
-            setUsersFilter(data.data.filter((user: { is_locked: boolean; }) => user.is_locked == false));
             setLoading(false);
 
             setResponseAPI({
@@ -113,43 +134,11 @@ function User() {
         }
     };
 
-    const onSortChange = (event: DropdownChangeEvent) => {
-        const value = event.value;
-
-        setSortKey(value);
-
-        if (value != 0) {
-            setUsersFilter(users?.filter(users => users.role_id == value && users.is_locked == (activeIndex == 1)));
-        }
-        else {
-            setUsersFilter(users?.filter(users => users.is_locked == (activeIndex == 1)))
-        }
-
-    };
-
-    const handleTabChange = (event: any) => {
-        setActiveIndex(event.index);
-
-        console.log('TabPanel clicked:', event.index);
-
-        console.log('sortKey:', sortKey);
-        console.log('TusersFilter:', usersFilter);
-
-        if (event.index == 0) {
-
-            setUsersFilter(users?.filter(users => sortKey != 0 && sortKey != null ? users.role_id == sortKey && users.is_locked == false : users.is_locked == false));
-            // setRenderCount(renderCount + 1);
-        } else {
-
-            setUsersFilter(users?.filter(users => sortKey != 0 && sortKey != null ? users.role_id == sortKey && users.is_locked == true : users.is_locked == true))
-
-        }
-    }
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-between md:items-center">
 
-            <TabView activeIndex={activeIndex} onTabChange={handleTabChange}>
+            <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                 <TabPanel header="Đang hoạt động" rightIcon="pi pi-check-circle ml-2" >
                 </TabPanel>
                 <TabPanel header="Bị Khóa" rightIcon="pi pi-ban ml-2">
@@ -162,7 +151,7 @@ function User() {
             </h4>
 
             <div className="text-right">
-                <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Bộ phận" onChange={onSortChange} style={{ marginRight: '.5em' }} />
+                <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Bộ phận" onChange={(e) => setSortKey(e.value)} style={{ marginRight: '.5em' }} />
 
                 <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
                     <i className="pi pi-search" />
@@ -178,7 +167,7 @@ function User() {
                     style={{ marginRight: '.5em' }}
                     onClick={() => {
                         setVisibleCreate(true);
-                        // setBranch(null);
+                        setUser(null);
                     }}
                 />
             </div>
@@ -261,11 +250,19 @@ function User() {
                     message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
                     rejectLabel="Không" />
 
-                {rowData.is_locked
+                {/* {rowData.is_locked
                     ? <span className="pi pi-times" onClick={() => { setConfirmPopup(true); setUser(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
                     : <span className="pi pi-check" onClick={() => { setConfirmPopup(true); setUser(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
+                } */}
+                {!rowData.is_locked
+                    ?
+                    <Button icon="pi pi-times" onClick={() => { setConfirmPopup(true); setUser(rowData); }} rounded outlined severity="danger" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                    :
+                    <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setUser(rowData);; }} rounded outlined severity="success" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
                 }
-                <span className="pi pi-eye" style={{ marginRight: '0.5em', fontSize: '1rem' }} onClick={() => { setVisible(true); setUser(rowData) }} ></span>
+                <Button icon="pi pi-eye" onClick={() => { setVisible(true); setUser(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+
+                {/* <span className="pi pi-eye" style={{ marginRight: '0.5em', fontSize: '1rem' }} onClick={() => { setVisible(true); setUser(rowData) }} ></span> */}
             </>
         );
 

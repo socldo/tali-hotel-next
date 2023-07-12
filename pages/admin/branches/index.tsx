@@ -45,6 +45,24 @@ function Branch() {
         };
     }, [renderCount]);
 
+    useEffect(() => {
+        filter()
+    }, [activeIndex, branches]);
+
+    const filter = () => {
+        if (activeIndex == 0) {
+
+            setBranchFilters(branches.filter((branch: { status: boolean; }) => branch.status));
+
+        }
+        else {
+
+            setBranchFilters(branches.filter((branch: { status: boolean; }) => !branch.status));
+
+
+        }
+    };
+
     const fetchBranches = async (): Promise<void> => {
         try {
             const queryParams = querystring.stringify({ status: -1 });
@@ -70,40 +88,6 @@ function Branch() {
         }
     };
 
-
-    const statusBodyTemplate = (rowData: Model.Branch) => {
-
-        let status = rowData.status ? 'active' : 'unactive';
-        let statusMessage = rowData.status ? 'Đang hoạt động' : 'Tạm ngưng';
-
-        return (
-            <>
-                <span className={`branches-status status-${status}`} style={rowData.status ? {
-                    borderRadius: 'var(--border-radius)',
-                    padding: '.25em .5rem',
-                    textTransform: 'uppercase',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    letterSpacing: '.3px',
-                    background: '#07f207',
-                    color: '#121111'
-                } : {
-                    borderRadius: 'var(--border-radius)',
-                    padding: '.25em .5rem',
-                    textTransform: 'uppercase',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    letterSpacing: '.3px',
-                    background: '#e40f25',
-                    color: '#121111'
-                }
-
-                }
-                >{statusMessage}</span >
-
-            </>
-        );
-    };
 
 
     const imageBodyTemplate = (rowData: Model.Branch) => {
@@ -154,11 +138,6 @@ function Branch() {
             toast.warn('Từ chối cập nhật')
         };
 
-        const handleEditBranch = (branch: Model.Branch) => {
-
-            setBranch(branch);
-            setVisible(true);
-        };
 
         return (
             <>
@@ -168,11 +147,17 @@ function Branch() {
                     message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
                     rejectLabel="Không" />
 
+
                 {rowData.status
-                    ? <span className="pi pi-times" onClick={() => { setConfirmPopup(true); setBranch(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
-                    : <span className="pi pi-check" onClick={() => { setConfirmPopup(true); setBranch(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
+                    ?
+                    <Button icon="pi pi-times" onClick={() => { setConfirmPopup(true); setBranch(rowData); }} rounded outlined severity="danger" aria-label="Bookmark" size="small" />
+                    :
+                    <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setBranch(rowData); }} rounded outlined severity="success" aria-label="Bookmark" size="small" />
                 }
-                <span className="pi pi-pencil" onClick={() => handleEditBranch(rowData)} style={{ marginRight: '0.5em', fontSize: '1rem' }}  ></span>
+                <Button icon="pi pi-eye" onClick={() => { setVisible(true); setBranch(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
+
+                <Button icon="pi pi-pencil" rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
+
             </>
         );
     };
@@ -200,24 +185,11 @@ function Branch() {
 
     }
 
-    const handleTabChange = (event: any) => {
-        setActiveIndex(event.index);
-
-        if (event.index == 0) {
-
-            setBranchFilters(branches?.filter(branch => branch.status == true));
-            // setRenderCount(renderCount + 1);
-        } else {
-
-            setBranchFilters(branches?.filter(branch => branch.status == false));
-
-        }
-    }
 
     const header = (
 
         <div className="flex flex-column md:flex-row md:justify-between md:items-center" >
-            <TabView activeIndex={activeIndex} onTabChange={handleTabChange}>
+            <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                 <TabPanel header="Đang hoạt động" rightIcon="pi pi-check-circle ml-2" >
                 </TabPanel>
                 <TabPanel header="Tạm ngưng" rightIcon="pi pi-ban ml-2">

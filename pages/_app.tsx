@@ -60,26 +60,20 @@ export default function App({ Component, pageProps, router }: Props) {
             require('../styles/layout/layout.scss');
             return (
 
-                <RecoilRoot>
-                    <Provider store={store}>
-                        <PersistGate loading={null} persistor={persistor}>
-                            <LayoutProvider>
-                                <AdminLayout>
-                                    <Component {...pageProps} />
-                                    <ToastContainer
-                                        position="top-right"
-                                        autoClose={3000}
-                                        hideProgressBar={false}
-                                        newestOnTop={false}
-                                        draggable={false}
-                                        closeOnClick
-                                        pauseOnHover
-                                    />
-                                </AdminLayout>
-                            </LayoutProvider>
-                        </PersistGate>
-                    </Provider>
-                </RecoilRoot>
+                <LayoutProvider>
+                    <AdminLayout>
+                        <Component {...pageProps} />
+                        <ToastContainer
+                            position="top-right"
+                            autoClose={3000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            draggable={false}
+                            closeOnClick
+                            pauseOnHover
+                        />
+                    </AdminLayout>
+                </LayoutProvider>
             );
         }
 
