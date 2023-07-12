@@ -18,14 +18,15 @@ import adminAuthMiddleware from '../../../components/admin/middleware/adminAuthM
 import UserCreate from '../../../components/admin/user/user-create';
 import { status } from 'nprogress';
 import CustomErrorPage from '../../../components/admin/custom-error';
+import { User, APIResponse } from '../../../interface/index'
 
 
 function User() {
 
-    const [users, setUsers] = useState<Model.User[]>([]);
-    const [usersFilter, setUsersFilter] = useState<Model.User[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
+    const [usersFilter, setUsersFilter] = useState<User[]>([]);
 
-    const [user, setUser] = useState<Model.User | null>();
+    const [user, setUser] = useState<User | null>();
 
     const [loading, setLoading] = useState(true);
     const [renderCount, setRenderCount] = useState(0);
@@ -38,7 +39,7 @@ function User() {
     const [sortKey, setSortKey] = useState(null);
     const [globalFilter, setGlobalFilter] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
-    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [responseAPI, setResponseAPI] = useState<APIResponse>({ status: 200, message: 'OK', data: null });
     const [visibleError, setVisibleError] = useState<boolean>(false);
 
 
@@ -174,7 +175,7 @@ function User() {
         </div >
     );
 
-    const avatarBodyTemplate = (rowData: Model.User) => {
+    const avatarBodyTemplate = (rowData: User) => {
         let image = rowData.avatar ? rowData.avatar : "";
 
         return (
@@ -221,7 +222,7 @@ function User() {
     };
 
 
-    const actionBodyTemplate = (rowData: Model.User) => {
+    const actionBodyTemplate = (rowData: User) => {
 
         const accept = async () => {
 
@@ -238,7 +239,7 @@ function User() {
 
         };
 
-        // const handleEditBranch = (branch: Model.Branch) => {
+        // const handleEditBranch = (branch: Branch) => {
 
         //     setBranch(branch);
         //     setVisible(true);
@@ -269,7 +270,7 @@ function User() {
 
     };
 
-    const roleBodyTemplate = (rowData: Model.User) => {
+    const roleBodyTemplate = (rowData: User) => {
         let roleName = '';
         switch (rowData.role_id) {
             case 1:

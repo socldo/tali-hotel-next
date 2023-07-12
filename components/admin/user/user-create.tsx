@@ -4,6 +4,7 @@ import { Button } from 'primereact/button';
 import { getCookie } from 'cookies-next'
 import { Dropdown } from 'primereact/dropdown';
 import { Dialog } from 'primereact/dialog';
+import { APIResponse, User } from '../../../interface';
 
 type FormErrors = {
     name?: string;
@@ -22,7 +23,7 @@ const roleOptions = [
 
 interface UserProps {
 
-    currentUser: Model.User | null;
+    currentUser: User | null;
     setVisibleCreate: React.Dispatch<React.SetStateAction<boolean>>;
     onSave: () => void;
 }
@@ -41,7 +42,7 @@ const UserCreate: React.FC<UserProps> = ({
     const [role, setRole] = useState(0);
     const [onClickSave, setOnClickSave] = useState(false);
 
-    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [responseAPI, setResponseAPI] = useState<APIResponse>({ status: 200, message: 'OK', data: null });
     const [visibleError, setVisibleError] = useState<boolean>(false);
 
     const token = getCookie('jwt_token')?.toString();

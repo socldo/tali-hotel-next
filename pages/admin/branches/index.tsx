@@ -14,13 +14,14 @@ import { getCookie } from 'cookies-next'
 import { TabView, TabPanel } from 'primereact/tabview';
 import adminAuthMiddleware from '../../../components/admin/middleware/adminAuthMiddleware';
 import { toast } from 'react-toastify'
+import { Branch } from '../../../interface/index'
 
 function Branch() {
 
-    const [branches, setBranches] = useState<Model.Branch[]>([]);
-    const [branchFilters, setBranchFilters] = useState<Model.Branch[]>([]);
+    const [branches, setBranches] = useState<Branch[]>([]);
+    const [branchFilters, setBranchFilters] = useState<Branch[]>([]);
 
-    const [branch, setBranch] = useState<Model.Branch | null>();
+    const [branch, setBranch] = useState<Branch | null>();
     const [loading, setLoading] = useState(true);
     const [visible, setVisible] = useState(false);
     const [confirmPopup, setConfirmPopup] = useState(false);
@@ -90,7 +91,7 @@ function Branch() {
 
 
 
-    const imageBodyTemplate = (rowData: Model.Branch) => {
+    const imageBodyTemplate = (rowData: Branch) => {
         let image = rowData.images ? rowData.images : "";
 
 
@@ -126,7 +127,7 @@ function Branch() {
         }
     };
 
-    const actionBodyTemplate = (rowData: Model.Branch) => {
+    const actionBodyTemplate = (rowData: Branch) => {
 
         const accept = async () => {
             setLoading(false);

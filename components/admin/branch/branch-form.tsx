@@ -7,6 +7,7 @@ import { storage, analytics } from '../../../firebaseConfig';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { getCookie } from 'cookies-next'
+import { Branch } from '../../../interface';
 
 type FormErrors = {
     name?: string;
@@ -17,7 +18,7 @@ type FormErrors = {
 
 interface BranchFormProps {
 
-    currentBranch: Model.Branch | null;
+    currentBranch: Branch | null;
     setVisible: React.Dispatch<React.SetStateAction<boolean>>;
     onSave: () => void;
     // toast: React.RefObject<Toast>;

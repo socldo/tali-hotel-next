@@ -4,10 +4,11 @@ import { Galleria, GalleriaResponsiveOptions } from 'primereact/galleria';
 import { Rating } from "primereact/rating";
 import { getCookie } from 'cookies-next';
 import { Checkbox } from "primereact/checkbox";
+import { Hotel, RatingRate } from '../../../interface';
 
 interface HotelDetailProps {
 
-    hotel: Model.Hotel | null;
+    hotel: Hotel | null;
 }
 
 const UserDetail: React.FC<HotelDetailProps> = ({
@@ -17,7 +18,7 @@ const UserDetail: React.FC<HotelDetailProps> = ({
 
     const [images, setImages] = useState<string[]>([]);
     const galleria = useRef<any>(null);
-    const [ratingRate, setRatingRate] = useState<Model.RatingRate | null>();
+    const [ratingRate, setRatingRate] = useState<RatingRate | null>();
 
 
 
@@ -60,13 +61,13 @@ const UserDetail: React.FC<HotelDetailProps> = ({
 
 
 
-    const statusBodyTemplate = (rowData: Model.Hotel) => {
+    const statusBodyTemplate = (rowData: Hotel) => {
 
         return <span className={`status-badge status-${rowData.status ? 'active' : 'unactive'}`}>{(rowData.status) ? 'Đang hoạt động' : 'Tạm ngưng'}</span>;
 
     };
 
-    const imageBodyTemplate = (rowData: Model.Hotel) => {
+    const imageBodyTemplate = (rowData: Hotel) => {
 
 
         const responsiveOptions: GalleriaResponsiveOptions[] = [

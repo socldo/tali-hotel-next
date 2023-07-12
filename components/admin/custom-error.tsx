@@ -1,11 +1,12 @@
 import React from 'react';
 import 'primeicons/primeicons.css';
+import { APIResponse } from '../../interface';
 
 
 
 
 interface Props {
-    props: Model.APIResponse;
+    props: APIResponse;
 }
 const CustomErrorPage = (props: Props) => {
 

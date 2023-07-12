@@ -8,6 +8,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Checkbox } from "primereact/checkbox";
 import CustomErrorPage from '../custom-error';
 import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
+import { APIResponse, Branch, Hotel } from '../../../interface';
 
 type FormErrors = {
     name?: string;
@@ -59,8 +60,8 @@ const defaultHotelModel = {
 
 interface HotelProps {
 
-    currentHotel: Model.Hotel | null;
-    branches: Model.Branch[];
+    currentHotel: Hotel | null;
+    branches: Branch[];
 
     setVisibleCreate: React.Dispatch<React.SetStateAction<boolean>>;
     onSave: () => void;
@@ -78,7 +79,7 @@ const HotelCreate: React.FC<HotelProps> = ({
 
     const [onClickSave, setOnClickSave] = useState(false);
 
-    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [responseAPI, setResponseAPI] = useState<APIResponse>({ status: 200, message: 'OK', data: null });
     const [visibleError, setVisibleError] = useState<boolean>(false);
 
     const token = getCookie('jwt_token')?.toString();

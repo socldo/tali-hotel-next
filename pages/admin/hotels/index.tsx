@@ -13,15 +13,16 @@ import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import HotelDetail from "../../../components/admin/hotel/hotel-detail";
 import CustomErrorPage from "../../../components/admin/custom-error";
 import HotelCreate from "../../../components/admin/hotel/hotel-create";
+import { Branch, Hotel, APIResponse } from '../../../interface/index'
 
 function Hotel() {
 
-    const [hotels, setHotels] = useState<Model.Hotel[]>([]);
-    const [branches, setBranches] = useState<Model.Branch[]>([]);
+    const [hotels, setHotels] = useState<Hotel[]>([]);
+    const [branches, setBranches] = useState<Branch[]>([]);
 
-    const [hotel, setHotel] = useState<Model.Hotel>();
+    const [hotel, setHotel] = useState<Hotel>();
 
-    const [hotelFilters, setHotelFilters] = useState<Model.Hotel[]>([]);
+    const [hotelFilters, setHotelFilters] = useState<Hotel[]>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [confirmPopup, setConfirmPopup] = useState(false);
 
@@ -36,7 +37,7 @@ function Hotel() {
 
     const [loading, setLoading] = useState(true);
     const [renderCount, setRenderCount] = useState(0);
-    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [responseAPI, setResponseAPI] = useState<APIResponse>({ status: 200, message: 'OK', data: null });
 
     const token = getCookie('jwt_token')?.toString();
 
@@ -223,7 +224,7 @@ function Hotel() {
         }
     };
 
-    const actionBodyTemplate = (rowData: Model.Hotel) => {
+    const actionBodyTemplate = (rowData: Hotel) => {
 
         const accept = async () => {
 
