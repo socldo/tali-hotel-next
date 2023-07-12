@@ -6,16 +6,16 @@ export enum UserRoleEnum {
 }
 export const getRoleName = (roleId: number): string => {
     switch (roleId) {
-        case UserRoleEnum.Customer:
-            return 'Khách hàng';
-        case UserRoleEnum.Manager:
-            return 'Quản lý';
-        case UserRoleEnum.Employee:
-            return 'Nhân viên';
-        case UserRoleEnum.Admin:
-            return 'Admin';
-        default:
-            return '';
+    case UserRoleEnum.Customer:
+        return 'Khách hàng';
+    case UserRoleEnum.Manager:
+        return 'Quản lý';
+    case UserRoleEnum.Employee:
+        return 'Nhân viên';
+    case UserRoleEnum.Admin:
+        return 'Admin';
+    default:
+        return '';
     }
 };
 export enum GenderEnum {
@@ -24,11 +24,11 @@ export enum GenderEnum {
 }
 export const getGenderName = (gender: number): string => {
     switch (gender) {
-        case GenderEnum.MALE:
-            return 'Nam';
-        case GenderEnum.FEMALE:
-            return 'Nữ';
-        default:
-            return '';
+    case GenderEnum.MALE:
+        return 'Nam';
+    case GenderEnum.FEMALE:
+        return 'Nữ';
+    default:
+        return '';
     }
 };
