@@ -13,7 +13,7 @@ import storage from 'redux-persist/lib/storage'
 import authReducer from '../features/authSlice'
 import hotelReducer from '../features/hotelSlice'
 import appReducer from '../features/appSlice'
-import { authApi, hotelApi, roomApi, uploadApi, userApi, bookingApi } from '../services'
+import { authApi, hotelApi, uploadApi, bookingApi } from '../services'
 
 const persistConfig = {
     key: 'root',
@@ -34,8 +34,6 @@ export const store = configureStore({
         persistedReducer,
         [authApi.reducerPath]: authApi.reducer,
         [hotelApi.reducerPath]: hotelApi.reducer,
-        [roomApi.reducerPath]: roomApi.reducer,
-        [userApi.reducerPath]: userApi.reducer,
         [uploadApi.reducerPath]: uploadApi.reducer,
         [bookingApi.reducerPath]: bookingApi.reducer
     },
@@ -44,7 +42,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
             }
-        }).concat(authApi.middleware, hotelApi.middleware, roomApi.middleware, userApi.middleware, uploadApi.middleware, bookingApi.middleware)
+        }).concat(authApi.middleware, hotelApi.middleware, uploadApi.middleware, bookingApi.middleware)
 })
 export const persistor = persistStore(store)
 
