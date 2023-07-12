@@ -16,17 +16,17 @@ const Security = () => {
 
     // Delete Account
     const [deleteUser, {isLoading: isDeleting}] = useDeleteUserMutation()
-    const handleDeleteMyAccount = async () => {
-        try {
-            const result = await deleteUser(user?._id as string).unwrap()
-            toast.success(result.message || 'Delete success')
-            dispatch(logout())
-            // Fix error toast
-            setTimeout(() => router.push('/'), 1)
-        } catch (error: any) {
-            toast.error(error.data?.message || 'Something went wrong')
-        }
-    }
+    // const handleDeleteMyAccount = async () => {
+    //     try {
+    //         const result = await deleteUser(user?.id as string).unwrap()
+    //         toast.success(result.message || 'Delete success')
+    //         dispatch(logout())
+    //         // Fix error toast
+    //         setTimeout(() => router.push('/'), 1)
+    //     } catch (error: any) {
+    //         toast.error(error.data?.message || 'Something went wrong')
+    //     }
+    // }
 
     // Change Password
     const [changePassword] = useChangePasswordMutation()
@@ -157,7 +157,7 @@ const Security = () => {
                             </div>
                             <button
                                 className="float-right w-max text-white bg-lightPrimary px-2.5 py-2 rounded-md"
-                                onClick={handleDeleteMyAccount}
+                                // onClick={handleDeleteMyAccount}
                                 disabled={isDeleting}
                             >
                                 {isDeleting ? 'Deleting...' : 'Delete account'}
