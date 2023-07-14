@@ -58,9 +58,9 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
         ? router.query.roomsReserve.map((item) => JSON.parse(item))
         : JSON.parse(router.query.roomsReserve || '[]');
 
-        
+    console.log('router:', router.query.hotel_id);
     const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ?  (Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn) : ""))) ;
-    console.log(checkIn);
+
     const checkOut =formatBookingDate(new Date(JSON.parse(router.query.checkOut ? (Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut)  : ""))) ;
 
     const totalDate = differentDate(new Date(JSON.parse(router.query.checkIn ? (Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn) : '')), new Date(JSON.parse(router.query.checkOut ? (Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut) : '')));
@@ -116,10 +116,10 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     const [paymentType, setPaymentType] = useState(0)
 
     const changeOption = () => {
+        console.log("hotel id: " ,hotelId);
+        
         router.push(`/hotel/${hotelId}`)
     }
-    console.log('check in :' ,checkIn , 'check out: ', checkOut);
-
 
     const handleDetailRoom = async ( ) => {
 
