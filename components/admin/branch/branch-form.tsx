@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import TemplateDemo from '../../../pages/admin/branches/test2';
 import { storage, analytics } from '../../../firebaseConfig';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { getCookie } from 'cookies-next'
-import { Branch } from '../../../interface';
+import { Model } from '../../../interface';
+import TemplateUploadImages from '../../core/TemplateUploadImages';
 
 type FormErrors = {
     name?: string;
@@ -18,7 +18,7 @@ type FormErrors = {
 
 interface BranchFormProps {
 
-    currentBranch: Branch | null;
+    currentBranch: Model.Branch | null;
     setVisible: React.Dispatch<React.SetStateAction<boolean>>;
     onSave: () => void;
     // toast: React.RefObject<Toast>;
@@ -240,14 +240,14 @@ const BranchForm: React.FC<BranchFormProps> = ({
                     </div>
                     {getFormErrorMessage('phone')} */}
 
-                    <div >
-                        <TemplateDemo onSelectedFiles={(e) => handleSelectedFiles(e)}  ></TemplateDemo>
-                        <br />
-                    </div>
+
 
                 </div>
 
-
+                <div >
+                    <TemplateUploadImages onSelectedFiles={(e) => handleSelectedFiles(e)}  ></TemplateUploadImages>
+                    <br />
+                </div>
                 <div style={{ textAlign: 'right' }}>
                     <Button label="Lưu" type="submit" icon="pi pi-check" style={{ marginRight: '.5em' }} onClick={() => handleSave()} />
                     <Button label="Hủy" severity="danger" icon="pi pi-times" onClick={() => { setVisible(false); setOnClickSave(false); }} />

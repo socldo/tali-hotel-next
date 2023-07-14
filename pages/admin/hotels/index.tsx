@@ -13,16 +13,17 @@ import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import HotelDetail from "../../../components/admin/hotel/hotel-detail";
 import CustomErrorPage from "../../../components/admin/custom-error";
 import HotelCreate from "../../../components/admin/hotel/hotel-create";
-import { Branch, Hotel, APIResponse } from '../../../interface/index'
+import { Model } from '../../../interface/index'
+import HotelUpdateImages from "../../../components/admin/hotel/hotel-update-images";
 
 function Hotel() {
 
-    const [hotels, setHotels] = useState<Hotel[]>([]);
-    const [branches, setBranches] = useState<Branch[]>([]);
+    const [hotels, setHotels] = useState<Model.Hotel[]>([]);
+    const [branches, setBranches] = useState<Model.Branch[]>([]);
 
-    const [hotel, setHotel] = useState<Hotel>();
+    const [hotel, setHotel] = useState<Model.Hotel>();
 
-    const [hotelFilters, setHotelFilters] = useState<Hotel[]>([]);
+    const [hotelFilters, setHotelFilters] = useState<Model.Hotel[]>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [confirmPopup, setConfirmPopup] = useState(false);
 
@@ -32,12 +33,13 @@ function Hotel() {
     const [sortKey, setSortKey] = useState(null);
     const [visibleError, setVisibleError] = useState<boolean>(false);
     const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
+    const [visibleImages, setVisibleImages] = useState<boolean>(false);
 
     const [visible, setVisible] = useState<boolean>(false);
 
     const [loading, setLoading] = useState(true);
     const [renderCount, setRenderCount] = useState(0);
-    const [responseAPI, setResponseAPI] = useState<APIResponse>({ status: 200, message: 'OK', data: null });
+    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
 
     const token = getCookie('jwt_token')?.toString();
 
@@ -73,7 +75,7 @@ function Hotel() {
     const filter = () => {
         if (activeIndex == 0) {
             if (!sortKey) {
-                setHotelFilters(hotels.filter((hotel: { status: boolean; }) => hotel.status));
+                setHotelFilters(hotels?.filter((hotel: { status: boolean; }) => hotel.status));
             }
             else {
                 setHotelFilters(hotels?.filter(hotel => hotel.branch_id == sortKey && hotel.status));
@@ -82,7 +84,7 @@ function Hotel() {
         }
         else {
             if (!sortKey) {
-                setHotelFilters(hotels.filter((hotel: { status: boolean; }) => !hotel.status));
+                setHotelFilters(hotels?.filter((hotel: { status: boolean; }) => !hotel.status));
             }
             else {
                 setHotelFilters(hotels?.filter(hotel => hotel.branch_id == sortKey && !hotel.status));
@@ -164,10 +166,10 @@ function Hotel() {
             <div className="text-right">
                 <Dropdown value={sortKey} options={[
                     { label: 'Tất cả', value: 0 },
-                    ...branches.map(branch => ({ label: branch.name, value: branch.id }))
+                    ...(branches?.map(branch => ({ label: branch.name, value: branch.id })) || [])
                 ]} optionLabel="label" placeholder="Khu vực"
-                onChange={(e) => setSortKey(e.value)}
-                style={{ marginRight: '.5em' }} />
+                    onChange={(e) => setSortKey(e.value)}
+                    style={{ marginRight: '.5em' }} />
 
                 <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
                     <i className="pi pi-search" />
@@ -190,6 +192,7 @@ function Hotel() {
             </div>
         </div >
     );
+
     const handleChangeStatus = async () => {
 
         try {
@@ -224,7 +227,7 @@ function Hotel() {
         }
     };
 
-    const actionBodyTemplate = (rowData: Hotel) => {
+    const actionBodyTemplate = (rowData: Model.Hotel) => {
 
         const accept = async () => {
 
@@ -256,7 +259,7 @@ function Hotel() {
                     }
                     <Button icon="pi pi-eye" onClick={() => { setVisible(true); setHotel(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
                     <Button icon="pi pi-pencil" onClick={() => { setVisibleCreate(true); setHotel(rowData) }} rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
-                    <Button icon="pi pi-images" rounded outlined severity="help" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
+                    <Button icon="pi pi-images" onClick={() => { setVisibleImages(true); setHotel(rowData) }} rounded outlined severity="help" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
 
                 </div>
 
@@ -265,6 +268,8 @@ function Hotel() {
 
 
     };
+
+
     const showSuccess = () => {
         setRenderCount(renderCount => renderCount + 1);
         if (hotel) {
@@ -275,6 +280,12 @@ function Hotel() {
             toast.success('Tạo mới thành công!');
         }
 
+    };
+
+
+    const handlePropChange = () => {
+
+        setRenderCount(prevCount => prevCount + 1);
     };
 
     return (<>
@@ -309,17 +320,23 @@ function Hotel() {
         <Dialog header="Chi tiết" visible={visible} onHide={() => setVisible(false)}
             style={{ width: '60vw' }} maximizable breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
             <p className="m-0">
-                <HotelDetail hotel={hotel || null} />
+                <HotelDetail hotel={hotel ?? null} />
 
             </p>
         </Dialog>
 
         <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={hotel ? 'Cập nhật' : 'Tạo mới'}>
 
-            <HotelCreate setVisibleCreate={setVisibleCreate} currentHotel={hotel || null} onSave={() => showSuccess()} branches={branches.filter(branch => branch?.status)}></HotelCreate>
+            <HotelCreate setVisibleCreate={setVisibleCreate} currentHotel={hotel ?? null} onSave={() => showSuccess()} branches={branches?.filter(branch => branch?.status)}></HotelCreate>
 
         </Dialog>
 
+
+        <Dialog visible={visibleImages} maximizable onHide={() => setVisibleImages(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header='Hình ảnh'>
+
+            <HotelUpdateImages propChange={handlePropChange} setVisibleImages={setVisibleImages} hotel={hotel ?? null} />
+
+        </Dialog>
 
         {responseAPI?.status != 200 ?
             <>

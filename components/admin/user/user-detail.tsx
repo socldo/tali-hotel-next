@@ -1,11 +1,11 @@
 import { Avatar } from 'primereact/avatar';
 import React, { useEffect, useRef, useState } from 'react';
 import { getGenderName, getRoleName } from '../../../utils/enum';
-import { User } from '../../../interface';
+import { Model } from '../../../interface';
 
 interface UserDetailProps {
 
-    user: User | null;
+    user: Model.User | null;
 }
 
 const UserDetail: React.FC<UserDetailProps> = ({

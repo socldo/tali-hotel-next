@@ -3,10 +3,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
     const { id } = request.query;
-    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/hotels/${id}/get-rating-rate`;
+    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/hotels/${id}/update-images`;
 
     const requestOptions = {
         method: request.method,
+        body: JSON.stringify(request.body),
         headers: new Headers({
             "Content-Type": "application/json",
             Accept: "application/json",

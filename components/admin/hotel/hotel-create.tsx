@@ -8,7 +8,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Checkbox } from "primereact/checkbox";
 import CustomErrorPage from '../custom-error';
 import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
-import { APIResponse, Branch, Hotel } from '../../../interface';
+import { Model } from '../../../interface';
 
 type FormErrors = {
     name?: string;
@@ -60,8 +60,8 @@ const defaultHotelModel = {
 
 interface HotelProps {
 
-    currentHotel: Hotel | null;
-    branches: Branch[];
+    currentHotel: Model.Hotel | null;
+    branches: Model.Branch[];
 
     setVisibleCreate: React.Dispatch<React.SetStateAction<boolean>>;
     onSave: () => void;
@@ -79,7 +79,7 @@ const HotelCreate: React.FC<HotelProps> = ({
 
     const [onClickSave, setOnClickSave] = useState(false);
 
-    const [responseAPI, setResponseAPI] = useState<APIResponse>({ status: 200, message: 'OK', data: null });
+    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
     const [visibleError, setVisibleError] = useState<boolean>(false);
 
     const token = getCookie('jwt_token')?.toString();
@@ -374,12 +374,12 @@ const HotelCreate: React.FC<HotelProps> = ({
                     {getFormErrorMessage('address')}
                     <div>
                         <Dropdown value={sortKey} options={[
-                            ...branches.map(branch => ({ label: branch.name, value: branch.id }))
-                        ]} optionLabel="label"
-                        onChange={(e) => setSortKey(e.value)}
-                        placeholder='Chọn khu vực'
-                        className="w-full md:w-14rem"
-                        style={{ marginRight: '.5em' }} />
+                            ...(branches?.map(branch => ({ label: branch.name, value: branch.id })) || [])]}
+                            optionLabel="label"
+                            onChange={(e) => setSortKey(e.value)}
+                            placeholder='Chọn khu vực'
+                            className="w-full md:w-14rem"
+                            style={{ marginRight: '.5em' }} />
                     </div>
                     {getFormErrorMessage('area_id')}
                     <div>

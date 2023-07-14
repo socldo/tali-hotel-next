@@ -18,15 +18,15 @@ import adminAuthMiddleware from '../../../components/admin/middleware/adminAuthM
 import UserCreate from '../../../components/admin/user/user-create';
 import { status } from 'nprogress';
 import CustomErrorPage from '../../../components/admin/custom-error';
-import { User, APIResponse } from '../../../interface/index'
+import { Model } from '../../../interface/index'
 
 
 function User() {
 
-    const [users, setUsers] = useState<User[]>([]);
-    const [usersFilter, setUsersFilter] = useState<User[]>([]);
+    const [users, setUsers] = useState<Model.User[]>([]);
+    const [usersFilter, setUsersFilter] = useState<Model.User[]>([]);
 
-    const [user, setUser] = useState<User | null>();
+    const [user, setUser] = useState<Model.User | null>();
 
     const [loading, setLoading] = useState(true);
     const [renderCount, setRenderCount] = useState(0);
@@ -39,7 +39,7 @@ function User() {
     const [sortKey, setSortKey] = useState(null);
     const [globalFilter, setGlobalFilter] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
-    const [responseAPI, setResponseAPI] = useState<APIResponse>({ status: 200, message: 'OK', data: null });
+    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
     const [visibleError, setVisibleError] = useState<boolean>(false);
 
 
@@ -86,7 +86,7 @@ function User() {
     const filter = () => {
         if (activeIndex == 0) {
             if (!sortKey) {
-                setUsersFilter(users.filter((user: { is_locked: boolean; }) => !user.is_locked));
+                setUsersFilter(users?.filter((user: { is_locked: boolean; }) => !user.is_locked));
             }
             else {
                 setUsersFilter(users?.filter(users => users.role_id == sortKey && !user?.is_locked));
@@ -95,7 +95,7 @@ function User() {
         }
         else {
             if (!sortKey) {
-                setUsersFilter(users.filter((user: { is_locked: boolean; }) => user.is_locked));
+                setUsersFilter(users?.filter((user: { is_locked: boolean; }) => user.is_locked));
             }
             else {
                 setUsersFilter(users?.filter(user => user.role_id == sortKey && user.is_locked));
@@ -175,7 +175,7 @@ function User() {
         </div >
     );
 
-    const avatarBodyTemplate = (rowData: User) => {
+    const avatarBodyTemplate = (rowData: Model.User) => {
         let image = rowData.avatar ? rowData.avatar : "";
 
         return (
@@ -222,7 +222,7 @@ function User() {
     };
 
 
-    const actionBodyTemplate = (rowData: User) => {
+    const actionBodyTemplate = (rowData: Model.User) => {
 
         const accept = async () => {
 
@@ -270,23 +270,23 @@ function User() {
 
     };
 
-    const roleBodyTemplate = (rowData: User) => {
+    const roleBodyTemplate = (rowData: Model.User) => {
         let roleName = '';
         switch (rowData.role_id) {
-        case 1:
-            roleName = 'user'
-            break;
-        case 2:
-            roleName = 'manager'
-            break;
-        case 3:
-            roleName = 'employee'
-            break;
-        case 4:
-            roleName = 'admin'
-            break;
-        default:
-            break;
+            case 1:
+                roleName = 'user'
+                break;
+            case 2:
+                roleName = 'manager'
+                break;
+            case 3:
+                roleName = 'employee'
+                break;
+            case 4:
+                roleName = 'admin'
+                break;
+            default:
+                break;
         }
         return <span className={`role-badge role-${roleName}`}>{roleName}</span>;
     };
