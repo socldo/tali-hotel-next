@@ -13,6 +13,7 @@ import { Checkbox } from "@material-tailwind/react";
 import { Button } from "../../components/core";
 import ButtonNext from "../../components/core/ButtonNext";
 import querystring from 'querystring';
+import { number } from "yup";
 
 interface Props {
   room: IRoom[];
@@ -52,13 +53,13 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     const bookingData = Array.isArray(router.query.roomsReserve)
         ? router.query.roomsReserve.map((item) => JSON.parse(item))
         : JSON.parse(router.query.roomsReserve || '[]');
-    console.log(router.query);
+
         
-    const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn[0] : ""))) ;
+    const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ?  (Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn) : ""))) ;
+    console.log(checkIn);
+    const checkOut =formatBookingDate(new Date(JSON.parse(router.query.checkOut ? (Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut)  : ""))) ;
 
-    const checkOut =formatBookingDate(new Date(JSON.parse(router.query.checkOut ? router.query.checkOut[0]  : ""))) ;
-
-    const totalDate = differentDate(new Date(JSON.parse(router.query.checkIn ? router.query.checkIn[0] : '')), new Date(JSON.parse(router.query.checkOut ? router.query.checkOut[0] : '')));
+    const totalDate = differentDate(new Date(JSON.parse(router.query.checkIn ? (Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn) : '')), new Date(JSON.parse(router.query.checkOut ? (Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut) : '')));
 
     const hotelId = router.query.hotel_id;
 
@@ -94,9 +95,11 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
      */
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
+    const [isSubmit, setIsSubmit] = useState(0)
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
     const [bookingFor, setBookingFor] = useState(0)
+    console.log(firstName);
 
     /**
      * Step
@@ -166,6 +169,27 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
         console.log(queryParams);
         
         router.push(`https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=${vnp_Amount}&vnp_Command=pay&vnp_CreateDate=20230711153333&vnp_CurrCode=VND&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=Thanh+toan+don+hang+%3A5&vnp_OrderType=other&vnp_ReturnUrl=https%3A%2F%2Fdomainmerchant.vn%2FReturnUrl&vnp_TmnCode=DEMOV210&vnp_TxnRef=5&vnp_Version=2.1.0&vnp_SecureHash=3e0d61a0c0534b2e36680b3f7277743e8784cc4e1d68fa7d276e79c23be7d6318d338b477910a27992f5057bb1582bd44bd82ae8009ffaf6d141219218625c42`)
+    }
+
+    const handleSetFirstName =  (e :any)  =>  {
+        if(e) {
+            setFirstName(e);
+            return  1;
+        } else return 2; 
+
+    }
+
+    const handleSetLastName =  (e :any)  =>  {
+        if(e) {
+            setLastName(e);
+            return  1;
+        } else return 2; 
+
+    }
+
+    const handleSetSetep = () => {
+        setStep(1)
+        setIsSubmit(1)
     }
     
 
@@ -302,6 +326,7 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                             <div className="w-72">
                                                 <div className="relative h-10 w-full min-w-[200px]">
                                                     <input
+                                                        required={true}
                                                         onChange={(e) => setLastName(e.target.value)}
                                                         className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                         placeholder=" "
@@ -309,11 +334,17 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                                     <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                                                 Họ  <span className="text-red-500"> *</span>
                                                     </label>
+                                                    {(isSubmit == 1 && lastName.length == 0) ?  
+                                                        <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
+                                                    Họ không được để trống
+                                                        </p> : <></>}
+
                                                 </div>
                                             </div>
                                             <div className="ml-2 w-72">
                                                 <div className="relative h-10 w-full min-w-[200px]">
                                                     <input
+                                                        required={true}
                                                         onChange={(e) => setFirstName(e.target.value)}
                                                         className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                         placeholder=" "
@@ -321,11 +352,16 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                                     <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500" >
                                                         <p >Tên <span className="text-red-500">*</span></p>
                                                     </label>
+                                                    {(isSubmit == 1 && firstName.length == 0) ?  
+                                                        <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
+                                                    Tên không được để trống
+                                                        </p> : <></>}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="mt-4 relative h-10 w-80 min-w-[200px]">
+                                        <div className="mt-6 relative h-10 w-80 min-w-[200px]">
                                             <input
+                                                required={true}
                                                 onChange={(e) => setPhone(e.target.value)}
                                                 className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                 placeholder=" "
@@ -333,9 +369,14 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                             <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                                                 Số điện thoại  <span className="text-red-500">  *</span>
                                             </label>
+                                            {(isSubmit === 1 && phone.length === 0) ?  
+                                                <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
+                                                    Số điện thoại không được để trống
+                                                </p> : <></>}
                                         </div>
-                                        <div className="mt-4 relative h-10 w-80 min-w-[200px]">
+                                        <div className="mt-6 relative h-10 w-80 min-w-[200px]">
                                             <input
+                                                required={true}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                 placeholder=" "
@@ -343,6 +384,10 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                             <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                                                 Email <span className="text-red-500">  *</span>
                                             </label>
+                                            {(isSubmit == 1 && email.length == 0) ?  
+                                                <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
+                                                    Email không được để trống
+                                                </p> : <></>}
                                         </div>
                                         <p className="ml-4 mt-4 text-xs text-slate-500">Email xác nhận đặt phòng sẽ được gửi đến địa chỉ này</p>
                                         <p className="ml-4 mt-4 text-sm font-bold">Bạn đặt phòng cho ai?</p>
@@ -354,13 +399,10 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                             <Checkbox color="blue" defaultChecked={false} onResize={undefined} checked={bookingFor == 2 ? true : false} onResizeCapture={undefined} onChange={() => setBookingFor(2)}/>
                                             <p className="items-center">Đặt phòng này là cho người khác</p>
                                         </div>
-
-                                    </div>
-
-                            
+                                    </div>            
                                 </div> 
                                 <div className="mt-4 w-120 grid justify-items-end">
-                                    <div onClick={() => setStep(2)}>
+                                    <div onClick={() => handleSetSetep()}>
                                         <ButtonNext text="Bước tiếp theo" textColor="text-white" bgColor="bg-blue-500" focusHandle="hover:bg-gray-300"/>
                                     </div>
                                                    
@@ -387,13 +429,9 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                     <div className="mt-4 w-120 grid justify-items-start">
                                         <div onClick={() => handlePayment()}>
                                             <Button text="Thanh toán ngay" textColor="text-white" bgColor="bg-blue-500" focusHandle="hover:bg-gray-300"/>
-                                        </div>
-                                                   
+                                        </div>                                                 
                                     </div>
-
-                                </div>
-
-                    
+                                </div>                   
                             </div> 
                         }
 

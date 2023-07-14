@@ -252,7 +252,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 dateFormat="dd/mm/yy"
                                 inputId="Check out"
                                 value={checkOut}
-                                onChange={(e: CalendarChangeEvent) => setCheckOut(e.value ? new Date(e.value.toString()[0]) : new Date())}
+                                onChange={(e: CalendarChangeEvent) => handleCheckOut(e.value ? new Date(e.value.toString()[0]) : new Date())}
                                 minDate={minimumcheckOut}
                             />
                             <label htmlFor="check_out">Check out</label>
