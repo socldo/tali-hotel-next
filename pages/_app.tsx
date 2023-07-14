@@ -50,7 +50,9 @@ export default function App({ Component, pageProps, router }: Props) {
 
         return (
             <LayoutProvider>
+                <Header />
                 {Component.getLayout(<Component {...pageProps} />)}
+                <Footer></Footer>
             </LayoutProvider>
         )
     }
@@ -80,7 +82,7 @@ export default function App({ Component, pageProps, router }: Props) {
         return (
             <RecoilRoot>
                 <Provider store={store}>
-                    <PersistGate loading={null} persistor={persistor}>
+                    <PersistGate loading={true} persistor={persistor}>
                         <Header />
                         <Component {...pageProps} />
                         <ToastContainer

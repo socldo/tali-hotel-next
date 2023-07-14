@@ -14,6 +14,8 @@ import { Button } from "../../components/core";
 import ButtonNext from "../../components/core/ButtonNext";
 import querystring from 'querystring';
 import { number } from "yup";
+import { differenceInDays, parseISO } from 'date-fns';
+
 
 interface Props {
   room: IRoom[];
@@ -43,9 +45,11 @@ const formatBookingDate= (date: Date) => {
 }
 
 const differentDate = (checkIn: Date, checkOut: Date) => {
-    return checkOut.getDate() - checkIn.getDate();
+    const start = parseISO(checkIn.toISOString());
+    const end = parseISO(checkOut.toISOString());
+    const days = differenceInDays(end, start);
+    return days;
 }
-
 
 
 const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
@@ -107,16 +111,15 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     const [step, setStep] = useState(1)
     
     /**
-     * Step
+     * Payment
      */
-    // const [paymentName, setPaymentName] = useState('')
-    // const [bank, setLastName] = useState('')
-    // const [phone, setPhone] = useState('')
-    // const [email, setEmail] = useState('')
+    const [paymentType, setPaymentType] = useState(0)
 
     const changeOption = () => {
         router.push(`/hotel/${hotelId}`)
     }
+    console.log('check in :' ,checkIn , 'check out: ', checkOut);
+
 
     const handleDetailRoom = async ( ) => {
 
@@ -162,13 +165,34 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
         handleDetailRoom()
     }, [])
 
-    const handlePayment = async () => {
-        const vnp_CreateDate = moment(new Date()).format("yyyyMMddHHmmss")
-        const vnp_Amount = price*totalDate;
-        const queryParams = querystring.stringify({ vnp_Amount, vnp_CreateDate});
-        console.log(queryParams);
+    const handleVNPay = async () => {
+        const orderInfo = "test";
+        const amount = price*totalDate;
+        const queryParams = querystring.stringify({ amount, orderInfo});
         
-        router.push(`https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=${vnp_Amount}&vnp_Command=pay&vnp_CreateDate=20230711153333&vnp_CurrCode=VND&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=Thanh+toan+don+hang+%3A5&vnp_OrderType=other&vnp_ReturnUrl=https%3A%2F%2Fdomainmerchant.vn%2FReturnUrl&vnp_TmnCode=DEMOV210&vnp_TxnRef=5&vnp_Version=2.1.0&vnp_SecureHash=3e0d61a0c0534b2e36680b3f7277743e8784cc4e1d68fa7d276e79c23be7d6318d338b477910a27992f5057bb1582bd44bd82ae8009ffaf6d141219218625c42`)
+        let token = getCookie('jwt_token')?.toString();
+        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
+        const jsonData = {amount: amount, orderInfo:orderInfo};
+
+        const url = `/api/vnpay/submitOrder`;
+        
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify(jsonData),
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: token == undefined ? "" : token
+            }),
+        });
+        const data = await response.json();
+        return data.data;
+
+    }
+
+    const handlePayment = async () => {
+        const vnPay = handleVNPay();
+        window.open(await vnPay, '_blank');
     }
 
     const handleSetFirstName =  (e :any)  =>  {
@@ -188,7 +212,7 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     }
 
     const handleSetSetep = () => {
-        setStep(1)
+        setStep(2)
         setIsSubmit(1)
     }
     
@@ -418,12 +442,12 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                     
                                     <div>                                        
                                         <div className="items-center flex flex-row text-sm">
-                                            <Checkbox color="blue" defaultChecked={false} checked={bookingFor == 1 ? true : false} onResize={undefined} onResizeCapture={undefined} onChange={() => setBookingFor(1)}/>
+                                            <Checkbox color="blue" defaultChecked={false} checked={paymentType == 1 ? true : false} onResize={undefined} onResizeCapture={undefined} onChange={() => setPaymentType(1)}/>
                                             <p className="items-center text-sm">Chuyển khoản ngân hàng</p>
                                         </div>
                                         <div className="items-center flex flex-row text-sm">
-                                            <Checkbox color="blue" defaultChecked={false} onResize={undefined} checked={bookingFor == 2 ? true : false} onResizeCapture={undefined} onChange={() => setBookingFor(2)}/>
-                                            <p className="items-center">Thanh toán bằng momo</p>
+                                            <Checkbox color="blue" defaultChecked={false} onResize={undefined} checked={paymentType == 2 ? true : false} onResizeCapture={undefined} onChange={() => setPaymentType(2)}/>
+                                            <p className="items-center">Thanh toán bằng VNPay</p>
                                         </div>
                                     </div> 
                                     <div className="mt-4 w-120 grid justify-items-start">
@@ -434,7 +458,6 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                 </div>                   
                             </div> 
                         }
-
                     </div>
                 </div>
             </div>
