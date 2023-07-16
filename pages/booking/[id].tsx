@@ -1,6 +1,6 @@
 import { Steps } from "primereact/steps";
 import { MenuItem } from "primereact/menuitem";
-import { IHotel, IRoom } from "../../models";
+import { IBooking, IHotel, IRoom } from "../../models";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import moment from "moment";
@@ -15,12 +15,13 @@ import ButtonNext from "../../components/core/ButtonNext";
 import querystring from 'querystring';
 import { number } from "yup";
 import { differenceInDays, parseISO } from 'date-fns';
-
+import { useParams } from 'react-router-dom';
 
 interface Props {
   room: IRoom[];
   checkIn: string;
   checkOut: string;
+  bookingData: IBooking;
 }
 
 interface RoomReserve extends IRoom {
@@ -52,20 +53,49 @@ const differentDate = (checkIn: Date, checkOut: Date) => {
 }
 
 
-const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
+const Booking = () => {
+    
     const router = useRouter();
-    const bookingData = Array.isArray(router.query.roomsReserve)
-        ? router.query.roomsReserve.map((item) => JSON.parse(item))
-        : JSON.parse(router.query.roomsReserve || '[]');
+    const [checkIn, setCheckIn] = useState("")
+    const [checkOut, setCheckOut] = useState("")
+    const [checkInData, setCheckInData] = useState("")
+    const [checkOutData, setCheckOutData] = useState("")
+    const [roomData, setRoomeData] = useState<IRoom[]>([])
+    const [totalDate, setTotalDate] = useState(0)
+    const [hotelId, setHotelParamId] = useState("")
+    
+    useEffect(() => {
+        setRoomeData( Array.isArray(router.query.roomsReserve)
+            ? router.query.roomsReserve.map((item) => JSON.parse(item))
+            : JSON.parse(router.query.roomsReserve || '[]'))
+        
+        if (router.query.checkIn) {
+            setCheckInData(Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn);
+            setCheckIn(formatBookingDate(new Date(JSON.parse(Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn))));
+        }
 
-    console.log('router:', router.query.hotel_id);
-    const checkIn = formatBookingDate(new Date(JSON.parse(router.query.checkIn ?  (Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn) : ""))) ;
+        if (router.query.checkOut) {
+            setCheckOutData(Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut);
+            setCheckOut(formatBookingDate(new Date(JSON.parse(Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut))));
+        }
 
-    const checkOut =formatBookingDate(new Date(JSON.parse(router.query.checkOut ? (Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut)  : ""))) ;
+        if (router.query.checkOut && router.query.checkIn) {
+            setTotalDate(differentDate(new Date(JSON.parse((Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn))), new Date(JSON.parse((Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut)))));
+        }
 
-    const totalDate = differentDate(new Date(JSON.parse(router.query.checkIn ? (Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn) : '')), new Date(JSON.parse(router.query.checkOut ? (Array.isArray(router.query.checkOut) ? router.query.checkOut[0] : router.query.checkOut) : '')));
+        if (router.query.hotel_id) {
+            setHotelParamId(router.query.hotel_id ? router.query.hotel_id[0]  : "0")
+        }
 
-    const hotelId = router.query.hotel_id;
+    }, [router.query])
+
+
+
+    const changeOption = () => {
+        console.log("hotel id: " ,hotelId);
+        
+        router.push(`/hotel/${hotelId}`)
+    }
 
     const price: number = Array.isArray(router.query.price)
         ? parseInt(router.query.price ? router.query.price[0] : "0")
@@ -93,7 +123,6 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     const [showModal, setShowModal] = useState(false)
     const [reviews, setReviews] = useState()
 
-
     /**
      * booking data
      */
@@ -103,7 +132,6 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
     const [bookingFor, setBookingFor] = useState(0)
-    console.log(firstName);
 
     /**
      * Step
@@ -115,13 +143,9 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
      */
     const [paymentType, setPaymentType] = useState(0)
 
-    const changeOption = () => {
-        console.log("hotel id: " ,hotelId);
-        
-        router.push(`/hotel/${hotelId}`)
-    }
 
-    const handleDetailRoom = async ( ) => {
+    const handleDetailRoom = async () => {
+
 
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
@@ -160,10 +184,52 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
         
         return data;
     }
+    console.log(checkInData);
+    
+
+    const handleCreateBooking = async () => {
+
+        let token = getCookie('jwt_token')?.toString();
+
+        const url = `/api/bookings/create`;
+        
+        const bookingData = {
+            user_id: number,
+            hotel_id: hotelId,
+            check_in: checkInData.slice(0,checkInData.indexOf('T1')).replace('"',''),
+            check_out:checkOutData.slice(0,checkOutData.indexOf('T1')).replace('"',''),
+            status: 1,
+            amount: price,
+            total_amount: price,
+            deposit_amount: price,
+            room_data: roomData,
+            first_name: firstName,
+            last_name: lastName,
+            phone: phone,
+            email:email
+        };
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: token == undefined ? "" : token
+            }),
+            body: JSON.stringify(bookingData)
+        });
+        const data = await response.json();
+        
+        if (data.data) {
+        }
+
+        
+        return data;
+    }
 
     useEffect(() => {
         handleDetailRoom()
-    }, [])
+    }, [router, checkIn, checkOut])
 
     const handleVNPay = async () => {
         const orderInfo = "test";
@@ -212,7 +278,10 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
     }
 
     const handleSetSetep = () => {
-        setStep(2)
+        handleCreateBooking()
+        if (firstName && lastName && phone && email) {
+            setStep(2) 
+        }
         setIsSubmit(1)
     }
     
@@ -264,7 +333,7 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                             </div>
                             <div>
                                 <p className="mt-4 text-sm font-bold">Bạn đã chọn</p>
-                                {bookingData?.map((bookingData: RoomReserve) => (<p key={bookingData.id} className="mt-2 text-sm">{bookingData.quantity} x {bookingData.name} </p>))}
+                                {roomData?.map((bookingData: RoomReserve) => (<p key={bookingData.id} className="mt-2 text-sm">{bookingData.quantity} x {bookingData.name} </p>))}
                                 <div className="mb-2 mt-2 text-sm font-bold text-sky-500" onClick={changeOption}>
                                     <Button                                   
                                         text="Đổi lựa chọn của bạn"
@@ -323,7 +392,7 @@ const Booking = ( roomData : RoomReserve[], hotel : IHotel) => {
                                 <p className="text-sm mt-2"><i className="pi pi-car text-green-600 mr-2" style={{ fontSize: '1rem' }}></i> 
                                 Tận hưởng ưu đãi 5% cho xe thuê khi đặt kỳ nghỉ này</p>
                                 <p className="text-sm mt-2"><i className="pi pi-clock text-red-600 mr-2" style={{ fontSize: '1rem' }}></i> 
-                                Bạn đang đặt {bookingData[0].name} cuối cùng còn trống chúng tôi có ở {name}.</p>
+                                Bạn đang đặt {roomData[0]?.name} cuối cùng còn trống chúng tôi có ở {name}.</p>
                             </div>
                         </div>
                         <div className="mt-4 border container">

@@ -1,3 +1,4 @@
+import { log } from 'console';
 import { NextApiRequest, NextApiResponse } from 'next';
 import querystring from 'querystring';
 
@@ -6,7 +7,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
     const requestBody = request.body;
 
     const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/create`;
-
+    console.log("body :",requestBody);
+    
     const requestOptions = {
         method: request.method,
         headers: new Headers({
