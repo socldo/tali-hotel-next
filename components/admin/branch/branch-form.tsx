@@ -1,18 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
-import { storage, analytics } from '../../../firebaseConfig';
+import React, { useEffect, useState } from 'react';
+import { storage } from '../../../firebaseConfig';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { getCookie } from 'cookies-next'
 import { Model } from '../../../interface';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 import TemplateUploadImages from '../../core/TemplateUploadImages';
+import CustomErrorPage from '../custom-error';
+import { Dialog } from 'primereact/dialog';
 
 type FormErrors = {
     name?: string;
-    email?: string;
-    phone?: string;
     address?: string;
 };
 
@@ -21,14 +20,12 @@ interface BranchFormProps {
     currentBranch: Model.Branch | null;
     setVisible: React.Dispatch<React.SetStateAction<boolean>>;
     onSave: () => void;
-    // toast: React.RefObject<Toast>;
 }
 
 const BranchForm: React.FC<BranchFormProps> = ({
     currentBranch,
     setVisible,
-    onSave,
-    // toast
+    onSave
 }) => {
 
 
@@ -38,17 +35,16 @@ const BranchForm: React.FC<BranchFormProps> = ({
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [onClickSave, setOnClickSave] = useState(false);
-    const toast = useRef<Toast>(null);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [visibleError, setVisibleError] = useState<boolean>(false);
 
     const token = getCookie('jwt_token')?.toString();
 
 
     const [errors, setErrors] = useState<FormErrors>({
         name: '',
-        email: '',
-        address: '',
-        phone: ''
+        address: ''
     });
 
 
@@ -96,9 +92,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
             // });
             setErrors({
                 name: '',
-                email: '',
-                address: '',
-                phone: ''
+                address: ''
             });
         }
     };
@@ -121,15 +115,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
             newErrors.name = 'Tên không không được để trống.';
         }
 
-        if (!data.email) {
-            newErrors.email = 'Địa chỉ email không được để trống.';
-        } else if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(data.email)) {
-            newErrors.email = 'Địa chỉ email không đúng định dạng.';
-        }
 
-        if (!data.phone) {
-            newErrors.phone = 'Số điện thoại không được để trống.';
-        }
         if (!data.address) {
             newErrors.address = 'Địa chỉ không được để trống.';
         }
@@ -140,17 +126,22 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
     const handleSave = async () => {
 
-        const newErrors = validate({ name, email, phone, address });
+
+        const newErrors = validate({ name, address });
         setErrors(newErrors);
         setOnClickSave(true);
         if (Object.keys(newErrors).length === 0) {
-            setVisible(false);
-            onSave();
 
-            await handleCreateUpdate();
+            let data = await handleCreateUpdate();
 
-
+            if (data?.status == 200) {
+                setVisible(false);
+                onSave();
+            } else {
+                setVisibleError(true);
+            }
         }
+
     };
 
     const handleCreateUpdate = async () => {
@@ -161,7 +152,10 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
             let downloadURL = await handleImageUpload(selectedFiles[0]);
 
-            console.log(downloadURL);
+            if (!downloadURL && id != 0) {
+
+                downloadURL = currentBranch?.images
+            }
 
 
             const response = await fetch(url, {
@@ -180,6 +174,16 @@ const BranchForm: React.FC<BranchFormProps> = ({
                 }),
             });
             const data = await response.json();
+            console.log(data);
+
+            setResponseAPI({
+                status: data.status,
+                message: data.message,
+                data: data.data,
+            });
+
+            return data;
+
         } catch (error) {
             console.error('Error fetching:', error);
 
@@ -212,7 +216,7 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
     return (
         <div >
-            {/* <Toast ref={toast} /> */}
+
 
             <form onSubmit={(e) => { handleSubmit(e) }} >
 
@@ -222,23 +226,12 @@ const BranchForm: React.FC<BranchFormProps> = ({
                         <InputText id="name" value={name} onChange={(e) => setName(e.target.value)} type="text" />
                     </div>
                     {getFormErrorMessage('name')}
-                    {/* <div className="field">
-                        <label htmlFor="email">Email</label>
-                        <InputText id="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    </div>
 
-                    {getFormErrorMessage('email')} */}
                     <div className="field">
                         <label htmlFor="address">Địa chỉ</label>
                         <InputText id="address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
                     </div>
                     {getFormErrorMessage('address')}
-
-                    {/* <div className="field">
-                        <label htmlFor="phone">Số điện thoại</label>
-                        <InputText id="phone" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                    </div>
-                    {getFormErrorMessage('phone')} */}
 
 
 
@@ -253,12 +246,25 @@ const BranchForm: React.FC<BranchFormProps> = ({
                     <Button label="Hủy" severity="danger" icon="pi pi-times" onClick={() => { setVisible(false); setOnClickSave(false); }} />
                 </div>
 
+
+                {responseAPI?.status != 200 ?
+                    <>
+
+                        <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Lỗi rồi">
+
+                            <CustomErrorPage props={responseAPI} />
+
+                        </Dialog>
+                    </>
+                    : null
+                }
+
             </form >
 
         </div >
     );
-};
 
+};
 export default BranchForm;
 
 
