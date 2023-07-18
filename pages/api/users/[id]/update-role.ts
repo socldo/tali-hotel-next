@@ -20,10 +20,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
     try {
         const apiResponse = await fetch(fetchUrl, requestOptions);
-
-
         const data = await apiResponse.json();
-        console.log(JSON.stringify(request.body));
 
         response.status(apiResponse.status).json(data);
     } catch (error) {
