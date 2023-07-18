@@ -2,12 +2,43 @@ import Link from "next/link";
 import { Layout } from "../../components/layout";
 import Footer from "../../components/layout/Footer";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { getCookie } from "cookies-next";
 
 const VNPayPayment = () => {
     const router = useRouter();
 
     const query = router.query;
 
+    const [bookingId, setBookingId] = useState<string>();
+
+    let bookingIdCookier= getCookie("booking_id")?.toString();
+
+    let token = getCookie('jwt_token')?.toString();
+
+    const handlePayment = () => {
+        setBookingId(bookingIdCookier ? bookingIdCookier.toString() : "0");
+        const url = `/api/bookings/${bookingIdCookier}`;
+        console.log("booking id:",bookingIdCookier);
+
+        const response = fetch(url, {
+            method: "POST",
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: token == undefined ? "" : token,
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                Pragma: "no-cache",
+                Expires: "0",
+            }),
+        });
+    }
+    useEffect(() => {
+        if (query.vnp_TransactionStatus == "00") {
+            handlePayment();
+        }
+    }, )
+    
     return (
         <Layout
             metadata={{

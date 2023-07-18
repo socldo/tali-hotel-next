@@ -74,56 +74,51 @@ const Header = () => {
     const accountMenu = [
         {
             icon: <AiOutlineUser />,
-            name: 'Manage account',
+            name: 'Quản lí tài khoản',
             link: '/user'
         },
         {
             icon: <RiSuitcaseLine />,
-            name: 'Bookings & Trips',
+            name: 'Đặt phòng',
             link: '/user/booking'
         },
-        {
-            icon: <AiOutlineWallet />,
-            name: 'Reward & Wallet',
-            link: '/'
-        },
+        // {
+        //     icon: <AiOutlineWallet />,
+        //     name: 'Reward & Wallet',
+        //     link: '/'
+        // },
         {
             icon: <AiOutlineHeart />,
-            name: 'Saved',
+            name: 'Đã đặt',
             link: '/user/wishlist'
         }
     ]
     const menu = [
         {
             icon: <BiBed />,
-            name: 'Stays',
-            link: '/'
-        },
-        {
-            icon: <MdOutlineAirplaneTicket />,
-            name: 'Flights',
+            name: 'Chỗ ở',
             link: '/'
         },
         {
             icon: <GiEarthAsiaOceania />,
-            name: 'Flight + Hotel',
+            name: 'Hoạt động',
             link: '/'
         },
         {
-            icon: <AiOutlineCar />,
-            name: 'Car rentals',
+            icon: <GiEarthAsiaOceania />,
+            name: 'Hoạt động',
             link: '/'
         },
         {
             icon: <MdOutlineAttractions />,
-            name: 'Attractions',
+            name: 'Đánh giá',
             link: '/'
         },
         {
-            icon: <RiTaxiWifiLine />,
-            name: 'Airport taxis',
+            icon: <MdOutlineAttractions />,
+            name: 'Blog',
             link: '/'
-        }
+        },
     ]
 
     return <header className="shadow-xl w-full border-b-2">

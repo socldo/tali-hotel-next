@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { Image } from 'primereact/image';
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import StarRating from "../../components/core/StarRating";
 import Link from "next/link";
 import { InputText } from "primereact/inputtext";
@@ -16,6 +16,7 @@ import querystring from 'querystring';
 import { number } from "yup";
 import { differenceInDays, parseISO } from 'date-fns';
 import { useParams } from 'react-router-dom';
+import { HttpStatusCode } from "axios";
 
 interface Props {
   room: IRoom[];
@@ -87,13 +88,11 @@ const Booking = () => {
             setHotelParamId(router.query.hotel_id ? router.query.hotel_id[0]  : "0")
         }
 
+        handleDetailRoom(router.query.hotel_id ? router.query.hotel_id[0]  : "0")
+
     }, [router.query])
 
-
-
     const changeOption = () => {
-        console.log("hotel id: " ,hotelId);
-        
         router.push(`/hotel/${hotelId}`)
     }
 
@@ -131,7 +130,9 @@ const Booking = () => {
     const [isSubmit, setIsSubmit] = useState(0)
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
-    const [bookingFor, setBookingFor] = useState(0)
+    const [bookingFor, setBookingFor] = useState(1)
+    const [bookingId, setBookingId] = useState(0)
+
 
     /**
      * Step
@@ -144,13 +145,14 @@ const Booking = () => {
     const [paymentType, setPaymentType] = useState(0)
 
 
-    const handleDetailRoom = async () => {
+    const handleDetailRoom = async (id: any) => {
 
 
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
 
-        const url = `/api/hotels/${hotelId}`;
+        const url = `/api/hotels/${id}`;
+        console.log("hotel ne", hotelId);
         
         const response = await fetch(url, {
             method: "GET",
@@ -160,9 +162,9 @@ const Booking = () => {
                 Authorization: token == undefined ? "" : token
             }),
         });
-        const data = await response.json();
-        console.log('data id', url);
         
+        const data = await response.json();
+
         if (data.data) {
             setHotelId( data.data.id)
             setBranchId(data.data.branch_id)
@@ -179,13 +181,11 @@ const Booking = () => {
             setTotalReview(data.data.total_reviews)
             setImages(data.data.images) 
         }
-  
-        console.log(type);
+
+        console.log(data.data);
         
         return data;
     }
-    console.log(checkInData);
-    
 
     const handleCreateBooking = async () => {
 
@@ -194,7 +194,7 @@ const Booking = () => {
         const url = `/api/bookings/create`;
         
         const bookingData = {
-            user_id: number,
+            user_id: 0,
             hotel_id: hotelId,
             check_in: checkInData.slice(0,checkInData.indexOf('T1')).replace('"',''),
             check_out:checkOutData.slice(0,checkOutData.indexOf('T1')).replace('"',''),
@@ -221,16 +221,30 @@ const Booking = () => {
         const data = await response.json();
         
         if (data.data) {
+            setBookingId(data.data.id)
+            setCookie("booking_id",data.data.id);
         }
-
         
         return data;
     }
 
-    useEffect(() => {
-        handleDetailRoom()
-    }, [router, checkIn, checkOut])
+    function isValidEmail(email: any) {
+        return /\S+@\S+\.\S+/.test(email);
+    }
 
+
+    const [error, setError] = useState("");    
+
+    const handleChangeEmail = (event: any) => {
+        if (!isValidEmail(event) || !event) {
+            setError('Email không hợp lệ');
+        } else {
+            setError("");
+        }
+    
+        setEmail(event);
+    };
+    
     const handleVNPay = async () => {
         const orderInfo = "test";
         const amount = price*totalDate;
@@ -252,13 +266,33 @@ const Booking = () => {
             }),
         });
         const data = await response.json();
+
+        return data.data;
+
+    }
+
+    const handlePayBooking = async () => {
+
+        let token = getCookie('jwt_token')?.toString();
+        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
+        const url = `/api/booking/${bookingId}`;
+        
+        const response = await fetch(url, {
+            method: "POST",
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: token == undefined ? "" : token
+            }),
+        });
+        const data = await response.json();
         return data.data;
 
     }
 
     const handlePayment = async () => {
         const vnPay = handleVNPay();
-        window.open(await vnPay, '_blank');
+        window.open(await vnPay, 'Thanh toán');
     }
 
     const handleSetFirstName =  (e :any)  =>  {
@@ -278,8 +312,9 @@ const Booking = () => {
     }
 
     const handleSetSetep = () => {
-        handleCreateBooking()
+
         if (firstName && lastName && phone && email) {
+            handleCreateBooking()
             setStep(2) 
         }
         setIsSubmit(1)
@@ -458,6 +493,8 @@ const Booking = () => {
                                                 onChange={(e) => setPhone(e.target.value)}
                                                 className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                 placeholder=" "
+                                                maxLength={11}
+                                                minLength={10}
                                             />
                                             <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                                                 Số điện thoại  <span className="text-red-500">  *</span>
@@ -470,14 +507,19 @@ const Booking = () => {
                                         <div className="mt-6 relative h-10 w-80 min-w-[200px]">
                                             <input
                                                 required={true}
-                                                onChange={(e) => setEmail(e.target.value)}
+                                                onChange={(e) => handleChangeEmail(e.target.value)}
                                                 className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                 placeholder=" "
+                                                
                                             />
                                             <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                                                 Email <span className="text-red-500">  *</span>
                                             </label>
-                                            {(isSubmit == 1 && email.length == 0) ?  
+                                            <p className="peer-invalid:visible text-red-700 font-light text-xs">
+                                                {error}
+                                                {/* Email không được để trống */}
+                                            </p> 
+                                            {(isSubmit === 1 && email.length === 0) ?  
                                                 <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
                                                     Email không được để trống
                                                 </p> : <></>}
@@ -504,19 +546,15 @@ const Booking = () => {
                             :
                             <div className="mt-4 border container">
                                 <div className="m-4">
-                                    <p className="text-lg font-bold">Chọn phương thức thanh toán</p>
+                                    <p className="text-lg font-bold">Thanh toán</p>
                                     <div className="mt-2 flex flex-row bg-green-100 w-80 items-center">
                                         <p className="ml-2 text-xs text-green-700 ">Thanh toán ngay! Chúng tôi cam kết hoàn tiền 100%</p>
                                     </div>
                                     
                                     <div>                                        
                                         <div className="items-center flex flex-row text-sm">
-                                            <Checkbox color="blue" defaultChecked={false} checked={paymentType == 1 ? true : false} onResize={undefined} onResizeCapture={undefined} onChange={() => setPaymentType(1)}/>
-                                            <p className="items-center text-sm">Chuyển khoản ngân hàng</p>
-                                        </div>
-                                        <div className="items-center flex flex-row text-sm">
-                                            <Checkbox color="blue" defaultChecked={false} onResize={undefined} checked={paymentType == 2 ? true : false} onResizeCapture={undefined} onChange={() => setPaymentType(2)}/>
-                                            <p className="items-center">Thanh toán bằng VNPay</p>
+                                            <Checkbox color="blue" defaultChecked={true} checked={true} onResize={undefined} onResizeCapture={undefined}/>
+                                            <p className="items-center text-sm">Đi đến trang thanh toán</p>
                                         </div>
                                     </div> 
                                     <div className="mt-4 w-120 grid justify-items-start">
