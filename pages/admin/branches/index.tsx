@@ -155,9 +155,8 @@ function Branch() {
                     :
                     <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setBranch(rowData); }} rounded outlined severity="success" aria-label="Bookmark" size="small" />
                 }
-                <Button icon="pi pi-eye" onClick={() => { setVisible(true); setBranch(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
 
-                <Button icon="pi pi-pencil" rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
+                <Button icon="pi pi-pencil" onClick={() => { setVisible(true); setBranch(rowData) }} rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
 
             </>
         );

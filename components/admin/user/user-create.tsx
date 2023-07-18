@@ -15,8 +15,8 @@ type FormErrors = {
 
 const roleOptions = [
     { name: 'Khách hàng', value: 1 },
-    { name: 'Quản lý', value: 2 },
-    { name: 'Nhân viên', value: 3 },
+    { name: 'Nhân viên', value: 2 },
+    { name: 'Quản lý', value: 3 },
     { name: 'Admin', value: 4 }
 ];
 

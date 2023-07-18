@@ -183,6 +183,10 @@ const HotelCreate: React.FC<HotelProps> = ({
         if (!data.phone) {
             newErrors.phone = 'Số điện thoại không được để trống.';
         }
+        else if (!/^(0\d{9,10})$/.test(data.phone)) {
+            newErrors.phone = 'Số điện thoại không đúng định dạng.';
+        }
+
         if (!data.address) {
             newErrors.address = 'Địa chỉ không được để trống.';
         }

@@ -62,5 +62,22 @@ export namespace Model {
         total_four_star: number;
         total_five_star: number;
     }
+    export interface Room {
+        id: number;
+        name: string;
+        hotel_id: number;
+        hotel_name: string;
+        branch_id: number;
+        branch_name: string;
+        description: string;
+        status: boolean;
+        bed_number: number;
+        people_number: number;
+        size: string;
+        price: number;
+        quantity: number;
+        created_at: string;
+        updated_at: string;
+    }
 
 }

@@ -14,7 +14,7 @@ const UserDetail: React.FC<UserDetailProps> = ({
 
 
     if (!user) {
-        return null; // Xử lý trường hợp user là null
+        return null;
     }
     return (<>
         <div className="card p-fluid"  >

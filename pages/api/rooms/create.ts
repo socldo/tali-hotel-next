@@ -1,9 +1,11 @@
+
+
 import { NextApiRequest, NextApiResponse } from 'next';
 
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
-    const { id } = request.query;
-    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/branches/${id}/change-status1`;
+
+    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/create`;
 
     const requestOptions = {
         method: request.method,
@@ -18,6 +20,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
     try {
         const apiResponse = await fetch(fetchUrl, requestOptions);
         const data = await apiResponse.json();
+        console.log(1);
+
         response.status(apiResponse.status).json(data);
     } catch (error) {
         console.error('Error fetching data:', error);

@@ -19,6 +19,7 @@ import UserCreate from '../../../components/admin/user/user-create';
 import { status } from 'nprogress';
 import CustomErrorPage from '../../../components/admin/custom-error';
 import { Model } from '../../../interface/index'
+import UserUpdateRole from '../../../components/admin/user/user-update-role';
 
 
 function User() {
@@ -35,6 +36,7 @@ function User() {
 
     const [visible, setVisible] = useState<boolean>(false);
     const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
+    const [visibleUpdateRole, setVisibleUpdateRole] = useState<boolean>(false);
 
     const [sortKey, setSortKey] = useState(null);
     const [globalFilter, setGlobalFilter] = useState('');
@@ -48,8 +50,8 @@ function User() {
     const sortOptions = [
         { label: 'Tất cả', value: 0 },
         { label: 'Khách hàng', value: 1 },
-        { label: 'Quản lý', value: 2 },
-        { label: 'Nhân viên', value: 3 },
+        { label: 'Nhân viên', value: 2 },
+        { label: 'Quản lý', value: 3 },
         { label: 'Admin', value: 4 }
     ];
 
@@ -251,17 +253,14 @@ function User() {
                     message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
                     rejectLabel="Không" />
 
-                {/* {rowData.is_locked
-                    ? <span className="pi pi-times" onClick={() => { setConfirmPopup(true); setUser(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
-                    : <span className="pi pi-check" onClick={() => { setConfirmPopup(true); setUser(rowData); }} style={{ marginRight: '1em', fontSize: '1rem' }}></span>
-                } */}
                 {!rowData.is_locked
                     ?
-                    <Button icon="pi pi-times" onClick={() => { setConfirmPopup(true); setUser(rowData); }} rounded outlined severity="danger" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                    <Button icon="pi pi-lock" onClick={() => { setConfirmPopup(true); setUser(rowData); }} rounded outlined severity="danger" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
                     :
-                    <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setUser(rowData);; }} rounded outlined severity="success" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                    <Button icon="pi pi-lock-open" onClick={() => { setConfirmPopup(true); setUser(rowData);; }} rounded outlined severity="success" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
                 }
                 <Button icon="pi pi-eye" onClick={() => { setVisible(true); setUser(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                <Button icon="pi pi-sort-alt" onClick={() => { setVisibleUpdateRole(true); setUser(rowData) }} outlined rounded severity='help' aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
 
                 {/* <span className="pi pi-eye" style={{ marginRight: '0.5em', fontSize: '1rem' }} onClick={() => { setVisible(true); setUser(rowData) }} ></span> */}
             </>
@@ -277,10 +276,10 @@ function User() {
                 roleName = 'user'
                 break;
             case 2:
-                roleName = 'manager'
+                roleName = 'employee'
                 break;
             case 3:
-                roleName = 'employee'
+                roleName = 'manager'
                 break;
             case 4:
                 roleName = 'admin'
@@ -297,7 +296,11 @@ function User() {
 
         toast.success('Tạo mới thành công')
     }
+    const showSuccessUpdate = () => {
+        setRenderCount(renderCount => renderCount + 1);
 
+        toast.success('Cập nhật thành công')
+    }
 
     return (
         <>
@@ -337,6 +340,12 @@ function User() {
             <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Tạo mới">
 
                 <UserCreate setVisibleCreate={setVisibleCreate} currentUser={user || null} onSave={() => showSuccess()}></UserCreate>
+
+            </Dialog>
+
+            <Dialog visible={visibleUpdateRole} maximizable onHide={() => setVisibleUpdateRole(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Cập nhật">
+
+                <UserUpdateRole setVisibleUpdateRole={setVisibleUpdateRole} user={user || null} onSave={() => showSuccessUpdate()}></UserUpdateRole>
 
             </Dialog>
 

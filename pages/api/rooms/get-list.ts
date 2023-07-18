@@ -3,13 +3,9 @@ import querystring from 'querystring';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
 
-    const { status } = request.query;
 
-    const queryParams = querystring.stringify({ status });
+    const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/get-list`;
 
-    const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/hotels/get-list`;
-
-    const fetchUrl = `${baseUrl}?${queryParams}`;
 
     const requestOptions = {
         method: request.method,
@@ -25,7 +21,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
     };
 
     try {
-        const apiResponse = await fetch(fetchUrl, requestOptions);
+        const apiResponse = await fetch(baseUrl, requestOptions);
 
 
         const data = await apiResponse.json();

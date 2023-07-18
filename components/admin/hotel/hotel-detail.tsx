@@ -11,7 +11,7 @@ interface HotelDetailProps {
     hotel: Model.Hotel | null;
 }
 
-const UserDetail: React.FC<HotelDetailProps> = ({
+const HotelDetail: React.FC<HotelDetailProps> = ({
     hotel
 }) => {
     const token = getCookie('jwt_token')?.toString();
@@ -54,7 +54,7 @@ const UserDetail: React.FC<HotelDetailProps> = ({
         fetchData();
 
         return () => {
-            isMounted = false; // Đánh dấu component đã unmount
+            isMounted = false;
         };
     }, []);
 
@@ -113,7 +113,7 @@ const UserDetail: React.FC<HotelDetailProps> = ({
     }
 
     if (!hotel) {
-        return null; // Xử lý trường hợp user là null
+        return null;
     }
     return (
         <>
@@ -178,20 +178,20 @@ const UserDetail: React.FC<HotelDetailProps> = ({
                             <label style={{ fontWeight: 'bold' }}>Số bài viết đánh giá: </label>
                             <span>{ratingRate?.rate_count}</span>
                         </div>
-                        <div className="flex justify-content-center">
+                        <div className="flex ">
 
                             <Rating value={5} readOnly cancel={false} /><div>:</div>
                         </div>
-                        <div className="flex justify-content-center">
+                        <div className="flex ">
                             <Rating value={4} readOnly cancel={false} /><div>:</div>
                         </div>
-                        <div className="flex justify-content-center">
+                        <div className="flex">
                             <Rating value={3} readOnly cancel={false} /><div>:</div>
                         </div>
-                        <div className="flex justify-content-center">
+                        <div className="flex ">
                             <Rating value={2} readOnly cancel={false} /><div>:</div>
                         </div>
-                        <div className="flex justify-content-center">
+                        <div className="flex">
                             <Rating value={1} readOnly cancel={false} /><div>:</div>
                         </div>
                     </div>
@@ -207,10 +207,10 @@ const UserDetail: React.FC<HotelDetailProps> = ({
                         <div className="field">
                             <span>{ratingRate?.total_four_star}</span>
                         </div>
-                        <div className="flex justify-content-center">
+                        <div className="flex ">
                             <span>{ratingRate?.total_three_star}</span>
                         </div>
-                        <div className="flex justify-content-center">
+                        <div className="flex ">
                             <span>{ratingRate?.total_two_star}</span>
                         </div>
                         <div className="field">
@@ -246,4 +246,4 @@ const UserDetail: React.FC<HotelDetailProps> = ({
 
 
 
-export default UserDetail;
+export default HotelDetail;

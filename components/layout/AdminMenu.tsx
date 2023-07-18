@@ -20,8 +20,8 @@ const AppMenu = () => {
             items: [
                 { label: 'Khu Vực', icon: 'pi pi-fw pi-globe', to: '/admin/branches' },
                 { label: 'Khách Sạn', icon: 'pi pi-fw pi-building', to: '/admin/hotels' },
+                { label: 'Phòng', icon: 'pi pi-fw pi-calendar-times', to: '/admin/rooms' },
                 { label: 'Tài Khoản', icon: 'pi pi-fw pi-users', to: '/admin/users' },
-                { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
                 { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },
                 { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },
                 { label: 'Table', icon: 'pi pi-fw pi-table', to: '/uikit/table' },
@@ -173,8 +173,8 @@ const AppMenu = () => {
                     return !item?.seperator ? <AdminMenuItem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
                 })}
 
-                <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
-                    <img alt="Prime Blocks" className="w-full mt-3" src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
+                <Link href="http://localhost:3000/admin" target="_blank" style={{ cursor: 'pointer' }}>
+                    <img alt="Tali-Hotel" className="w-full mt-3" src='/tali-hotel-logo-black.png' style={{ maxWidth: '120px' }} />
                 </Link>
             </ul>
         </MenuProvider>
