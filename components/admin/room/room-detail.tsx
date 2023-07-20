@@ -21,6 +21,7 @@ const RoomDetail: React.FC<Props> = ({
 
         );
     };
+
     const statusBodyTemplate = (rowData: Model.Room) => {
 
         return <span className={`status-badge status-${rowData.status ? 'active' : 'unactive'}`}>{(rowData.status) ? 'Đang hoạt động' : 'Tạm ngưng'}</span>;

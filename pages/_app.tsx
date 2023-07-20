@@ -49,11 +49,11 @@ export default function App({ Component, pageProps, router }: Props) {
     if (Component.getLayout) {
 
         return (
-            <LayoutProvider>                
+            <LayoutProvider>
                 <Provider store={store}>
-                    <Header />
+                    {/* <Header /> */}
                     {Component.getLayout(<Component {...pageProps} />)}
-                    <Footer></Footer>
+                    {/* <Footer></Footer> */}
                 </Provider>
             </LayoutProvider>
         )

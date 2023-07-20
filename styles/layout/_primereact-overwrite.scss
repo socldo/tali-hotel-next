@@ -6,12 +6,12 @@
 //     background: #ffffff;
 //     border-color: #2196f3;
 //     color: #008eff;
-//     background-color: #50ea1969;
+//     background-color: #89f36369;
 // }
 
-.justify-content-center {
-    justify-content: center !important;
-}
+// .justify-content-center {
+//     justify-content: center !important;
+// }
 
 .card-primereact {
     background: var(--surface-card);
@@ -28,4 +28,10 @@
 }
 .col-4 {
     width: 33.3333%;
+}
+
+.p-speeddial-button.p-button.p-button-icon-only {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0.5rem;
 }

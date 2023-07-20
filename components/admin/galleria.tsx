@@ -59,7 +59,7 @@ const ShowAndUpdateImages: React.FC<Props> = ({
 
 
     return (
-        <div className="card-primereact flex justify-content-center" >
+        <div className="card-primereact flex justify-content-center" style={{ justifyContent: 'center'! }} >
             <Galleria
                 ref={galleria}
                 value={images}
@@ -81,6 +81,7 @@ const ShowAndUpdateImages: React.FC<Props> = ({
                 marginLeft: '-0.5rem',
                 marginTop: '-0.5rem'
             }}>
+
                 <div className="grid" style={{ maxWidth: '600px', display: 'flex', flexWrap: 'wrap', marginRight: '-0.5rem', marginLeft: '-0.5rem', marginTop: '-0.5rem' }}>
                     {images &&
                         images.map((image, index) => {
@@ -110,6 +111,7 @@ const ShowAndUpdateImages: React.FC<Props> = ({
                         })}
                 </div>
             </div>
+
         </div >
     );
 }

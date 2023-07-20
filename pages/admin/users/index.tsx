@@ -20,6 +20,8 @@ import { status } from 'nprogress';
 import CustomErrorPage from '../../../components/admin/custom-error';
 import { Model } from '../../../interface/index'
 import UserUpdateRole from '../../../components/admin/user/user-update-role';
+import { MenuItem } from 'primereact/menuitem';
+import { SpeedDial } from 'primereact/speeddial';
 
 
 function User() {
@@ -241,12 +243,6 @@ function User() {
 
         };
 
-        // const handleEditBranch = (branch: Branch) => {
-
-        //     setBranch(branch);
-        //     setVisible(true);
-
-
         return (
             <>
                 <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup} onHide={() => setConfirmPopup(false)}
@@ -262,12 +258,88 @@ function User() {
                 <Button icon="pi pi-eye" onClick={() => { setVisible(true); setUser(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
                 <Button icon="pi pi-sort-alt" onClick={() => { setVisibleUpdateRole(true); setUser(rowData) }} outlined rounded severity='help' aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
 
-                {/* <span className="pi pi-eye" style={{ marginRight: '0.5em', fontSize: '1rem' }} onClick={() => { setVisible(true); setUser(rowData) }} ></span> */}
             </>
         );
 
 
     };
+
+    const actionBodyTemplate2 = (rowData: Model.User) => {
+
+        const handleClickDetail = () => {
+            setVisible(true);
+        };
+        const handleClickUpdate = () => {
+            setVisibleUpdateRole(true);
+        };
+        const handleClickUpdateStatus = () => {
+            setConfirmPopup(true);
+        };
+
+        const accept = async () => {
+
+            let changeStatus = await handleChangeStatus();
+
+            if (changeStatus?.status === 200) {
+                toast.success('Cập nhật thành công');
+            }
+        };
+
+        const reject = () => {
+            toast.warn('Từ chối cập nhật')
+
+
+        };
+
+        const items: MenuItem[] = [
+            {
+                label: 'Detail',
+                icon: 'pi pi-eye',
+                command: () => {
+                    handleClickDetail()
+                }
+            },
+            {
+                label: 'Update',
+                icon: 'pi pi-sort-alt',
+                command: () => {
+                    handleClickUpdate();
+                }
+            },
+            rowData.is_locked ?
+                {
+                    label: 'Update-Active',
+                    icon: 'pi pi-lock',
+                    command: () => {
+                        handleClickUpdateStatus();
+
+                    }
+                } :
+                {
+                    label: 'Update-Unactive',
+                    icon: 'pi pi-lock-open',
+                    command: () => {
+                        handleClickUpdateStatus();
+                    }
+                }
+        ];
+
+        return (
+            <>
+
+                <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup} onHide={() => setConfirmPopup(false)}
+                    message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
+                    rejectLabel="Không" />
+
+                <div className="flex align-items-center justify-content-center" style={{ marginRight: '3rem', height: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                        <SpeedDial onClick={() => { setUser(rowData); }} model={items} direction="left" style={{ right: '3rem' }} />
+                    </div>
+                </div>
+            </>
+        )
+
+    }
 
     const roleBodyTemplate = (rowData: Model.User) => {
         let roleName = '';
@@ -326,13 +398,13 @@ function User() {
                 <Column field="role_id" header="Bộ phận" style={{ flexGrow: 1, flexBasis: '200px' }} body={(users) => roleBodyTemplate(users)}></Column>
                 <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                 <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                <Column body={(users) => actionBodyTemplate(users)}></Column>
+                <Column body={(users) => actionBodyTemplate2(users)}></Column>
             </DataTable>
 
             <Dialog header="Chi tiết" visible={visible} onHide={() => setVisible(false)}
                 style={{ width: '60vw' }} maximizable breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
                 <p className="m-0">
-                    <UserDetail user={user || null} />
+                    <UserDetail user={user ?? null} />
 
                 </p>
             </Dialog>

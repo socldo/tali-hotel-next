@@ -22,7 +22,8 @@ const AppMenu = () => {
                 { label: 'Khách Sạn', icon: 'pi pi-fw pi-building', to: '/admin/hotels' },
                 { label: 'Phòng', icon: 'pi pi-fw pi-calendar-times', to: '/admin/rooms' },
                 { label: 'Tài Khoản', icon: 'pi pi-fw pi-users', to: '/admin/users' },
-                { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },
+
+                { label: 'Đánh giá', icon: 'pi pi-star', to: '/admin/reviews' },
                 { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },
                 { label: 'Table', icon: 'pi pi-fw pi-table', to: '/uikit/table' },
                 { label: 'List', icon: 'pi pi-fw pi-list', to: '/uikit/list' },

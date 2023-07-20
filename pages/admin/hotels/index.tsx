@@ -15,6 +15,8 @@ import CustomErrorPage from "../../../components/admin/custom-error";
 import HotelCreate from "../../../components/admin/hotel/hotel-create";
 import { Model } from '../../../interface/index'
 import HotelUpdateImages from "../../../components/admin/hotel/hotel-update-images";
+import { MenuItem } from "primereact/menuitem";
+import { SpeedDial } from "primereact/speeddial";
 
 function Hotel() {
 
@@ -270,6 +272,93 @@ function Hotel() {
     };
 
 
+    const actionBodyTemplate2 = (rowData: Model.Hotel) => {
+
+        const handleClickDetail = () => {
+            setVisible(true);
+        };
+        const handleClickUpdate = () => {
+            setVisibleCreate(true);
+        };
+        const handleClickUpdateStatus = () => {
+            setConfirmPopup(true);
+        };
+        const handleClickUpdateImages = () => {
+            setVisibleImages(true);
+        };
+
+        const accept = async () => {
+
+            let changeStatus = await handleChangeStatus();
+
+            if (changeStatus?.status === 200) {
+                toast.success('Cập nhật thành công');
+            }
+        };
+
+        const reject = () => {
+            toast.warn('Từ chối cập nhật')
+
+
+        };
+
+        const items: MenuItem[] = [
+            {
+                label: 'Detail',
+                icon: 'pi pi-eye',
+                command: () => {
+                    handleClickDetail()
+                }
+            },
+            {
+                label: 'Update',
+                icon: 'pi pi-pencil',
+                command: () => {
+                    handleClickUpdate();
+                }
+            },
+            {
+                label: 'Update-Image',
+                icon: 'pi pi-images',
+                command: () => {
+                    handleClickUpdateImages();
+                }
+            },
+            !rowData.status ?
+                {
+                    label: 'Update-Active',
+                    icon: 'pi pi-times',
+                    command: () => {
+                        handleClickUpdateStatus();
+
+                    }
+                } :
+                {
+                    label: 'Update-Unactive',
+                    icon: 'pi pi-check',
+                    command: () => {
+                        handleClickUpdateStatus();
+                    }
+                }
+        ];
+
+        return (
+            <>
+
+                <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup} onHide={() => setConfirmPopup(false)}
+                    message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
+                    rejectLabel="Không" />
+
+                <div className="flex align-items-center justify-content-center" style={{ marginRight: '3rem', height: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                        <SpeedDial onClick={() => { setHotel(rowData); }} model={items} direction="left" style={{ right: '3rem' }} />
+                    </div>
+                </div>
+            </>
+        )
+
+    }
+
     const showSuccess = () => {
         setRenderCount(renderCount => renderCount + 1);
         if (hotel) {
@@ -314,7 +403,7 @@ function Hotel() {
             <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
             <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
             <Column field="short_description" header="Mô tả" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-            <Column body={(hotel) => actionBodyTemplate(hotel)}></Column>
+            <Column body={(hotel) => actionBodyTemplate2(hotel)}></Column>
         </DataTable>
 
         <Dialog header="Chi tiết" visible={visible} onHide={() => setVisible(false)}

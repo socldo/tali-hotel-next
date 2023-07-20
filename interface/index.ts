@@ -80,4 +80,33 @@ export namespace Model {
         updated_at: string;
     }
 
+    export interface Reviews {
+        id: number;
+        parent_review_id: number;
+        hotel_id: number;
+        hotel_name: string;
+        user_id: number;
+        user_name: string;
+        is_deleted: number;
+        content: string;
+        score_rate: number;
+        created_at: string;
+        updated_at: string;
+    }
+
+    export interface ReviewsDetail {
+        id: number;
+        parent_review_id: number;
+        hotel_id: number;
+        hotel_name: string;
+        user_id: number;
+        user_name: string;
+        is_deleted: number;
+        content: string;
+        score_rate: number;
+        created_at: string;
+        updated_at: string;
+        comments: Reviews[];
+    }
+
 }
