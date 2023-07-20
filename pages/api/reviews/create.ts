@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
 
-    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/hotels/create`;
+    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/reviews/create`;
 
     const requestOptions = {
         method: request.method,

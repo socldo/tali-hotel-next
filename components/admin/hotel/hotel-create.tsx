@@ -95,6 +95,13 @@ const HotelCreate: React.FC<HotelProps> = ({
 
     });
 
+    useEffect(() => {
+        if (responseAPI?.status != 200) {
+            setVisibleError(true);
+        } else
+            setVisibleError(false);
+
+    }, [responseAPI]);
 
     useEffect(() => {
         if (currentHotel) {

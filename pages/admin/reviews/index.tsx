@@ -13,6 +13,7 @@ import { SpeedDial } from "primereact/speeddial";
 import { ConfirmPopup } from "primereact/confirmpopup";
 import { Dialog } from "primereact/dialog";
 import CustomErrorPage from "../../../components/admin/custom-error";
+import ReviewDetail from "../../../components/admin/review/review-detail";
 
 function Review() {
 
@@ -21,14 +22,16 @@ function Review() {
     const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
     const [hotels, setHotels] = useState<Model.Hotel[]>([]);
     const [reviews, setReviews] = useState<Model.Reviews[]>([]);
-    const [review, setReview] = useState<Model.Reviews>();
-    const [reviewFilters, setReviewFilters] = useState<Model.ReviewsDetail[]>([]);
+    const [review, setReview] = useState<Model.ReviewDetail>();
+    const [reviewFilters, setReviewFilters] = useState<Model.ReviewDetail[]>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [visibleError, setVisibleError] = useState<boolean>(false);
     const [sortKeyHotel, setSortKeyHotel] = useState(null);
     const [renderCount, setRenderCount] = useState(0);
     const [sortKey, setSortKey] = useState(null);
     const buttonEl = useRef(null);
+    const [visible, setVisible] = useState(false);
+
 
     const [confirmPopup, setConfirmPopup] = useState(false);
 
@@ -63,15 +66,13 @@ function Review() {
     const filter = () => {
 
 
-        const copiedReviews: Model.ReviewsDetail[] = reviews
+        const copiedReviews: Model.ReviewDetail[] = reviews
             ?.filter(review => review.parent_review_id === 0)
             .map(review => ({
                 ...review,
                 comments: reviews.filter(comment => comment.parent_review_id === review.id)
             }));
-        console.log('review', copiedReviews);
-        console.log('sortKeyHotel', sortKeyHotel);
-        console.log('sortKey', sortKey);
+
 
 
         if (sortKeyHotel && sortKey) {
@@ -200,8 +201,10 @@ function Review() {
     const header = (
         <div className="flex flex-column md:flex-row md:justify-between md:items-center">
 
+            <div>
 
-            <h4 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
+            </div>
+            <h4 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'center' }}>
                 Đánh giá
             </h4>
 
@@ -229,7 +232,7 @@ function Review() {
             </div>
         </div >
     );
-    const starBodyTemplate = (rowData: Model.Reviews) => {
+    const starBodyTemplate = (rowData: Model.ReviewDetail) => {
 
         return (
             <div className=" flex justify-content-center">
@@ -240,7 +243,7 @@ function Review() {
 
 
 
-    const actionBodyTemplate = (rowData: Model.Reviews) => {
+    const actionBodyTemplate = (rowData: Model.ReviewDetail) => {
 
 
 
@@ -277,7 +280,7 @@ function Review() {
                 label: 'Detail',
                 icon: 'pi pi-comments',
                 command: () => {
-                    handleClickUpdateStatus();
+                    setVisible(true);
                 }
             }
         ];
@@ -299,7 +302,12 @@ function Review() {
 
     }
 
+    const showSuccess = () => {
+        setRenderCount(renderCount => renderCount + 1);
 
+        toast.success('Cập nhật thành công!');
+
+    }
     return (
         <>
 
@@ -328,6 +336,12 @@ function Review() {
                 <Column body={(reviewFilters) => starBodyTemplate(reviewFilters)} field="score_rate" sortable header="Điểm đánh giá" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                 <Column body={(reviewFilters) => actionBodyTemplate(reviewFilters)}></Column>
             </DataTable>
+
+            <Dialog visible={visible} maximizable onHide={() => setVisible(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Đánh giá">
+
+                <ReviewDetail setVisible={setVisible} onSave={() => showSuccess()} currentReview={review ?? null}></ReviewDetail>
+
+            </Dialog>
 
             {responseAPI?.status != 200 ?
                 <>

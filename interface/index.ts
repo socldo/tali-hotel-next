@@ -86,7 +86,10 @@ export namespace Model {
         hotel_id: number;
         hotel_name: string;
         user_id: number;
+        user_role_id: number;
         user_name: string;
+        user_avatar: string;
+        user_role_name: string;
         is_deleted: number;
         content: string;
         score_rate: number;
@@ -94,13 +97,16 @@ export namespace Model {
         updated_at: string;
     }
 
-    export interface ReviewsDetail {
+    export interface ReviewDetail {
         id: number;
         parent_review_id: number;
         hotel_id: number;
         hotel_name: string;
         user_id: number;
+        user_role_id: number;
+        user_avatar: string;
         user_name: string;
+        user_role_name: string;
         is_deleted: number;
         content: string;
         score_rate: number;

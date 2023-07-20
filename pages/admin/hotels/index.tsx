@@ -373,6 +373,7 @@ function Hotel() {
 
 
     const handlePropChange = () => {
+        toast.success('Cập nhật thành công!');
 
         setRenderCount(prevCount => prevCount + 1);
     };
