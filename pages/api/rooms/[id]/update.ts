@@ -1,9 +1,11 @@
+
+
 import { NextApiRequest, NextApiResponse } from 'next';
 
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
     const { id } = request.query;
-    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/branches/${id}/change-status1`;
+    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/${id}/update`;
 
     const requestOptions = {
         method: request.method,

@@ -9,6 +9,7 @@ import { Checkbox } from "primereact/checkbox";
 import CustomErrorPage from '../custom-error';
 import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
 import { Model } from '../../../interface';
+import { InputNumber } from 'primereact/inputnumber';
 
 type FormErrors = {
     name?: string;
@@ -17,6 +18,7 @@ type FormErrors = {
     address?: string;
     area_id: number;
     type?: number;
+    price: number;
 };
 
 
@@ -36,6 +38,7 @@ interface HotelModel {
     short_description: string;
     highlight_property: string;
     type: number;
+    price: number;
 
 }
 
@@ -54,7 +57,8 @@ const defaultHotelModel = {
     is_have_parking: false,
     short_description: "",
     highlight_property: "",
-    type: 0
+    type: 0,
+    price: 0
 }
 
 
@@ -91,10 +95,18 @@ const HotelCreate: React.FC<HotelProps> = ({
         phone: '',
         address: '',
         area_id: 0,
-        type: 0
+        type: 0,
+        price: 0
 
     });
 
+    useEffect(() => {
+        if (responseAPI?.status != 200) {
+            setVisibleError(true);
+        } else
+            setVisibleError(false);
+
+    }, [responseAPI]);
 
     useEffect(() => {
         if (currentHotel) {
@@ -114,6 +126,7 @@ const HotelCreate: React.FC<HotelProps> = ({
                 short_description: currentHotel.short_description,
                 highlight_property: currentHotel.highlight_property,
                 type: currentHotel.type,
+                price: currentHotel.price
             });
 
             setSortKey(currentHotel?.branch_id);
@@ -132,7 +145,8 @@ const HotelCreate: React.FC<HotelProps> = ({
             phone: hotelCreate?.phone,
             address: hotelCreate?.address,
             area_id: sortKey,
-            type: hotelCreate?.type
+            type: hotelCreate?.type,
+            price: hotelCreate?.price
 
         }
         const newErrors = validate({ ...value });
@@ -150,7 +164,8 @@ const HotelCreate: React.FC<HotelProps> = ({
                 phone: '',
                 address: '',
                 area_id: 0,
-                type: 0
+                type: 0,
+                price: 0,
             });
         }
 
@@ -183,6 +198,10 @@ const HotelCreate: React.FC<HotelProps> = ({
         if (!data.phone) {
             newErrors.phone = 'Số điện thoại không được để trống.';
         }
+        else if (!/^(0\d{9,10})$/.test(data.phone)) {
+            newErrors.phone = 'Số điện thoại không đúng định dạng.';
+        }
+
         if (!data.address) {
             newErrors.address = 'Địa chỉ không được để trống.';
         }
@@ -191,6 +210,9 @@ const HotelCreate: React.FC<HotelProps> = ({
         }
         if (data.type == 0) {
             newErrors.type = 'Vui lòng chọn loại hình kinh doanh.';
+        }
+        if (data.price == 0) {
+            newErrors.price = 'Vui lòng nhập giá.';
         }
         return newErrors;
     };
@@ -204,7 +226,8 @@ const HotelCreate: React.FC<HotelProps> = ({
             phone: hotelCreate?.phone,
             address: hotelCreate?.address,
             area_id: sortKey,
-            type: hotelCreate?.type
+            type: hotelCreate?.type,
+            price: hotelCreate.price
 
         }
         const newErrors = validate({ ...value });
@@ -251,7 +274,8 @@ const HotelCreate: React.FC<HotelProps> = ({
                     is_have_wifi: hotelCreate?.is_have_wifi ? 1 : 0,
                     is_have_parking: hotelCreate?.is_have_parking ? 1 : 0,
                     short_description: hotelCreate?.short_description,
-                    highlight_property: hotelCreate?.highlight_property
+                    highlight_property: hotelCreate?.highlight_property,
+                    price: hotelCreate?.price
 
                 }),
                 headers: new Headers({
@@ -294,7 +318,8 @@ const HotelCreate: React.FC<HotelProps> = ({
                     is_have_wifi: hotelCreate?.is_have_wifi ? 1 : 0,
                     is_have_parking: hotelCreate?.is_have_parking ? 1 : 0,
                     short_description: hotelCreate?.short_description,
-                    highlight_property: hotelCreate?.highlight_property
+                    highlight_property: hotelCreate?.highlight_property,
+                    price: hotelCreate?.price
 
                 }),
                 headers: new Headers({
@@ -379,6 +404,14 @@ const HotelCreate: React.FC<HotelProps> = ({
                         style={{ marginRight: '.5em' }} />
                     </div>
                     {getFormErrorMessage('area_id')}
+
+                    <div >
+                        <label htmlFor="horizontal-buttons" className="block mb-2">Giá</label>
+                        <InputNumber inputId="horizontal-buttons" value={hotelCreate?.price ?? 0} onValueChange={(e) => setHotelCreate({ ...hotelCreate, price: e.target.value ?? 0 })} showButtons buttonLayout="horizontal" step={100000}
+                            decrementButtonClassName="p-button-danger" incrementButtonClassName="p-button-success" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
+                            mode="currency" currency="VND" />
+                    </div>
+                    {getFormErrorMessage('price')}
                     <div>
                         <label htmlFor="address">Loại hình kinh doanh: </label>
                         <br />

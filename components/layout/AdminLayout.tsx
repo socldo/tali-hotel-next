@@ -129,9 +129,9 @@ const Layout = ({ children }: ChildContainerProps) => {
                 <meta name="viewport" content="initial-scale=1, width=device-width" />
                 <meta property="og:type" content="website"></meta>
                 <meta property="og:title" content="Taili Hotel Admin"></meta>
-                <meta property="og:url" content="https://www.primefaces.org/sakai-react"></meta>
+                {/* <meta property="og:url" content="https://www.primefaces.org/sakai-react"></meta> */}
                 <meta property="og:description" content="The ultimate collection of design-agnostic, flexible and accessible React UI Components." />
-                <meta property="og:image" content="https://www.primefaces.org/static/social/sakai-nextjs.png"></meta>
+                {/* <meta property="og:image" content="https://www.primefaces.org/static/social/sakai-nextjs.png"></meta> */}
                 <meta property="og:ttl" content="604800"></meta>
                 <link rel="icon" href={`/favicon.ico`} type="image/x-icon"></link>
             </Head>

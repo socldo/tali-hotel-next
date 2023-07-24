@@ -49,6 +49,7 @@ export namespace Model {
         highlight_property: string;
         type: number;
         type_name: string;
+        price: number;
         created_at: string;
         updated_at: string;
     }
@@ -62,5 +63,72 @@ export namespace Model {
         total_four_star: number;
         total_five_star: number;
     }
+    export interface Room {
+        id: number;
+        name: string;
+        hotel_id: number;
+        hotel_name: string;
+        branch_id: number;
+        branch_name: string;
+        description: string;
+        status: boolean;
+        bed_number: number;
+        people_number: number;
+        size: string;
+        price: number;
+        quantity: number;
+        created_at: string;
+        updated_at: string;
+    }
 
+    export interface Reviews {
+        id: number;
+        parent_review_id: number;
+        hotel_id: number;
+        hotel_name: string;
+        user_id: number;
+        user_role_id: number;
+        user_name: string;
+        user_avatar: string;
+        user_role_name: string;
+        is_deleted: number;
+        content: string;
+        score_rate: number;
+        created_at: string;
+        updated_at: string;
+    }
+
+    export interface ReviewDetail {
+        id: number;
+        parent_review_id: number;
+        hotel_id: number;
+        hotel_name: string;
+        user_id: number;
+        user_role_id: number;
+        user_avatar: string;
+        user_name: string;
+        user_role_name: string;
+        is_deleted: number;
+        content: string;
+        score_rate: number;
+        created_at: string;
+        updated_at: string;
+        comments: Reviews[];
+    }
+
+    export interface News {
+        id: number;
+        user_id: number;
+        user_role_id: number;
+        user_avatar: string;
+        content: string;
+        image: string;
+        summary: string;
+        title: string;
+        type: number;
+        views: number;
+        is_deleted: boolean;
+        created_at: string;
+        updated_at: string;
+    }
 }

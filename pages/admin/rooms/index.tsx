@@ -15,15 +15,19 @@ import CustomErrorPage from "../../../components/admin/custom-error";
 import HotelCreate from "../../../components/admin/hotel/hotel-create";
 import { Model } from '../../../interface/index'
 import HotelUpdateImages from "../../../components/admin/hotel/hotel-update-images";
-import { MenuItem } from "primereact/menuitem";
+import CreateUpdateRoom from "../../../components/admin/room/room-create-update";
+import RoomDetail from "../../../components/admin/room/room-detail";
 import { SpeedDial } from "primereact/speeddial";
+import { MenuItem } from "primereact/menuitem";
 
 function Hotel() {
 
     const [hotels, setHotels] = useState<Model.Hotel[]>([]);
     const [branches, setBranches] = useState<Model.Branch[]>([]);
+    const [rooms, setRooms] = useState<Model.Room[]>([]);
+    const [room, setRoom] = useState<Model.Room>();
 
-    const [hotel, setHotel] = useState<Model.Hotel>();
+    const [roomFilters, setRoomFilters] = useState<Model.Room[]>([]);
 
     const [hotelFilters, setHotelFilters] = useState<Model.Hotel[]>([]);
     const [globalFilter, setGlobalFilter] = useState('');
@@ -32,10 +36,10 @@ function Hotel() {
     const [activeIndex, setActiveIndex] = useState(0);
     const buttonEl = useRef(null);
 
-    const [sortKey, setSortKey] = useState(null);
+    const [sortKeyBranch, setSortKeyBranch] = useState(null);
+    const [sortKeyHotel, setSortKeyHotel] = useState(null);
     const [visibleError, setVisibleError] = useState<boolean>(false);
     const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
-    const [visibleImages, setVisibleImages] = useState<boolean>(false);
 
     const [visible, setVisible] = useState<boolean>(false);
 
@@ -50,6 +54,7 @@ function Hotel() {
         setLoading(true);
 
         const timer = setTimeout(async () => {
+            await fetchRooms();
             await fetchHotels();
             await fetchBranches();
         }, 300);
@@ -62,8 +67,19 @@ function Hotel() {
 
     useEffect(() => {
         filter()
-    }, [sortKey, activeIndex, hotels]);
+    }, [sortKeyHotel, activeIndex, rooms]);
 
+    useEffect(() => {
+
+        setSortKeyHotel(null);
+        setHotelFilters(!sortKeyBranch ? hotels : hotels?.filter(hotel => hotel.branch_id == sortKeyBranch));
+        filter()
+    }, [sortKeyBranch]);
+
+
+    useEffect(() => {
+        setHotelFilters(hotels);
+    }, [hotels]);
 
     useEffect(() => {
         if (responseAPI?.status != 200) {
@@ -75,25 +91,70 @@ function Hotel() {
 
 
     const filter = () => {
+
         if (activeIndex == 0) {
-            if (!sortKey) {
-                setHotelFilters(hotels?.filter((hotel: { status: boolean; }) => hotel.status));
+            if (!sortKeyBranch) {
+
+                if (!sortKeyHotel) {
+                    setRoomFilters(rooms?.filter((room: { status: boolean; }) => room.status));
+                } else {
+                    setRoomFilters(rooms?.filter(room => room.hotel_id == sortKeyHotel && room.status));
+                }
             }
             else {
-                setHotelFilters(hotels?.filter(hotel => hotel.branch_id == sortKey && hotel.status));
-
+                if (!sortKeyHotel) {
+                    setRoomFilters(rooms?.filter(room => room.branch_id == sortKeyBranch && room.status));
+                }
+                else {
+                    setRoomFilters(rooms?.filter(room => room.hotel_id == sortKeyHotel && room.status));
+                }
             }
         }
         else {
-            if (!sortKey) {
-                setHotelFilters(hotels?.filter((hotel: { status: boolean; }) => !hotel.status));
+            if (!sortKeyBranch) {
+                setRoomFilters(rooms?.filter((room: { status: boolean; }) => !room.status));
             }
             else {
-                setHotelFilters(hotels?.filter(hotel => hotel.branch_id == sortKey && !hotel.status));
+                if (!sortKeyHotel) {
+                    setRoomFilters(rooms?.filter(room => room.branch_id == sortKeyBranch && !room.status));
+                }
+                else {
+                    setRoomFilters(rooms?.filter(room => room.hotel_id == sortKeyHotel && !room.status));
+                }
 
             }
         }
     };
+
+
+    const fetchRooms = async (): Promise<void> => {
+        try {
+            const response = await fetch(`/api/rooms/get-list`, {
+                method: "GET",
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: !token ? "" : token
+                }),
+            });
+
+            const data = await response.json();
+            console.log('data:', data);
+
+            setRooms(data.data);
+            setLoading(false);
+
+            setResponseAPI({
+                status: data.status,
+                message: data.message,
+                data: data.data,
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            setLoading(false);
+        }
+    };
+
 
     const fetchHotels = async (): Promise<void> => {
         try {
@@ -111,7 +172,6 @@ function Hotel() {
             console.log('data:', data);
 
             setHotels(data.data);
-            setLoading(false);
 
             setResponseAPI({
                 status: data.status,
@@ -141,7 +201,6 @@ function Hotel() {
             console.log('data:', data);
 
             setBranches(data.data);
-            setLoading(false);
 
         } catch (error) {
             console.error('Error fetching:', error);
@@ -162,15 +221,21 @@ function Hotel() {
 
 
             <h4 className="m-0" style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'left' }}>
-                Khách Sạn
+                Phòng
             </h4>
 
             <div className="text-right">
-                <Dropdown value={sortKey} options={[
+                <Dropdown value={sortKeyBranch} options={[
                     { label: 'Tất cả', value: 0 },
                     ...(branches?.map(branch => ({ label: branch.name, value: branch.id })) || [])
                 ]} optionLabel="label" placeholder="Khu vực"
-                    onChange={(e) => setSortKey(e.value)}
+                    onChange={(e) => setSortKeyBranch(e.value)}
+                    style={{ marginRight: '.5em' }} />
+                <Dropdown value={sortKeyHotel} options={[
+                    { label: 'Tất cả', value: 0 },
+                    ...(hotelFilters?.map(hotel => ({ label: hotel.name, value: hotel.id })) || [])
+                ]} optionLabel="label" placeholder="Khách sạn"
+                    onChange={(e) => setSortKeyHotel(e.value)}
                     style={{ marginRight: '.5em' }} />
 
                 <span className="block mt-2 md:mt-0 p-input-icon-left" style={{ marginRight: '.5em' }}>
@@ -188,7 +253,7 @@ function Hotel() {
 
                     onClick={() => {
                         setVisibleCreate(true);
-                        setHotel(undefined);
+                        setRoom(undefined);
                     }}
                 />
             </div>
@@ -199,7 +264,7 @@ function Hotel() {
 
         try {
 
-            const response = await fetch(`/api/hotels/${hotel?.id}/change-status`, {
+            const response = await fetch(`/api/rooms/${room?.id}/change-status`, {
                 method: "POST",
                 body: JSON.stringify({
                 }),
@@ -229,7 +294,7 @@ function Hotel() {
         }
     };
 
-    const actionBodyTemplate = (rowData: Model.Hotel) => {
+    const actionBodyTemplate = (rowData: Model.Room) => {
 
         const accept = async () => {
 
@@ -255,13 +320,12 @@ function Hotel() {
 
                     {rowData.status
                         ?
-                        <Button icon="pi pi-times" onClick={() => { setConfirmPopup(true); setHotel(rowData); }} rounded outlined severity="danger" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                        <Button icon="pi pi-times" onClick={() => { setConfirmPopup(true); setRoom(rowData); }} rounded outlined severity="danger" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
                         :
-                        <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setHotel(rowData); }} rounded outlined severity="success" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                        <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setRoom(rowData); }} rounded outlined severity="success" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
                     }
-                    <Button icon="pi pi-eye" onClick={() => { setVisible(true); setHotel(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
-                    <Button icon="pi pi-pencil" onClick={() => { setVisibleCreate(true); setHotel(rowData) }} rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
-                    <Button icon="pi pi-images" onClick={() => { setVisibleImages(true); setHotel(rowData) }} rounded outlined severity="help" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
+                    <Button icon="pi pi-eye" onClick={() => { setVisible(true); setRoom(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
+                    <Button icon="pi pi-pencil" onClick={() => { setVisibleCreate(true); setRoom(rowData) }} rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ margin: '0.1rem' }} />
 
                 </div>
 
@@ -271,8 +335,7 @@ function Hotel() {
 
     };
 
-
-    const actionBodyTemplate2 = (rowData: Model.Hotel) => {
+    const actionBodyTemplate2 = (rowData: Model.Room) => {
 
         const handleClickDetail = () => {
             setVisible(true);
@@ -283,9 +346,7 @@ function Hotel() {
         const handleClickUpdateStatus = () => {
             setConfirmPopup(true);
         };
-        const handleClickUpdateImages = () => {
-            setVisibleImages(true);
-        };
+
 
         const accept = async () => {
 
@@ -317,13 +378,6 @@ function Hotel() {
                     handleClickUpdate();
                 }
             },
-            {
-                label: 'Update-Image',
-                icon: 'pi pi-images',
-                command: () => {
-                    handleClickUpdateImages();
-                }
-            },
             !rowData.status ?
                 {
                     label: 'Update-Active',
@@ -351,7 +405,7 @@ function Hotel() {
 
                 <div className="flex align-items-center justify-content-center" style={{ marginRight: '3rem', height: '100%' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                        <SpeedDial onClick={() => { setHotel(rowData); }} model={items} direction="left" style={{ right: '3rem' }} />
+                        <SpeedDial onClick={() => { setRoom(rowData); }} model={items} direction="left" style={{ right: '3rem' }} />
                     </div>
                 </div>
             </>
@@ -361,7 +415,7 @@ function Hotel() {
 
     const showSuccess = () => {
         setRenderCount(renderCount => renderCount + 1);
-        if (hotel) {
+        if (room) {
 
             toast.success('Cập nhật thành công!');
 
@@ -371,17 +425,25 @@ function Hotel() {
 
     };
 
+    const priceBodyTemplate = (value: number) => {
+        const formatter = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        });
+        return (
+            <div>
+                {formatter.format(value)}
+            </div>
 
-    const handlePropChange = () => {
-        toast.success('Cập nhật thành công!');
-
-        setRenderCount(prevCount => prevCount + 1);
+        );
     };
+
+
 
     return (<>
 
         <DataTable
-            value={hotelFilters}
+            value={roomFilters}
             scrollable scrollHeight="400px"
             loading={loading}
             className="mt-3"
@@ -399,34 +461,28 @@ function Hotel() {
                 style={{ flexGrow: 1, flexBasis: '100px' }}
             ></Column>
             <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
-
-            <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-            <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-            <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-            <Column field="short_description" header="Mô tả" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-            <Column body={(hotel) => actionBodyTemplate2(hotel)}></Column>
+            <Column field="price" body={(rooms) => priceBodyTemplate(rooms.price)} header="Giá" style={{ flexGrow: 1, flexBasis: '200px' }} sortable></Column>
+            <Column field="quantity" header="Số lượng" style={{ flexGrow: 1, flexBasis: '200px' }} sortable ></Column>
+            <Column field="size" header="Kích thước" style={{ flexGrow: 1, flexBasis: '200px' }}  ></Column>
+            <Column field="description" header="Mô tả" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+            <Column body={(rooms) => actionBodyTemplate2(rooms)}></Column>
         </DataTable>
 
         <Dialog header="Chi tiết" visible={visible} onHide={() => setVisible(false)}
             style={{ width: '60vw' }} maximizable breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
             <p className="m-0">
-                <HotelDetail hotel={hotel ?? null} />
+                <RoomDetail room={room ?? null} />
 
             </p>
         </Dialog>
 
-        <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={hotel ? 'Cập nhật' : 'Tạo mới'}>
+        <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={room ? 'Cập nhật' : 'Tạo mới'}>
 
-            <HotelCreate setVisibleCreate={setVisibleCreate} currentHotel={hotel ?? null} onSave={() => showSuccess()} branches={branches?.filter(branch => branch?.status)}></HotelCreate>
+            <CreateUpdateRoom setVisibleCreate={setVisibleCreate} currentRoom={room ?? null} onSave={() => showSuccess()} hotels={hotels?.filter(hotel => hotel?.status)}></CreateUpdateRoom>
 
-        </Dialog>
+        </Dialog> *
 
 
-        <Dialog visible={visibleImages} maximizable onHide={() => setVisibleImages(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header='Hình ảnh'>
-
-            <HotelUpdateImages propChange={handlePropChange} setVisibleImages={setVisibleImages} hotel={hotel ?? null} />
-
-        </Dialog>
 
         {responseAPI?.status != 200 ?
             <>

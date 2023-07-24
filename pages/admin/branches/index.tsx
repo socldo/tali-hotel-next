@@ -15,6 +15,9 @@ import { TabView, TabPanel } from 'primereact/tabview';
 import adminAuthMiddleware from '../../../components/admin/middleware/adminAuthMiddleware';
 import { toast } from 'react-toastify'
 import { Model } from '../../../interface/index'
+import { SpeedDial } from 'primereact/speeddial';
+import { MenuItem } from 'primereact/menuitem';
+import CustomErrorPage from '../../../components/admin/custom-error';
 
 function Branch() {
 
@@ -28,6 +31,9 @@ function Branch() {
     const [renderCount, setRenderCount] = useState(0);
     const buttonEl = useRef(null);
     const [globalFilter, setGlobalFilter] = useState('');
+    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [visibleError, setVisibleError] = useState<boolean>(false);
+
 
     const [activeIndex, setActiveIndex] = useState(0);
 
@@ -63,6 +69,13 @@ function Branch() {
 
         }
     };
+    useEffect(() => {
+        if (responseAPI?.status != 200) {
+            setVisibleError(true);
+        } else
+            setVisibleError(false);
+
+    }, [responseAPI]);
 
     const fetchBranches = async (): Promise<void> => {
         try {
@@ -121,7 +134,18 @@ function Branch() {
             });
             const data = await response.json();
             console.log('data:', data);
-            setRenderCount(renderCount + 1);
+
+            setResponseAPI({
+                status: data.status,
+                message: data.message,
+                data: data.data,
+            });
+
+            if (data.status == 200) {
+
+                setRenderCount(renderCount + 1);
+            }
+            return data;
         } catch (error) {
             console.error('Error fetching branches:', error);
         }
@@ -155,27 +179,82 @@ function Branch() {
                     :
                     <Button icon="pi pi-check" onClick={() => { setConfirmPopup(true); setBranch(rowData); }} rounded outlined severity="success" aria-label="Bookmark" size="small" />
                 }
-                <Button icon="pi pi-eye" onClick={() => { setVisible(true); setBranch(rowData) }} outlined rounded severity="info" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
 
-                <Button icon="pi pi-pencil" rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
+                <Button icon="pi pi-pencil" onClick={() => { setVisible(true); setBranch(rowData) }} rounded outlined severity="secondary" aria-label="Bookmark" size="small" style={{ marginLeft: '0.2rem' }} />
 
             </>
         );
     };
 
-    // const toolbarLeftTemplate = () => {
 
-    //     return (
-    //         <>
+    const actionBodyTemplate2 = (rowData: Model.Branch) => {
 
 
-    //             <Button label="New" icon="pi pi-plus" style={{ marginRight: '.5em' }} onClick={() => {
-    //                 setVisible(true);
-    //                 setBranch(null);
-    //             }} />
-    //         </>
-    //     );
-    // };
+        const handleClickUpdate = () => {
+            setVisible(true);
+        };
+        const handleClickUpdateStatus = () => {
+            setConfirmPopup(true);
+        };
+
+        const accept = async () => {
+
+            let changeStatus = await handleChangeStatus();
+
+            if (changeStatus?.status === 200) {
+                toast.success('Cập nhật thành công');
+            }
+        };
+
+        const reject = () => {
+            toast.warn('Từ chối cập nhật')
+
+
+        };
+
+        const items: MenuItem[] = [
+
+            {
+                label: 'Update',
+                icon: 'pi pi-pencil',
+                command: () => {
+                    handleClickUpdate();
+                }
+            },
+            rowData.status ?
+                {
+                    label: 'Update-Active',
+                    icon: 'pi pi-times',
+                    command: () => {
+                        handleClickUpdateStatus();
+
+                    }
+                } :
+                {
+                    label: 'Update-Unactive',
+                    icon: 'pi pi-check',
+                    command: () => {
+                        handleClickUpdateStatus();
+                    }
+                }
+        ];
+
+        return (
+            <>
+
+                <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup} onHide={() => setConfirmPopup(false)}
+                    message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={accept} reject={reject} acceptLabel="Có"
+                    rejectLabel="Không" />
+
+                <div className="flex align-items-center justify-content-center" style={{ marginRight: '3rem', height: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                        <SpeedDial onClick={() => { setBranch(rowData); }} model={items} direction="left" style={{ right: '3rem' }} />
+                    </div>
+                </div>
+            </>
+        )
+
+    }
 
     const showSuccess = () => {
         setRenderCount(renderCount => renderCount + 1);
@@ -228,9 +307,7 @@ function Branch() {
 
     return (
         <>
-            {/* <div className="grid">
-                <div className="col-12"> */}
-            {/* <div className="card" > */}
+
 
             <DataTable
                 value={branchFilters}
@@ -250,11 +327,8 @@ function Branch() {
                 ></Column>
                 <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
                 <Column field="images" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(branches) => imageBodyTemplate(branches)} className="font-bold"></Column>
-                {/* <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column> */}
-                {/* <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column> */}
                 <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                {/* <Column field="status" header="Trạng thái" style={{ flexGrow: 1, flexBasis: '200px' }} body={(branches) => statusBodyTemplate(branches)}></Column> */}
-                <Column body={(branches) => actionBodyTemplate(branches)}></Column>
+                <Column body={(branches) => actionBodyTemplate2(branches)}></Column>
 
             </DataTable>
 
@@ -264,9 +338,18 @@ function Branch() {
 
             </Dialog>
 
-            {/* </div > */}
-            {/* </div >
-            </div > */}
+
+            {responseAPI?.status != 200 ?
+                <>
+
+                    <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} >
+
+                        <CustomErrorPage props={responseAPI} />
+
+                    </Dialog>
+                </>
+                : null
+            }
         </>
     );
 }
