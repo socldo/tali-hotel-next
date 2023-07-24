@@ -120,16 +120,14 @@ export namespace Model {
         id: number;
         user_id: number;
         user_role_id: number;
-        user_name: string;
         user_avatar: string;
-        user_role_name: string;
         content: string;
         image: string;
         summary: string;
         title: string;
         type: number;
         views: number;
-        is_deleted: number;
+        is_deleted: boolean;
         created_at: string;
         updated_at: string;
     }

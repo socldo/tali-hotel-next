@@ -1,27 +1,23 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import querystring from 'querystring';
+
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
-
-
-    const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/news/get-list`;
+    const { id } = request.query;
+    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/news/${id}/change-status`;
 
     const requestOptions = {
         method: request.method,
+        body: JSON.stringify(request.body),
         headers: new Headers({
             "Content-Type": "application/json",
             Accept: "application/json",
-            Authorization: 'Bearer ' + `${request.headers['authorization']}`,
-            "Cache-Control": "no-cache, no-store, must-revalidate",
-            Pragma: "no-cache",
-            Expires: "0",
+            Authorization: 'Bearer ' + `${request.headers['authorization']}`
 
         }),
     };
-
     try {
-        const apiResponse = await fetch(baseUrl, requestOptions);
 
+        const apiResponse = await fetch(fetchUrl, requestOptions);
         const data = await apiResponse.json();
         response.status(apiResponse.status).json(data);
     } catch (error) {
@@ -29,3 +25,5 @@ export default async function handler(request: NextApiRequest, response: NextApi
         response.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+

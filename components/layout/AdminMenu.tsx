@@ -23,9 +23,10 @@ const AppMenu = () => {
                 { label: 'Phòng', icon: 'pi pi-fw pi-calendar-times', to: '/admin/rooms' },
                 { label: 'Tài Khoản', icon: 'pi pi-fw pi-users', to: '/admin/users' },
 
-                { label: 'Đánh giá', icon: 'pi pi-star', to: '/admin/reviews' },
+                { label: 'Đánh giá', icon: 'pi pi-fw pi-star', to: '/admin/reviews' },
+                { label: 'Tin tức', icon: 'pi pi-fw pi-book', to: '/admin/news' },
                 { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },
-                { label: 'Table', icon: 'pi pi-fw pi-table', to: '/uikit/table' },
+
                 { label: 'List', icon: 'pi pi-fw pi-list', to: '/uikit/list' },
                 { label: 'Tree', icon: 'pi pi-fw pi-share-alt', to: '/uikit/tree' },
                 { label: 'Panel', icon: 'pi pi-fw pi-tablet', to: '/uikit/panel' },
