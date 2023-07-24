@@ -36,7 +36,7 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                             <Image
                                 width="500"
                                 height="500"
-                                src="https://images.unsplash.com/photo-1620814153812-38115a7f0fbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
+                                src={hotel.images[0]}
                                 preview
                             />
                         </div>

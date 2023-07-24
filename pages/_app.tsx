@@ -30,6 +30,7 @@ type Props = AppProps & {
 export default function App({ Component, pageProps, router }: Props) {
     const isAdminPage = router.pathname.startsWith('/admin');
 
+    const isAuthPage = router.pathname.startsWith('/auth');
 
     NProgress.configure({ showSpinner: false })
     useEffect(() => {
@@ -81,11 +82,32 @@ export default function App({ Component, pageProps, router }: Props) {
             );
         }
 
+        if (isAuthPage) {
+            return (
+                <RecoilRoot>
+                    <Provider store={store}>
+                        <PersistGate loading={true} persistor={persistor}>
+                            <Component {...pageProps} />
+                            <ToastContainer
+                                position="top-right"
+                                autoClose={3000}
+                                hideProgressBar={false}
+                                newestOnTop={false}
+                                draggable={false}
+                                closeOnClick
+                                pauseOnHover
+                            />
+                            <Footer></Footer>
+                        </PersistGate>
+                    </Provider>
+                </RecoilRoot>);
+        }
+
         return (
             <RecoilRoot>
                 <Provider store={store}>
                     <PersistGate loading={true} persistor={persistor}>
-                        <Header />
+                        <Header /> 
                         <Component {...pageProps} />
                         <ToastContainer
                             position="top-right"

@@ -23,6 +23,8 @@ import { setBookings, setHotelWishList } from '../../features/appSlice'
 import { deleteCookie, getCookie } from 'cookies-next'
 import 'primeicons/primeicons.css';
 import { FiShoppingCart } from 'react-icons/fi'
+import Cookies from 'cookies-next';
+import { GiNotebook } from 'react-icons/gi'
 
 const Header = () => {
     const router = useRouter()
@@ -64,11 +66,25 @@ const Header = () => {
         dispatch(setHotelWishList([]))
         dispatch(setBookings([]))
         toast.success('User logged out...')
+        deleteCookie("id");
+        deleteCookie("jwt_token");
+        deleteCookie("email");
+        deleteCookie("phone");
+        deleteCookie("name");
+        deleteCookie("role");
+        deleteCookie("avatar");
         await router.push('/auth')
+
     }
 
     const handleSignOut = () => {
-        deleteCookie("jet_token");
+        deleteCookie("id");
+        deleteCookie("jwt_token");
+        deleteCookie("email");
+        deleteCookie("phone");
+        deleteCookie("name");
+        deleteCookie("role");
+        deleteCookie("avatar");
     }
 
     const accountMenu = [
@@ -100,14 +116,14 @@ const Header = () => {
             link: '/'
         },
         {
-            icon: <GiEarthAsiaOceania />,
-            name: 'Hoạt động',
-            link: '/'
+            icon: <GiNotebook />,
+            name: 'Quản lí đặt phòng',
+            link: '/booking-manager/manager'
         },
         {
             icon: <GiEarthAsiaOceania />,
             name: 'Hoạt động',
-            link: '/'
+            link: '/explore/explore'
         },
         {
             icon: <MdOutlineAttractions />,
@@ -117,7 +133,7 @@ const Header = () => {
         {
             icon: <MdOutlineAttractions />,
             name: 'Blog',
-            link: '/'
+            link: '/blog'
         },
     ]
 
@@ -198,5 +214,4 @@ const Header = () => {
         </nav>
     </header>
 }
-
-export default Header
+export default Header;

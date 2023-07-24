@@ -133,7 +133,6 @@ const HotelDetailPage = () => {
         setRoomId(branchSlug);
         handleDetailRoom();
         handleReviews();
-        console.log();
     },[])
 
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -160,7 +159,7 @@ const HotelDetailPage = () => {
                 title: `${name} - Booking`,
                 description: `${name} - Booking`
             }}
-        >2
+        >
             <div
                 className="w-full my-4 mx-auto container px-4 lg:px-6 overflow-hidden"
                 onClick={() => {

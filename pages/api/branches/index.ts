@@ -3,14 +3,15 @@ import querystring from 'querystring';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
 
-    const { status } = request.query;
+    const { status , key_search} = request.query;
 
-    const queryParams = querystring.stringify({ status });
+    const queryParams = querystring.stringify({ status , key_search});
 
     const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/branches`;
 
     const fetchUrl = `${baseUrl}?${queryParams}`;
-
+    console.log(fetchUrl);
+    
     const requestOptions = {
         method: request.method,
         headers: new Headers({

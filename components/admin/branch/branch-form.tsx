@@ -161,9 +161,6 @@ const BranchForm: React.FC<BranchFormProps> = ({
 
             let downloadURL = await handleImageUpload(selectedFiles[0]);
 
-            console.log(downloadURL);
-
-
             const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify({
