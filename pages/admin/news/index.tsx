@@ -12,11 +12,14 @@ import { ConfirmPopup } from 'primereact/confirmpopup';
 import { SpeedDial } from 'primereact/speeddial';
 import { MenuItem } from 'primereact/menuitem';
 import { toast } from 'react-toastify'
-
+import { Tooltip } from 'primereact/tooltip';
+import { Image } from 'primereact/image';
+import { Dialog } from 'primereact/dialog';
+import NewsCreateUpdate from '../../../components/admin/news/news-create-update';
 function News() {
 
     const [news, setReviews] = useState<Model.News[]>([]);
-    const [one, setOne] = useState<Model.News>();
+    const [one, setOne] = useState<Model.News | null>();
     const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
     const [loading, setLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
@@ -26,6 +29,7 @@ function News() {
     const [newsFilter, setNewsFilter] = useState<Model.News[]>([]);
     const [confirmPopup, setConfirmPopup] = useState(false);
     const buttonEl = useRef(null);
+    const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
 
     const [renderCount, setRenderCount] = useState(0);
 
@@ -36,7 +40,7 @@ function News() {
         { label: 'Tất cả', value: 0 },
         { label: 'Khách sạn', value: 1 },
         { label: 'Du lịch', value: 2 },
-        { label: 'Kinh nghiệm và lời khuyên', value: 3 }
+        { label: 'Kinh nghiệm', value: 3 }
     ];
 
     useEffect(() => {
@@ -155,7 +159,7 @@ function News() {
             <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                 <TabPanel header="Đang hoạt động" rightIcon="pi pi-check-circle ml-2" >
                 </TabPanel>
-                <TabPanel header="Bị Khóa" rightIcon="pi pi-ban ml-2">
+                <TabPanel header="Tạm ngưng" rightIcon="pi pi-ban ml-2">
                 </TabPanel>
             </TabView>
 
@@ -180,8 +184,8 @@ function News() {
                     icon="pi pi-plus"
                     style={{ marginRight: '.5em' }}
                     onClick={() => {
-                        // setVisibleCreate(true);
-                        // setUser(null);
+                        setVisibleCreate(true);
+                        setOne(null);
                     }}
                 />
             </div>
@@ -189,12 +193,7 @@ function News() {
     );
 
 
-    const renderContent = (rowData: Model.News) => {
 
-        return <>
-
-        </>
-    }
     const actionBodyTemplate = (rowData: Model.News) => {
 
         // const handleClickDetail = () => {
@@ -240,7 +239,7 @@ function News() {
             rowData.is_deleted ?
                 {
                     label: 'Update-Active',
-                    icon: 'pi pi-lock',
+                    icon: 'pi pi-check',
                     command: () => {
                         handleClickUpdateStatus();
 
@@ -248,7 +247,7 @@ function News() {
                 } :
                 {
                     label: 'Update-Unactive',
-                    icon: 'pi pi-lock-open',
+                    icon: 'pi pi-times',
                     command: () => {
                         handleClickUpdateStatus();
                     }
@@ -271,6 +270,47 @@ function News() {
         )
 
     }
+    const renderContentWithTooltip = (content: string) => {
+        let charLimit = 40
+
+        if (content.length > charLimit) {
+            return (
+                <>
+                    <Tooltip target=".short-text" />
+
+                    <div className="short-text" data-pr-tooltip={content}>
+                        {content.slice(0, charLimit)}...
+                    </div>
+                </>
+            );
+        } else {
+            return <div>{content}</div>;
+        }
+    };
+    const imageBodyTemplate = (rowData: Model.News) => {
+        let image = rowData.image ? rowData.image : "";
+
+
+        return (
+            <>
+                <div className=" flex justify-content-center">
+                    <Image src={image} zoomSrc={image} alt="Image" width="80" height="60" preview />
+                </div>
+            </>
+        )
+    };
+
+    const showSuccess = () => {
+        setRenderCount(renderCount => renderCount + 1);
+        if (one) {
+
+            toast.success('Cập nhật thành công!');
+
+        } else {
+            toast.success('Tạo mới thành công!');
+        }
+
+    };
 
     return (
         <>
@@ -292,13 +332,22 @@ function News() {
                     body={(_, { rowIndex }) => rowIndex + 1}
                     style={{ flexGrow: 1, flexBasis: '100px' }}
                 ></Column>
-                <Column field="title" header="Tiêu đề" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
-                {/* <Column field="avatar" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(users) => avatarBodyTemplate(users)} className="font-bold"></Column> */}
-                {/* <Column field="summary" header="Bộ phận" style={{ flexGrow: 1, flexBasis: '200px' }} body={(users) => roleBodyTemplate(users)}></Column> */}
-                <Column field="summary" header="Tóm tắt" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                <Column field="title" header="Tiêu đề" style={{ flexGrow: 1, flexBasis: '160px' }} body={(news) => renderContentWithTooltip(news.title)} sortable className="font-bold"></Column>
+
+                <Column field="images" header="Ảnh" style={{ flexGrow: 1, flexBasis: '160px' }} body={(news) => imageBodyTemplate(news)} className="font-bold"></Column>
+
+                <Column field="summary" header="Tóm tắt" body={(news) => renderContentWithTooltip(news.summary)} style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                <Column field="user_name" header="Người tạo" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                <Column field="views" header="Lượt xem" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                 <Column body={(news) => actionBodyTemplate(news)}></Column>
             </DataTable>
+
+
+            <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={one ? 'Cập nhật' : 'Tạo mới'}>
+
+                <NewsCreateUpdate setVisible={setVisibleCreate} currentNews={one ?? null} onSave={() => showSuccess()} ></NewsCreateUpdate>
+
+            </Dialog>
 
         </>
     );
