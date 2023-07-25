@@ -16,6 +16,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { Image } from 'primereact/image';
 import { Dialog } from 'primereact/dialog';
 import NewsCreateUpdate from '../../../components/admin/news/news-create-update';
+import NewsDetail from '../../../components/admin/news/news-detail';
 function News() {
 
     const [news, setReviews] = useState<Model.News[]>([]);
@@ -30,6 +31,7 @@ function News() {
     const [confirmPopup, setConfirmPopup] = useState(false);
     const buttonEl = useRef(null);
     const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
+    const [visibleDetail, setVisibleDetail] = useState<boolean>(false);
 
     const [renderCount, setRenderCount] = useState(0);
 
@@ -196,12 +198,13 @@ function News() {
 
     const actionBodyTemplate = (rowData: Model.News) => {
 
-        // const handleClickDetail = () => {
-        //     setVisible(true);
-        // };
-        // const handleClickUpdate = () => {
-        //     setVisibleUpdateRole(true);
-        // };
+        const handleClickDetail = () => {
+            setVisibleDetail(true);
+        };
+        const handleClickUpdate = () => {
+            setVisibleCreate(true);
+
+        };
         const handleClickUpdateStatus = () => {
             setConfirmPopup(true);
         };
@@ -222,20 +225,20 @@ function News() {
         };
 
         const items: MenuItem[] = [
-            // {
-            //     label: 'Detail',
-            //     icon: 'pi pi-eye',
-            //     command: () => {
-            //         handleClickDetail()
-            //     }
-            // },
-            // {
-            //     label: 'Update',
-            //     icon: 'pi pi-sort-alt',
-            //     command: () => {
-            //         handleClickUpdate();
-            //     }
-            // },
+            {
+                label: 'Detail',
+                icon: 'pi pi-eye',
+                command: () => {
+                    handleClickDetail()
+                }
+            },
+            {
+                label: 'Update',
+                icon: 'pi pi-pencil',
+                command: () => {
+                    handleClickUpdate();
+                }
+            },
             rowData.is_deleted ?
                 {
                     label: 'Update-Active',
@@ -338,7 +341,7 @@ function News() {
 
                 <Column field="summary" header="Tóm tắt" body={(news) => renderContentWithTooltip(news.summary)} style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                 <Column field="user_name" header="Người tạo" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-                <Column field="views" header="Lượt xem" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                <Column field="views" header="Lượt xem" sortable style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
                 <Column body={(news) => actionBodyTemplate(news)}></Column>
             </DataTable>
 
@@ -346,6 +349,12 @@ function News() {
             <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={one ? 'Cập nhật' : 'Tạo mới'}>
 
                 <NewsCreateUpdate setVisible={setVisibleCreate} currentNews={one ?? null} onSave={() => showSuccess()} ></NewsCreateUpdate>
+
+            </Dialog>
+
+            <Dialog visible={visibleDetail} maximizable onHide={() => setVisibleDetail(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header='Chi tiết'>
+
+                <NewsDetail news={one ?? null}  ></NewsDetail>
 
             </Dialog>
 

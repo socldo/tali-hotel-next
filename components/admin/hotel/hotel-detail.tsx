@@ -46,7 +46,7 @@ const HotelDetail: React.FC<HotelDetailProps> = ({
                     setRatingRate(data.data);
                 }
             } catch (error) {
-                console.error('Error fetching branches:', error);
+                console.error('Error fetching:', error);
             }
         };
 
