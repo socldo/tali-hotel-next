@@ -7,8 +7,6 @@ export default async function handler(request: NextApiRequest, response: NextApi
     const url = request.url;
 
     const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}${url}`;
-    console.log(baseUrl);
-    
     const requestOptions = {
         method: request.method,
         headers: new Headers({

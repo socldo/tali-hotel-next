@@ -43,7 +43,6 @@ const HotelDetail: React.FC<HotelDetailProps> = ({
                 const data = await response.json();
 
                 if (isMounted) {
-                    console.log('data:', data);
                     setRatingRate(data.data);
                 }
             } catch (error) {

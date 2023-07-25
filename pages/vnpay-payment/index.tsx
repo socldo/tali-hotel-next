@@ -19,7 +19,6 @@ const VNPayPayment = () => {
     const handlePayment = () => {
         setBookingId(bookingIdCookier ? bookingIdCookier.toString() : "0");
         const url = `/api/bookings/${bookingIdCookier}`;
-        console.log("booking id:",bookingIdCookier);
 
         const response = fetch(url, {
             method: "POST",

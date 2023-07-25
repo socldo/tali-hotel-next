@@ -1,22 +1,17 @@
 import { Steps } from "primereact/steps";
 import { MenuItem } from "primereact/menuitem";
-import { IBooking, IHotel, IRoom } from "../../models";
+import { IBooking, IRoom } from "../../models";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import moment from "moment";
 import { Image } from 'primereact/image';
 import { getCookie, setCookie } from "cookies-next";
 import StarRating from "../../components/core/StarRating";
 import Link from "next/link";
-import { InputText } from "primereact/inputtext";
 import { Checkbox } from "@material-tailwind/react";
 import { Button } from "../../components/core";
 import ButtonNext from "../../components/core/ButtonNext";
 import querystring from 'querystring';
-import { number } from "yup";
 import { differenceInDays, parseISO } from 'date-fns';
-import { useParams } from 'react-router-dom';
-import { HttpStatusCode } from "axios";
 
 interface Props {
   room: IRoom[];
@@ -190,11 +185,11 @@ const Booking = () => {
     const handleCreateBooking = async () => {
 
         let token = getCookie('jwt_token')?.toString();
-
+        let user_id = getCookie('id')?.toString();
         const url = `/api/bookings/create`;
         
         const bookingData = {
-            user_id: 0,
+            user_id: user_id ? user_id : 0,
             hotel_id: hotelId,
             check_in: checkInData.slice(0,checkInData.indexOf('T1')).replace('"',''),
             check_out:checkOutData.slice(0,checkOutData.indexOf('T1')).replace('"',''),

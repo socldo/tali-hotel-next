@@ -59,8 +59,6 @@ const SignUp = ({ setIsSignIn }: Props) => {
 
         return registerUser(data)
     };
-    // console.log(registerUser);
-
 
     useEffect(() => {
         if (isRegisterSuccess) {
