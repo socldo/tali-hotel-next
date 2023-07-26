@@ -8,17 +8,17 @@ import Link from "next/link";
 import { InputText } from "primereact/inputtext";
 import { useRouter } from "next/router";
 
-const Blog = () => {
-    
+const BlogDetail = () => {
     const router = useRouter();
-    const [news, setNews] = useState([]);
+    const { id } = router.query;
+    const [item, setNews] = useState<INew>();
     const [newsTop, setNewsTop] = useState([]);
-
-    const getListNews = async () => {
+    
+    const getDetailNews = async () => {
         
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        const url = `/api/news/get-list`;
+        const url = `/api/news/${id}`;
         
         const response = await fetch(url, {
             method: "GET",
@@ -56,13 +56,18 @@ const Blog = () => {
 
     }
 
+
     useEffect(() => {
-        getListNews()
+        getDetailNews()
         getListNewsTop()
     }, [])
     
+    const handleDetail = (id: any) => {
+        router.push(`/blog/${id}`)
+    };
+
     const getSeverity = (news: any) => {
-        switch (news.type) {
+        switch (news?.type) {
         case 1:
             return 'Khách sạn';
 
@@ -77,43 +82,37 @@ const Blog = () => {
         }
     };
 
-    const handleDetail = (id: any) => {
-        router.push(`/blog/${id}`)
-    };
-
     return (
         <div className="mr-11 ml-11 mt-16">
             <div className="mr-80 ml-80 rounded-lg">
                 <div className="grid grid-cols-3 gap-4 rounded-lg">
                     <div className="col-span-2 flex flex-col py-2 border-round rounded-lg">
-                        {news.map((item: INew) =>
-                            <div key={item.id} className="boder-1 mt-4 mb-8 border rounded-lg">
-                                <Image src={item.image} alt="Image" width="800" preview />
-                                <div className="ml-8 mt-4 mr-8 mb-8">
-                                    <Tag severity={'info'}>{getSeverity(item)}</Tag>
-                                    <div className="flex flex-row mt-4 text-sm text-slate-500 mb-4">
-                                        <p> <span className="pi pi-eye"></span> {item.views}</p>
-                                        <p> <span className="ml-4 pi pi-comments"></span> {item.views}</p>
-                                        <p> <span className="ml-4 pi pi-calendar-times"></span> {item.created_at.toLocaleString()}</p>
-                                    </div>
-                                    <h2 className="italic text-2xl font-semibold mt-4">{item.title}</h2>
-
-                                    <h2 className="mt-4 text-base text-slate-600">{item.summary}</h2>
-
-                                    <div className="flex justify-between mt-4 items-center">
-                                        <div className="flex flex-row grad-4 items-center">
-                                            <Avatar image={item.user_avatar} className="mr-2" size="large" shape="circle" />
-                                            <p className="font-semibold ">{item.user_name}</p>
-                                        </div>
-                                        
-                                        <Link className="items-center text-yellow-600 text-sm font-semibold hover:text-yellow-700" href={`/blog/` + item.id}>
-                                            <p className=""><span className="mr-2 pi pi-arrow-right"></span>Read more</p>
-                                        </Link>
-                                    </div>
+                        <div key={item?.id} className="boder-1 mt-4 mb-8 border rounded-lg">
+                            <Image src={item?.image} alt="Image" width="800" preview />
+                            <div className="ml-8 mt-4 mr-8 mb-8">
+                                <Tag severity={'info'}>{getSeverity(item)}</Tag>
+                                <div className="flex flex-row mt-4 text-sm text-slate-500 mb-4">
+                                    <p> <span className="pi pi-eye"></span> {item?.views}</p>
+                                    <p> <span className="ml-4 pi pi-comments"></span> {item?.views}</p>
+                                    <p> <span className="ml-4 pi pi-calendar-times"></span> {item?.created_at.toLocaleString()}</p>
                                 </div>
-                               
+                                <h2 className="italic text-2xl font-semibold mt-4">{item?.title}</h2>
+
+                                <h2 className="mt-4 text-base text-slate-600">{item?.summary}</h2>
+                                <h2 className="mt-4 text-base text-slate-600">{item?.content}</h2>
+                                <div className="flex justify-between mt-4 items-center">
+                                    <div className="flex flex-row grad-4 items-center">
+                                        <Avatar image={item?.user_avatar} className="mr-2" size="large" shape="circle" />
+                                        <p className="font-semibold ">{item?.user_name}</p>
+                                    </div>
+                                        
+                                    {/* <Link className="items-center text-yellow-600 text-sm font-semibold hover:text-yellow-700" href={""}>
+                                        <p className=""><span className="mr-2 pi pi-arrow-right"></span>Read more</p>
+                                    </Link> */}
+                                </div>
                             </div>
-                        )}
+                               
+                        </div>
 
                     </div>
                     <div className="grid grid-cols-1 flex content-start mt-6 rounded-lg">
@@ -167,4 +166,4 @@ const Blog = () => {
     );
 };
 
-export default Blog;
+export default BlogDetail;
