@@ -17,4 +17,6 @@ export interface IRoom {
     average_rate: number;
     createdAt?: Date;
     updatedAt?: Date;
+    lat: string;
+    lng: string;
 }

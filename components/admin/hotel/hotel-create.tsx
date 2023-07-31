@@ -397,11 +397,11 @@ const HotelCreate: React.FC<HotelProps> = ({
                     <div>
                         <Dropdown value={sortKey} options={[
                             ...(branches?.map(branch => ({ label: branch.name, value: branch.id })) || [])]}
-                        optionLabel="label"
-                        onChange={(e) => setSortKey(e.value)}
-                        placeholder='Chọn khu vực'
-                        className="w-full md:w-14rem"
-                        style={{ marginRight: '.5em' }} />
+                            optionLabel="label"
+                            onChange={(e) => setSortKey(e.value)}
+                            placeholder='Chọn khu vực'
+                            className="w-full md:w-14rem"
+                            style={{ marginRight: '.5em' }} />
                     </div>
                     {getFormErrorMessage('area_id')}
 

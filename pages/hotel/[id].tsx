@@ -10,7 +10,7 @@ import {
     Ri24HoursFill,
     BsFillShareFill
 } from '../../utils/icons'
-import { Dialog, Transition } from '@headlessui/react'
+import { Transition } from '@headlessui/react'
 import { Button, SearchVertical } from '../../components/core'
 import { Layout, Loader } from '../../components/layout'
 import { RoomHotel } from '../../components/room'
@@ -20,6 +20,8 @@ import { useRouter } from 'next/router'
 import {  RiCupLine, RiHandSanitizerLine } from 'react-icons/ri'
 import {  GalleriaResponsiveOptions } from 'primereact/galleria';
 import { HotelReview, ImageGallery } from '../../components/hotel'
+import GGMap from '../../components/googlemap/GGMap'
+import { Dialog } from 'primereact/dialog'
 
 const HotelDetailPage = () => {
     const router = useRouter()
@@ -41,6 +43,8 @@ const HotelDetailPage = () => {
     const [description, setDescription] = useState('')
     const [address, setAddress] = useState('')
     const [type, setType] = useState('')
+    const [lat, setLat] = useState('')
+    const [lng, setLng] = useState('')
     const [price, setPrice] = useState(0)
     const [status, setStatus] = useState(0)
     const [rateCount, setRateCount] = useState(0)
@@ -52,7 +56,7 @@ const HotelDetailPage = () => {
     const [totalReview, setTotalReview] = useState(0)
     const [showModal, setShowModal] = useState(false)
     const [reviews, setReviews] = useState()
-
+    const [visible, setVisible] = useState(false);
     const responsiveOptions: GalleriaResponsiveOptions[] = [
         {
             breakpoint: '991px',
@@ -101,6 +105,8 @@ const HotelDetailPage = () => {
             setHighlightProperty(data.data.highlight_property)
             setTotalReview(data.data.total_reviews)
             setImages(data.data.images) 
+            setLat(data.data.lat)
+            setLng(data.data.lng)
         }
   
   
@@ -233,12 +239,14 @@ const HotelDetailPage = () => {
                             <div className="text-secondary flex flex-wrap gap-x-2.5 items-center mb-4">
                                 <MdLocationOn />
                                 <h2 className="text-primary">{address}</h2>
-                                <p
-                                    className="text-secondary cursor-pointer"
-                                    // onClick={() => setShowMap(true)}
-                                >
-                                        Địa điểm tuyệt vời - Xem bản đồ
-                                </p>
+                                <span className="cursor-pointer flex-wrap" >
+                                    <p onClick={() => setVisible(true)}>Địa điểm tuyệt vời - Xem vị trí</p>
+                                        
+                                    <Dialog header={address} visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
+
+                                        <GGMap lat={lat} lng={lng}></GGMap>
+                                    </Dialog>
+                                </span>
                             </div>
                         </div>
 

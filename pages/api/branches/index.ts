@@ -10,7 +10,6 @@ export default async function handler(request: NextApiRequest, response: NextApi
     const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/branches`;
 
     const fetchUrl = `${baseUrl}?${queryParams}`;
-    console.log(fetchUrl);
     
     const requestOptions = {
         method: request.method,

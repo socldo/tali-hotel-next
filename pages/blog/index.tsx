@@ -13,12 +13,13 @@ const Blog = () => {
     const router = useRouter();
     const [news, setNews] = useState([]);
     const [newsTop, setNewsTop] = useState([]);
+    const [keySearch, setKeySearch] = useState(''); 
 
     const getListNews = async () => {
         
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        const url = `/api/news/get-list`;
+        const url = `/api/news/get-list?key_search=${keySearch}`;
         
         const response = await fetch(url, {
             method: "GET",
@@ -55,11 +56,13 @@ const Blog = () => {
         return data.data;
 
     }
+    console.log(keySearch);
+    
 
     useEffect(() => {
         getListNews()
         getListNewsTop()
-    }, [])
+    }, [keySearch])
     
     const getSeverity = (news: any) => {
         switch (news.type) {
@@ -137,7 +140,7 @@ const Blog = () => {
                             <div className="text-center mt-8 ml-8 mr-8 justify-items-center">
                                 <span className="p-input-icon-left border-round mb-16">
                                     <i className="pi pi-search" />
-                                    <InputText className="border-lg" placeholder="Tìm kiếm" />
+                                    <InputText className="border-lg" placeholder="Tìm kiếm" onChange={(e) => setKeySearch(e.target.value)} />
                                 </span>
                             </div>
                         </div>

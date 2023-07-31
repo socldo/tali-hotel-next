@@ -127,13 +127,13 @@ const Header = () => {
         },
         {
             icon: <MdOutlineAttractions />,
-            name: 'Đánh giá',
-            link: '/'
+            name: 'Blog',
+            link: '/blog'
         },
         {
             icon: <MdOutlineAttractions />,
-            name: 'Blog',
-            link: '/blog'
+            name: 'Liên hệ',
+            link: '/'
         },
     ]
 

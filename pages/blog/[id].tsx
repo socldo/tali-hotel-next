@@ -7,6 +7,7 @@ import { Avatar } from 'primereact/avatar';
 import Link from "next/link";
 import { InputText } from "primereact/inputtext";
 import { useRouter } from "next/router";
+import HtmlRenderer from "../../components/admin/HtmlRenderer";
 
 const BlogDetail = () => {
     const router = useRouter();
@@ -97,18 +98,15 @@ const BlogDetail = () => {
                                     <p> <span className="ml-4 pi pi-calendar-times"></span> {item?.created_at.toLocaleString()}</p>
                                 </div>
                                 <h2 className="italic text-2xl font-semibold mt-4">{item?.title}</h2>
-
-                                <h2 className="mt-4 text-base text-slate-600">{item?.summary}</h2>
-                                <h2 className="mt-4 text-base text-slate-600">{item?.content}</h2>
+                                {/* <h2 className="mt-4 text-base text-slate-600">{item?.content}</h2> */}
+                                <div className="className="mt-4 text-base text-slate-600>
+                                    <HtmlRenderer htmlString={item?.content ? item?.content : ""}></HtmlRenderer>
+                                </div>
                                 <div className="flex justify-between mt-4 items-center">
                                     <div className="flex flex-row grad-4 items-center">
                                         <Avatar image={item?.user_avatar} className="mr-2" size="large" shape="circle" />
                                         <p className="font-semibold ">{item?.user_name}</p>
                                     </div>
-                                        
-                                    {/* <Link className="items-center text-yellow-600 text-sm font-semibold hover:text-yellow-700" href={""}>
-                                        <p className=""><span className="mr-2 pi pi-arrow-right"></span>Read more</p>
-                                    </Link> */}
                                 </div>
                             </div>
                                

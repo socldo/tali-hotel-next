@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { IHotel, IRoom } from '../../models'
 import Button from './Button'
 import StarRating from './StarRating'
@@ -7,6 +7,9 @@ import { Image } from 'primereact/image';
 import { MdLocationOn } from '../../utils/icons'
 import { Tag } from 'primereact/tag';
 import { atom, useRecoilState } from 'recoil';
+import { MapContainer } from '../map'
+import GGMap from '../googlemap/GGMap'
+import { Dialog } from 'primereact/dialog'
 interface Props {
     data?: IRoom[];
     city?: string;
@@ -19,8 +22,10 @@ const numberFormat = (e: any) =>
     }).format(e);
 
 
+
 const SearchResults: React.FC<Props> = ({ data, city }) => {
-    
+    const [visible, setVisible] = useState(false);
+    console.log(visible);
 
     return (
         <div>
@@ -54,8 +59,13 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                                     <span className="cursor-pointer capitalize">
                                         {hotel.address}
                                     </span>
-                                    <span className="cursor-pointer flex-wrap">
-                                        Show on map
+                                    <span className="cursor-pointer flex-wrap" >
+                                        <p onClick={() => setVisible(true)}>Xem vị trí</p>
+                                        
+                                        <Dialog header={hotel.address} visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
+
+                                            <GGMap lat={hotel.lat} lng={hotel.lng}></GGMap>
+                                        </Dialog>
                                     </span>
                                 </div>
                                 <div className="flex flex-wrap gap-1">

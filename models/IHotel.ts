@@ -21,4 +21,6 @@ export interface IHotel {
     is_have_parking?: number;
     short_description: string;
     highlight_property: string;
+    lat: string;
+    lng: string;
 }

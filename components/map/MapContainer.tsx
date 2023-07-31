@@ -15,10 +15,10 @@ const MapContainer = ({ hotel }: { hotel: IHotel }) => {
 
     return (
         <>
-            {/* <Map
+            <Map
                 initialViewState={{
-                    longitude: hotel.address.lng,
-                    latitude: hotel.address.lat,
+                    longitude: parseFloat(hotel.lat),
+                    latitude: parseFloat(hotel.lng),
                     zoom: 16
                 }}
                 style={{ width: 600, height: 400 }}
@@ -26,9 +26,9 @@ const MapContainer = ({ hotel }: { hotel: IHotel }) => {
                 mapboxAccessToken={mapboxAccessToken}
             >
                 {hotels?.map(e => <Marker
-                    key={e._id}
-                    longitude={e.address.lng}
-                    latitude={e.address.lat}
+                    key={e.id}
+                    longitude={parseFloat(e.lng)}
+                    latitude={parseFloat(e.lat)}
                     color="red"
                     onClick={event => {
                         event.originalEvent.stopPropagation()
@@ -36,8 +36,8 @@ const MapContainer = ({ hotel }: { hotel: IHotel }) => {
                     }}
                 />)}
                 <Marker
-                    longitude={hotel.address.lng}
-                    latitude={hotel.address.lat}
+                    longitude={parseFloat(hotel.lat)}
+                    latitude={parseFloat(hotel.lng)}
                     color="blue"
                     onClick={event => {
                         event.originalEvent.stopPropagation()
@@ -49,8 +49,8 @@ const MapContainer = ({ hotel }: { hotel: IHotel }) => {
                 {popupInfo && (
                     <Popup
                         anchor="top"
-                        longitude={popupInfo.address.lng!}
-                        latitude={popupInfo.address.lat!}
+                        longitude={parseFloat(popupInfo.lng)!}
+                        latitude={parseFloat(popupInfo.lat)!}
                         onClose={() => setPopupInfo(null)}
 
                     >
@@ -58,18 +58,18 @@ const MapContainer = ({ hotel }: { hotel: IHotel }) => {
                             className="cursor-pointer"
                             onClick={(e) => {
                                 e.preventDefault()
-                                router.push(`/hotel/${popupInfo?._id}`)
+                                router.push(`/hotel/${popupInfo?.id}`)
                             }
                             }>
 
                             <div className="font-bold">
-                                {popupInfo.title}
+                                {popupInfo.name}
                             </div>
-                            <Image src={popupInfo.photos[0]} alt={popupInfo.name} width={250} height={150} />
+                            <Image src={popupInfo.images[0]} alt={popupInfo.name} width={250} height={150} />
                         </div>
                     </Popup>
                 )}
-            </Map> */}
+            </Map>
         </>
     )
 }

@@ -120,6 +120,7 @@ export namespace Model {
         id: number;
         user_id: number;
         user_role_id: number;
+        user_name: string;
         user_avatar: string;
         content: string;
         image: string;
