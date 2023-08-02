@@ -1,5 +1,5 @@
-import React from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import React from 'react';
 
 const containerStyle = {
     width: '100%',
@@ -13,6 +13,7 @@ interface Props {
 }
 
 
+
 const GGMap: React.FC<Props> = ({lat, lng}) => {
     console.log(lat);
     
@@ -22,13 +23,17 @@ const GGMap: React.FC<Props> = ({lat, lng}) => {
     };
     
     return (
-        <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={14}
-        >
-            <Marker position={center} />
-        </GoogleMap>
+        <LoadScript googleMapsApiKey={'AIzaSyDxupq7h_cyTu3QkYeB8MAxWz_CePD74u4'}>
+            <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={center}
+                zoom={14}
+        
+            >
+                <Marker position={center} />
+            </GoogleMap>
+
+        </LoadScript>
     );
 };
 

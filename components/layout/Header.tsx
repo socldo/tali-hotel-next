@@ -133,7 +133,7 @@ const Header = () => {
         {
             icon: <MdOutlineAttractions />,
             name: 'Liên hệ',
-            link: '/'
+            link: '/contact'
         },
     ]
 
