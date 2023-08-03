@@ -21,6 +21,7 @@ import { RecoilRoot } from 'recoil'
 import { LayoutProvider } from '../components/layout/context/layoutcontext'
 import AdminLayout from '../components/layout/AdminLayout'
 import { Page } from '../types/layout'
+import { LoadScript } from '@react-google-maps/api'
 
 
 type Props = AppProps & {
@@ -106,20 +107,23 @@ export default function App({ Component, pageProps, router }: Props) {
         return (
             <RecoilRoot>
                 <Provider store={store}>
-                    <PersistGate loading={true} persistor={persistor}>
-                        <Header /> 
-                        <Component {...pageProps} />
-                        <ToastContainer
-                            position="top-right"
-                            autoClose={3000}
-                            hideProgressBar={false}
-                            newestOnTop={false}
-                            draggable={false}
-                            closeOnClick
-                            pauseOnHover
-                        />
-                        <Footer></Footer>
-                    </PersistGate>
+
+                    <LoadScript googleMapsApiKey={'AIzaSyDxupq7h_cyTu3QkYeB8MAxWz_CePD74u4'}>
+                        <PersistGate loading={true} persistor={persistor}>
+                            <Header /> 
+                            <Component {...pageProps} />
+                            <ToastContainer
+                                position="top-right"
+                                autoClose={3000}
+                                hideProgressBar={false}
+                                newestOnTop={false}
+                                draggable={false}
+                                closeOnClick
+                                pauseOnHover
+                            />
+                            <Footer></Footer>
+                        </PersistGate>
+                    </LoadScript>
                 </Provider>
             </RecoilRoot>
         )
