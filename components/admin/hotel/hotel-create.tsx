@@ -10,6 +10,7 @@ import CustomErrorPage from '../custom-error';
 import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
 import { Model } from '../../../interface';
 import { InputNumber } from 'primereact/inputnumber';
+import HotelMap from './hotel-map';
 
 type FormErrors = {
     name?: string;
@@ -85,6 +86,7 @@ const HotelCreate: React.FC<HotelProps> = ({
 
     const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
     const [visibleError, setVisibleError] = useState<boolean>(false);
+    const [visibleMap, setVisibleMap] = useState<boolean>(false);
 
     const token = getCookie('jwt_token')?.toString();
 
@@ -482,13 +484,27 @@ const HotelCreate: React.FC<HotelProps> = ({
                     </div>
                 </div>
 
+                <div className='button-save-cancel' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                        <Button onClick={() => setVisibleMap(true)} label="Chọn vị trí" severity="help" type="submit" icon="pi pi-images" style={{ marginRight: '.5em' }} />
 
-                <div className='button-save-cancel' style={{ textAlign: 'right' }}>
-                    <Button label="Lưu" type="submit" icon="pi pi-check" style={{ marginRight: '.5em' }} onClick={() => handleSave()} />
-                    <Button label="Hủy" severity="danger" icon="pi pi-times" onClick={() => { setVisibleCreate(false); setOnClickSave(false); }} />
+                    </div>
+                    <div >
+                        <Button label="Lưu" type="submit" icon="pi pi-check" style={{ marginRight: '.5em' }} onClick={() => handleSave()} />
+                        <Button label="Hủy" severity="danger" icon="pi pi-times" onClick={() => { setVisibleCreate(false); setOnClickSave(false); }} />
+                    </div>
                 </div>
 
+
+                <Dialog visible={visibleMap} maximizable onHide={() => setVisibleMap(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header='Vị trí'>
+
+                    <HotelMap></HotelMap>
+                </Dialog>
+
             </form >
+
+
+
 
             {responseAPI?.status != 200 ?
                 <>
