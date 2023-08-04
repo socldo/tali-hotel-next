@@ -89,7 +89,7 @@ const Blog = () => {
             <div className="mr-80 ml-80 rounded-lg">
                 <div className="grid grid-cols-3 gap-4 rounded-lg">
                     <div className="col-span-2 flex flex-col py-2 border-round rounded-lg">
-                        {news.map((item: INew) =>
+                        {news?.map((item: INew) =>
                             <div key={item.id} className="boder-1 mt-4 mb-8 border rounded-lg">
                                 <Image src={item.image} alt="Image" width="800" preview />
                                 <div className="ml-8 mt-4 mr-8 mb-8">

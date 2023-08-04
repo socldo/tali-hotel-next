@@ -10,6 +10,7 @@ import { atom, useRecoilState } from 'recoil';
 import { MapContainer } from '../map'
 import GGMap from '../googlemap/GGMap'
 import { Dialog } from 'primereact/dialog'
+import { LoadScript } from '@react-google-maps/api'
 interface Props {
     data?: IRoom[];
     city?: string;
@@ -60,6 +61,7 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                                         {hotel.address}
                                     </span>
                                     <span className="cursor-pointer flex-wrap" >
+
                                         <p onClick={() => setVisible(true)}>Xem vị trí</p>
                                         
                                         <Dialog header={hotel.address} visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
