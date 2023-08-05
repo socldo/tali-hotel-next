@@ -5,6 +5,8 @@ import { Rating } from "primereact/rating";
 import { getCookie } from 'cookies-next';
 import { Checkbox } from "primereact/checkbox";
 import { Model } from '../../../interface';
+import { Dialog } from 'primereact/dialog';
+import GGMap from '../../googlemap/GGMap';
 
 interface HotelDetailProps {
 
@@ -19,6 +21,7 @@ const HotelDetail: React.FC<HotelDetailProps> = ({
     const [images, setImages] = useState<string[]>([]);
     const galleria = useRef<any>(null);
     const [ratingRate, setRatingRate] = useState<Model.RatingRate | null>();
+    const [visibleMap, setVisibleMap] = useState<boolean>(false);
 
 
 
@@ -100,14 +103,15 @@ const HotelDetail: React.FC<HotelDetailProps> = ({
 
         return (
             <>
-                {/* <div className="card flex justify-content-center"> */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Button label="Hình ảnh" icon="pi pi-external-link" onClick={() => galleria.current?.show()} />
+                    <Button label="Vị trí" severity="success" icon="pi pi-map" onClick={() => setVisibleMap(true)} />
+                </div>
                 <Galleria ref={galleria} value={images} responsiveOptions={responsiveOptions} numVisible={9} style={{ maxWidth: '50%' }}
                     circular fullScreen showItemNavigators item={itemTemplate} thumbnail={thumbnailTemplate} />
-
-                <Button label="Hình ảnh" icon="pi pi-external-link" onClick={() => galleria.current?.show()} />
-                {/* </div> */}
             </>
-        )
+        );
+
 
     }
 
@@ -238,6 +242,16 @@ const HotelDetail: React.FC<HotelDetailProps> = ({
                 </div>
             </div>
             {imageBodyTemplate(hotel)}
+
+            <Dialog visible={visibleMap} maximizable onHide={() => setVisibleMap(false)} style={{ width: '60vw' }} header='Vị trí'>
+
+
+                <GGMap
+                    lat={hotel.lat ? hotel.lat.toString() : '10.762622'}
+                    lng={hotel.lng ? hotel.lng.toString() : '106.660172'}
+                />
+
+            </Dialog>
 
         </>
     );

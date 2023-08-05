@@ -108,22 +108,22 @@ export default function App({ Component, pageProps, router }: Props) {
             <RecoilRoot>
                 <Provider store={store}>
 
-                    <LoadScript googleMapsApiKey={'AIzaSyDxupq7h_cyTu3QkYeB8MAxWz_CePD74u4'}>
-                        <PersistGate loading={true} persistor={persistor}>
-                            <Header /> 
-                            <Component {...pageProps} />
-                            <ToastContainer
-                                position="top-right"
-                                autoClose={3000}
-                                hideProgressBar={false}
-                                newestOnTop={false}
-                                draggable={false}
-                                closeOnClick
-                                pauseOnHover
-                            />
-                            <Footer></Footer>
-                        </PersistGate>
-                    </LoadScript>
+                    {/* <LoadScript googleMapsApiKey={'AIzaSyDxupq7h_cyTu3QkYeB8MAxWz_CePD74u4'}> */}
+                    <PersistGate loading={true} persistor={persistor}>
+                        <Header />
+                        <Component {...pageProps} />
+                        <ToastContainer
+                            position="top-right"
+                            autoClose={3000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            draggable={false}
+                            closeOnClick
+                            pauseOnHover
+                        />
+                        <Footer></Footer>
+                    </PersistGate>
+                    {/* </LoadScript> */}
                 </Provider>
             </RecoilRoot>
         )

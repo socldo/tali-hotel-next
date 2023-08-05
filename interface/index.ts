@@ -52,6 +52,8 @@ export namespace Model {
         price: number;
         created_at: string;
         updated_at: string;
+        lat: number;
+        lng: number;
     }
 
     export interface RatingRate {

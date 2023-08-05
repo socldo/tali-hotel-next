@@ -40,6 +40,8 @@ interface HotelModel {
     highlight_property: string;
     type: number;
     price: number;
+    lat: number;
+    lng: number;
 
 }
 
@@ -59,7 +61,9 @@ const defaultHotelModel = {
     short_description: "",
     highlight_property: "",
     type: 0,
-    price: 0
+    price: 0,
+    lat: 10.762622,
+    lng: 106.660172
 }
 
 
@@ -87,6 +91,8 @@ const HotelCreate: React.FC<HotelProps> = ({
     const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
     const [visibleError, setVisibleError] = useState<boolean>(false);
     const [visibleMap, setVisibleMap] = useState<boolean>(false);
+
+
 
     const token = getCookie('jwt_token')?.toString();
 
@@ -128,7 +134,9 @@ const HotelCreate: React.FC<HotelProps> = ({
                 short_description: currentHotel.short_description,
                 highlight_property: currentHotel.highlight_property,
                 type: currentHotel.type,
-                price: currentHotel.price
+                price: currentHotel.price,
+                lat: currentHotel.lat,
+                lng: currentHotel.lat
             });
 
             setSortKey(currentHotel?.branch_id);
@@ -277,8 +285,9 @@ const HotelCreate: React.FC<HotelProps> = ({
                     is_have_parking: hotelCreate?.is_have_parking ? 1 : 0,
                     short_description: hotelCreate?.short_description,
                     highlight_property: hotelCreate?.highlight_property,
-                    price: hotelCreate?.price
-
+                    price: hotelCreate?.price,
+                    lat: hotelCreate?.lat,
+                    lng: hotelCreate?.lng
                 }),
                 headers: new Headers({
                     "Content-Type": "application/json",
@@ -321,8 +330,9 @@ const HotelCreate: React.FC<HotelProps> = ({
                     is_have_parking: hotelCreate?.is_have_parking ? 1 : 0,
                     short_description: hotelCreate?.short_description,
                     highlight_property: hotelCreate?.highlight_property,
-                    price: hotelCreate?.price
-
+                    price: hotelCreate?.price,
+                    lat: hotelCreate?.lat,
+                    lng: hotelCreate?.lng
                 }),
                 headers: new Headers({
                     "Content-Type": "application/json",
@@ -348,7 +358,15 @@ const HotelCreate: React.FC<HotelProps> = ({
         }
     };
 
-
+    const handleMapClick = (lat: number, lng: number) => {
+        setHotelCreate(
+            {
+                ...hotelCreate,
+                lat: lat,
+                lng: lng
+            }
+        );
+    };
 
 
     return (
@@ -486,7 +504,7 @@ const HotelCreate: React.FC<HotelProps> = ({
 
                 <div className='button-save-cancel' style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
-                        <Button onClick={() => setVisibleMap(true)} label="Chọn vị trí" severity="help" type="submit" icon="pi pi-images" style={{ marginRight: '.5em' }} />
+                        <Button onClick={() => setVisibleMap(true)} label="Chọn vị trí" severity="help" type="submit" icon="pi pi-map-marker" style={{ marginRight: '.5em' }} />
 
                     </div>
                     <div >
@@ -496,9 +514,11 @@ const HotelCreate: React.FC<HotelProps> = ({
                 </div>
 
 
-                <Dialog visible={visibleMap} maximizable onHide={() => setVisibleMap(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header='Vị trí'>
+                <Dialog visible={visibleMap} maximizable onHide={() => setVisibleMap(false)} style={{ width: '60vw' }} header='Vị trí'>
 
-                    <HotelMap></HotelMap>
+
+                    <HotelMap setVisibleMap={setVisibleMap} onMapClick={handleMapClick} latHotel={!currentHotel?.lat ? 10.762622 : currentHotel?.lat} lngHotel={!currentHotel?.lng ? 106.660172 : currentHotel?.lng} />
+
                 </Dialog>
 
             </form >

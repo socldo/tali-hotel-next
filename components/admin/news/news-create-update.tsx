@@ -75,7 +75,7 @@ const NewsCreateUpdate: React.FC<Props> = ({
                 summary: currentNews.summary,
                 type: currentNews.type
             });
-            setText(currentNews.summary)
+            setText(currentNews.content)
 
         }
     }, []);
