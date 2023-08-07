@@ -35,7 +35,7 @@ const Header = () => {
             // Thực hiện tác vụ khi người dùng truy cập vào trang /auth
             // ...
             console.log(1);
-            
+
             // Ví dụ: Xóa cookie
             deleteCookie("jwt_token");
             deleteCookie("email");
@@ -47,18 +47,17 @@ const Header = () => {
     }, []);
 
     const jwt_token = getCookie('jwt_token');
-    console.log(jwt_token);
-    
+
+
     const enableProfile = router.pathname === '/auth';
-    console.log(enableProfile);
-    
+
+
     const email = getCookie('email');
     const phone = getCookie('phone');
     const name = getCookie('name');
-    const role = getCookie('role');
+    const role_id = getCookie('role_id');
     const avatar = getCookie('avatar');
 
-    
     const dispatch = useAppDispatch()
 
     const handleLogout = async () => {
@@ -90,7 +89,7 @@ const Header = () => {
     const accountMenu = [
         {
             icon: <AiOutlineUser />,
-            name: 'Quản lí tài khoản',
+            name: 'Tài khoản',
             link: '/user'
         },
         {
@@ -137,22 +136,49 @@ const Header = () => {
         },
     ]
 
+
+    const adminNavigationButton = (role: any) => {
+
+
+        if (role !== undefined && role !== null) {
+            const roleNumber = parseInt(role, 10);
+
+            if (!isNaN(roleNumber) && roleNumber !== 1) {
+                return (
+                    <li className="font-semibold bg-white hover:bg-gray-300 block whitespace-no-wrap">
+                        <Link href='/admin'
+                            className=" flex items-center py-2 px-4 gap-x-2.5 ">
+                            {<MdOutlineAttractions />}
+                            <span>Quản trị</span>
+                        </Link>
+                    </li>
+                );
+            }
+        }
+
+        return null;
+
+
+    }
+
+
+
     return <header className="shadow-xl w-full border-b-2">
-        <nav className=""> 
+        <nav className="">
             <div className="flex flex-wrap justify-between items-center gap-2.5 mx-auto container px-4 lg:px-6 py-2.5 ">
                 <Link href="/">
                     <span className="self-center text-3xl font-semibold whitespace-nowrap text-white"><img className='h-12' src="/tali-hotel-logo-black.png" alt="" /></span>
                 </Link>
-                {enableProfile != true ?                 <div className=" flex flex-end items-end gap-2 sm:gap-4">
+                {enableProfile != true ? <div className=" flex flex-end items-end gap-2 sm:gap-4">
                     {jwt_token
                         ? <>
                             <div
                                 className="group inline-block relative">
-                                    
+
                                 <button
                                     className=" w-full px-2 flex items-center text-black gap-1 ">
-                                    {avatar 
-                                        ?<>
+                                    {avatar
+                                        ? <>
                                             <img className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" src={avatar.toString()} alt="Bordered avatar"></img>
                                         </>
                                         :
@@ -162,11 +188,13 @@ const Header = () => {
                                             overflow-hidden">
                                             <HiUser size={30} />
                                         </div>}
-                                    
+
                                     <span className="ml-2 font-medium hidden md:block">Xin chào {name}</span>
 
                                 </button>
                                 <ul className="shadow-2xl w-max absolute z-50 right-0 hidden text-black pt-2 group-hover:block">
+
+                                    {adminNavigationButton(role_id)}
                                     {accountMenu.map(item =>
                                         <li key={item.name}
                                             className="font-semibold bg-white hover:bg-gray-300 block whitespace-no-wrap">
@@ -191,7 +219,7 @@ const Header = () => {
                         : <>
 
                             <Link href="/auth" onClick={handleSignOut}>
-                                <Button text="Đăng nhập" textColor="text-primary" bgColor="bg-white" focusHandle="hover:bg-gray-300"/>
+                                <Button text="Đăng nhập" textColor="text-primary" bgColor="bg-white" focusHandle="hover:bg-gray-300" />
                             </Link>
 
                         </>}

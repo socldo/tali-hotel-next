@@ -19,6 +19,9 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
         const apiResponse = await fetch(fetchUrl, requestOptions);
         const data = await apiResponse.json();
+        console.log(data);
+
+
         response.status(apiResponse.status).json(data);
     } catch (error) {
         console.error('Error fetching data:', error);
