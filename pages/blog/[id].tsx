@@ -85,7 +85,7 @@ const BlogDetail = () => {
 
     return (
         <div className="mr-11 ml-11 mt-16">
-            <div className="mr-30 ml-30 rounded-lg">
+            <div className="mr-80 ml-80 rounded-lg">
                 <div className="grid grid-cols-3 gap-4 rounded-lg">
                     <div className="col-span-2 flex flex-col py-2 border-round rounded-lg">
                         <div key={item?.id} className="boder-1 mt-4 mb-8 border rounded-lg">

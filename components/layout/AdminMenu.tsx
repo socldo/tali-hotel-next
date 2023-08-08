@@ -29,25 +29,14 @@ const AppMenu = () => {
 
                 { label: 'Đánh giá', icon: 'pi pi-fw pi-star', to: '/admin/reviews' },
                 { label: 'Tin tức', icon: 'pi pi-fw pi-book', to: '/admin/news' },
-                { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },
-
-                { label: 'List', icon: 'pi pi-fw pi-list', to: '/uikit/list' },
-                { label: 'Tree', icon: 'pi pi-fw pi-share-alt', to: '/uikit/tree' },
-                { label: 'Panel', icon: 'pi pi-fw pi-tablet', to: '/uikit/panel' },
-                { label: 'Overlay', icon: 'pi pi-fw pi-clone', to: '/uikit/overlay' },
-                { label: 'Media', icon: 'pi pi-fw pi-image', to: '/uikit/media' },
-                { label: 'Menu', icon: 'pi pi-fw pi-bars', to: '/uikit/menu', preventExact: true },
-                { label: 'Message', icon: 'pi pi-fw pi-comment', to: '/uikit/message' },
-                { label: 'File', icon: 'pi pi-fw pi-file', to: '/uikit/file' },
-                { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/charts' },
-                { label: 'Misc', icon: 'pi pi-fw pi-circle', to: '/uikit/misc' }
+                { label: 'Booking', icon: 'pi pi-fw pi-ticket', to: '/admin/booking' }
             ]
         },
         {
-            label: 'Prime Blocks',
+            label: 'Báo cáo',
             items: [
-                { label: 'Free Blocks', icon: 'pi pi-fw pi-eye', to: '/blocks', badge: 'NEW' },
-                { label: 'All Blocks', icon: 'pi pi-fw pi-globe', url: 'https://blocks.primereact.org', target: '_blank' }
+                { label: 'Khu vực', icon: 'pi pi-fw pi-eye', to: '/blocks' },
+                { label: 'Khách sạn', icon: 'pi pi-fw pi-globe', to: '/blocks' }
             ]
         },
         {
