@@ -104,6 +104,7 @@ export namespace Model {
         id: number;
         parent_review_id: number;
         hotel_id: number;
+
         hotel_name: string;
         user_id: number;
         user_role_id: number;
@@ -134,4 +135,30 @@ export namespace Model {
         created_at: string;
         updated_at: string;
     }
+
+    export interface Booking {
+        id: number;
+        user_id: number;
+        hotel_id: number;
+        branch_id: number;
+        checkin_date: string;
+        checkout_date: string;
+        status: number;
+        amount: number;
+        total_amount: number;
+        deposit_amount: number;
+        payment_type: number;
+        payment_status: number;
+        first_name: number;
+        last_name: number;
+        phone: string;
+        email: string;
+        hotel_name: string;
+        image: string;
+        type: string;
+        rating: number;
+        created_at: string;
+        updated_at: string;
+    }
+
 }

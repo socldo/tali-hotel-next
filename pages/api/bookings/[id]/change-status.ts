@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
     const { id } = request.query;
-    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/branches/${id}/change-status`;
+    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${id}/change-status`;
 
     const requestOptions = {
         method: request.method,
