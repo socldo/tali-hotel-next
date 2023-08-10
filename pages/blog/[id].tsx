@@ -14,13 +14,13 @@ const BlogDetail = () => {
     const { id } = router.query;
     const [item, setNews] = useState<INew>();
     const [newsTop, setNewsTop] = useState([]);
-    
+
     const getDetailNews = async () => {
-        
+
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/news/${id}`;
-        
+
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -31,17 +31,17 @@ const BlogDetail = () => {
         });
         const data = await response.json();
         setNews(data.data)
-        
+
         return data.data;
 
     }
 
     const getListNewsTop = async () => {
-        
+
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/news/get-list?sort=1`;
-        
+
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -52,7 +52,7 @@ const BlogDetail = () => {
         });
         const data = await response.json();
         setNewsTop(data.data)
-        
+
         return data.data;
 
     }
@@ -62,24 +62,24 @@ const BlogDetail = () => {
         getDetailNews()
         getListNewsTop()
     }, [])
-    
+
     const handleDetail = (id: any) => {
         router.push(`/blog/${id}`)
     };
 
     const getSeverity = (news: any) => {
         switch (news?.type) {
-        case 1:
-            return 'Khách sạn';
+            case 1:
+                return 'Khách sạn';
 
-        case 2:
-            return 'Du lịch';
+            case 2:
+                return 'Du lịch';
 
-        case 3:
-            return 'Kinh nghiệm và lời khuyên';
+            case 3:
+                return 'Kinh nghiệm và lời khuyên';
 
-        default:
-            return null;
+            default:
+                return null;
         }
     };
 
@@ -98,8 +98,8 @@ const BlogDetail = () => {
                                     <p> <span className="ml-4 pi pi-calendar-times"></span> {item?.created_at.toLocaleString()}</p>
                                 </div>
                                 <h2 className="italic text-2xl font-semibold mt-4">{item?.title}</h2>
-                                {/* <h2 className="mt-4 text-base text-slate-600">{item?.content}</h2> */}
-                                <div className="className="mt-4 text-base text-slate-600>
+                                <h2 className="mt-4 text-base text-slate-600">{item?.content}</h2>
+                                <div className="className=" mt-4 text-base text-slate-600>
                                     <HtmlRenderer htmlString={item?.content ? item?.content : ""}></HtmlRenderer>
                                 </div>
                                 <div className="flex justify-between mt-4 items-center">
@@ -109,7 +109,7 @@ const BlogDetail = () => {
                                     </div>
                                 </div>
                             </div>
-                               
+
                         </div>
 
                     </div>
@@ -117,7 +117,7 @@ const BlogDetail = () => {
                         <div className="py-2 border rounded-lg">
                             <h1 className="ml-8 mt-8 text-lg font-semibold text-neutral-600"><span className="pi pi-info"></span> Giới thiệu về tôi</h1>
                             <div className="text-center mt-8 ml-8 mr-8 justify-items-center">
-                                <Avatar label="P" size="xlarge" shape="circle" image="https://firebasestorage.googleapis.com/v0/b/tali-hotel.appspot.com/o/branches%2F80186458-bff7-4a33-86c4-9c3e483cc7fe.jpg?alt=media&token=241ac97b-5acd-47dd-91ee-b270f1c17a28"/>
+                                <Avatar label="P" size="xlarge" shape="circle" image="https://firebasestorage.googleapis.com/v0/b/tali-hotel.appspot.com/o/branches%2F80186458-bff7-4a33-86c4-9c3e483cc7fe.jpg?alt=media&token=241ac97b-5acd-47dd-91ee-b270f1c17a28" />
                                 <h1 className="mt-6 font-semibold">Bùi Nguyễn Minh Tài</h1>
                                 <p className="mt-6 text-stone-600 text-sm"> Hãy để đội ngũ chúng tôi chăm sóc và phục vụ bạn với tận tâm, để bạn có một kỳ nghỉ tuyệt vời và thoải mái nhất. </p>
                                 <p className="space-x-4 mt-8 mb-8">

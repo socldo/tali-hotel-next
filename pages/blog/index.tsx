@@ -9,18 +9,18 @@ import { InputText } from "primereact/inputtext";
 import { useRouter } from "next/router";
 
 const Blog = () => {
-    
+
     const router = useRouter();
     const [news, setNews] = useState([]);
     const [newsTop, setNewsTop] = useState([]);
-    const [keySearch, setKeySearch] = useState(''); 
-
+    const [keySearch, setKeySearch] = useState('');
+    const token = getCookie('jwt_token')?.toString();
     const getListNews = async () => {
-        
-        let token = getCookie('jwt_token')?.toString();
+
+
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/news/get-list?key_search=${keySearch}`;
-        
+
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -31,17 +31,16 @@ const Blog = () => {
         });
         const data = await response.json();
         setNews(data.data)
-        
+
         return data.data;
 
     }
 
     const getListNewsTop = async () => {
-        
-        let token = getCookie('jwt_token')?.toString();
+
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/news/get-list?sort=1`;
-        
+
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -52,37 +51,63 @@ const Blog = () => {
         });
         const data = await response.json();
         setNewsTop(data.data)
-        
+
         return data.data;
 
     }
     console.log(keySearch);
-    
+
 
     useEffect(() => {
         getListNews()
         getListNewsTop()
     }, [keySearch])
-    
+
     const getSeverity = (news: any) => {
         switch (news.type) {
-        case 1:
-            return 'Khách sạn';
+            case 1:
+                return 'Khách sạn';
 
-        case 2:
-            return 'Du lịch';
+            case 2:
+                return 'Du lịch';
 
-        case 3:
-            return 'Kinh nghiệm và lời khuyên';
+            case 3:
+                return 'Kinh nghiệm và lời khuyên';
 
-        default:
-            return null;
+            default:
+                return null;
         }
     };
 
     const handleDetail = (id: any) => {
+
+
         router.push(`/blog/${id}`)
     };
+
+    const fetchCreaseViews = async (id: any): Promise<void> => {
+        try {
+
+            const response = await fetch(`/api/news/${id}/increase`, {
+                method: "POST",
+                body: JSON.stringify({
+                }),
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: !token ? "" : token
+                }),
+            });
+
+            const data = await response.json();
+            console.log('data:', data);
+
+
+        } catch (error) {
+            console.error('Error fetching:', error);
+        }
+    };
+
 
     return (
         <div className="mr-11 ml-11 mt-16">
@@ -108,22 +133,27 @@ const Blog = () => {
                                             <Avatar image={item.user_avatar} className="mr-2" size="large" shape="circle" />
                                             <p className="font-semibold ">{item.user_name}</p>
                                         </div>
-                                        
+
                                         <Link className="items-center text-yellow-600 text-sm font-semibold hover:text-yellow-700" href={`/blog/` + item.id}>
-                                            <p className=""><span className="mr-2 pi pi-arrow-right"></span>Read more</p>
+                                            <p className="" onClick={() => { fetchCreaseViews(item.id) }}><span className="mr-2 pi pi-arrow-right"></span>Read more</p>
                                         </Link>
                                     </div>
                                 </div>
-                               
+
                             </div>
                         )}
 
                     </div>
                     <div className="grid grid-cols-1 flex content-start mt-6 rounded-lg">
                         <div className="py-2 border rounded-lg">
-                            <h1 className="ml-8 mt-8 text-lg font-semibold text-neutral-600"><span className="pi pi-info"></span> Giới thiệu về tôi</h1>
+                            {/* <h1 className="ml-8 mt-8 text-lg font-semibold text-neutral-600">
+                                <span className="pi pi-info">
+
+                                </span>
+                                Giới thiệu về tôi
+                            </h1> */}
                             <div className="text-center mt-8 ml-8 mr-8 justify-items-center">
-                                <Avatar label="P" size="xlarge" shape="circle" image="https://firebasestorage.googleapis.com/v0/b/tali-hotel.appspot.com/o/branches%2F80186458-bff7-4a33-86c4-9c3e483cc7fe.jpg?alt=media&token=241ac97b-5acd-47dd-91ee-b270f1c17a28"/>
+                                <Avatar label="P" size="xlarge" shape="circle" image="https://firebasestorage.googleapis.com/v0/b/tali-hotel.appspot.com/o/branches%2F80186458-bff7-4a33-86c4-9c3e483cc7fe.jpg?alt=media&token=241ac97b-5acd-47dd-91ee-b270f1c17a28" />
                                 <h1 className="mt-6 font-semibold">Bùi Nguyễn Minh Tài</h1>
                                 <p className="mt-6 text-stone-600 text-sm"> Hãy để đội ngũ chúng tôi chăm sóc và phục vụ bạn với tận tâm, để bạn có một kỳ nghỉ tuyệt vời và thoải mái nhất. </p>
                                 <p className="space-x-4 mt-8 mb-8">
@@ -148,7 +178,7 @@ const Blog = () => {
                             <h1 className="ml-8 mt-8 text-lg font-semibold text-neutral-600">Blog phổ biến</h1>
                             <div className=" mt-8 ml-8 mr-8 ">
                                 <ul className="mx-auto container flex flex-col gap-x-2 text-black">
-                                    {newsTop.map((item: INew) =>
+                                    {newsTop?.map((item: INew) =>
                                         <li key={item.id} onClick={() => handleDetail(item.id)}
                                             className="mb-8 rounded-3xl hover:bg-gray-500 hover:bg-opacity-25 whitespace-no-wrap flex flex-row items-center">
                                             <Avatar image={item.user_avatar} className="mr-2" size="large" shape="circle" />
