@@ -8,4 +8,12 @@ export namespace ReportModel {
     }
 
 
+    export interface NumberOfVisitorsAndRevenue {
+        id: number;
+        order_quantity: number;
+        total_revenue: number;
+        report_time: string;
+    }
+
+
 }
