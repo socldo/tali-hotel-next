@@ -22,7 +22,7 @@ import { LayoutProvider } from '../components/layout/context/layoutcontext'
 import AdminLayout from '../components/layout/AdminLayout'
 import { Page } from '../types/layout'
 import { LoadScript } from '@react-google-maps/api'
-import '../styles/layout/layout.scss'
+// import '../styles/layout/layout.scss'
 
 type Props = AppProps & {
     Component: Page;
@@ -63,7 +63,7 @@ export default function App({ Component, pageProps, router }: Props) {
     else {
         if (isAdminPage) {
 
-            // require('../styles/layout/layout.scss');
+            require('../styles/layout/layout.scss');
             return (
 
                 <LayoutProvider>
