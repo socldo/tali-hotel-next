@@ -13,7 +13,7 @@ const NumberOfHotelByAreaReport = () => {
     const [dataLoaded, setDataLoaded] = useState(false);
 
     const columnColors = randomColor({
-        count: numberOfHotelByArea.length, // Số lượng màu cần tạo
+        count: numberOfHotelByArea?.length, // Số lượng màu cần tạo
         luminosity: 'bright', // Chọn màu sáng
         format: 'rgba' // Định dạng màu là rgba
     });
@@ -49,8 +49,8 @@ const NumberOfHotelByAreaReport = () => {
 
     useEffect(() => {
         if (dataLoaded) {
-            const labels = numberOfHotelByArea.map(item => item.name);
-            const dataValues = numberOfHotelByArea.map(item => item.hotel_quantity);
+            const labels = numberOfHotelByArea?.map(item => item.name);
+            const dataValues = numberOfHotelByArea?.map(item => item.hotel_quantity);
 
             const documentStyle = getComputedStyle(document.documentElement);
             const data = {

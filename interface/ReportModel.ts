@@ -7,6 +7,12 @@ export namespace ReportModel {
         hotel_quantity: number;
     }
 
+    export interface CustomerReview {
+        id: number;
+        name: string;
+        quantity: number;
+    }
+
 
     export interface NumberOfVisitorsAndRevenue {
         id: number;

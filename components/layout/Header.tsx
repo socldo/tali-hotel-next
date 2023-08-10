@@ -205,7 +205,7 @@ const Header = () => {
                                         <div onClick={() => handleLogout()}
                                             className="flex items-center py-2 px-4 gap-x-2.5 cursor-pointer">
                                             <VscSignOut />
-                                            <span>Sign out</span>
+                                            <span>Đăng xuất</span>
                                         </div>
                                     </li>
                                 </ul>
