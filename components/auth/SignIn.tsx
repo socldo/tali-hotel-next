@@ -92,8 +92,8 @@ export default function SignIn({ setIsSignIn }: Props) {
             setCookie("avatar", data.avatar);
             setCookie("role_id", data.role_id);
 
-        } else {
-            toast.warning("Sai số điện thoại hoặc mật khẩu!");
+        }   else {
+            toast.warning(json.message);
             deleteCookie("jwt_token");
         }
     };
@@ -182,10 +182,10 @@ export default function SignIn({ setIsSignIn }: Props) {
                         className="w-full md:w-2/5 bg-lightPrimary text-white rounded-b-2xl md:rounded-none md:rounded-r-2xl px-8 py-12 xl:px-12
                         flex flex-col items-center justify-center"
                     >
-                        <h2 className="text-3xl font-bold mb-2">Hello, Friend!</h2>
+                        <h2 className="text-3xl font-bold mb-2">Xin chào!</h2>
                         <div className="border-2 w-10 border-white inline-block mb-2"></div>
                         <p className="mb-2">
-                            Fill up personal information and start journey with us.
+                        Điền thông tin cá nhân và bắt đầu cuộc hành trình với chúng tôi.
                         </p>
                         <div onClick={() => handleSignUp()}>
                             <Button

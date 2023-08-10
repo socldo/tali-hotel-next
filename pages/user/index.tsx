@@ -8,13 +8,13 @@ const UserPage = () => {
     const sidebar = [
         {
             icon: <RiUserSettingsLine />,
-            name: 'Personal details',
+            name: 'Thông tin tài khoản',
             id: 1,
             component: <PersonalDetails />
         },
         {
             icon: <BsShieldLock />,
-            name: 'Security',
+            name: 'Bảo mật',
             id: 2,
             component: <Security />
         }
@@ -55,4 +55,4 @@ const UserPage = () => {
     )
 }
 
-export default withAuthentication(UserPage)
+export default UserPage

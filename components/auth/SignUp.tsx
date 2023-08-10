@@ -219,7 +219,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         </p>
                                     )}
                                 </div>
-                                <button type="submit">
+                                <button type="submit" onClick={handleSubmit(onSubmit)}>
                                     <Button text="Sign Up" textColor="text-white" bgColor="bg-primary" />
                                 </button>
                             </form>

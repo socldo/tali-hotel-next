@@ -6,10 +6,12 @@ export default async function handler(request: NextApiRequest, response: NextApi
     const { id } = request.query;
 
 
-    const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/users/${id}`;
-
+    const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/users/${id}/update`;
+    console.log('body',JSON.stringify(request.body));
+    
     const requestOptions = {
         method: request.method,
+        body: JSON.stringify(request.body),
         headers: new Headers({
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -17,7 +19,6 @@ export default async function handler(request: NextApiRequest, response: NextApi
             "Cache-Control": "no-cache, no-store, must-revalidate",
             Pragma: "no-cache",
             Expires: "0",
-
         }),
     };
     try {

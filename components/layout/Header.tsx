@@ -98,11 +98,6 @@ const Header = () => {
             name: 'Đặt phòng',
             link: '/user/booking'
         },
-        // {
-        //     icon: <AiOutlineWallet />,
-        //     name: 'Reward & Wallet',
-        //     link: '/'
-        // },
         {
             icon: <AiOutlineHeart />,
             name: 'Đã đặt',
