@@ -90,8 +90,8 @@ function AreaReport() {
             <div className="flex">
                 <div className="mr-4">
                     <Dropdown
-                        value={branch}
-                        onChange={(e: DropdownChangeEvent) => { setBranch(e.value), setAreaId(e.value) }}
+                        value={areaId}
+                        onChange={(e: DropdownChangeEvent) => { setAreaId(e.value) }}
                         options={[
                             { label: "Tất cả", value: -1 },
                             ...(branches?.map((branch) => ({ label: branch.name, value: branch.id })) || []),
@@ -113,7 +113,7 @@ function AreaReport() {
                     <Button icon="pi pi-search" rounded severity="success" aria-label="Search" onClick={handleSearchClick} />
                 </div>
             </div>
-            <CustomerReviewReport fromDate={fromDateString} toDate={toDateString} areaId={areaId} search={search} />
+            <CustomerReviewReport fromDate={fromDateString} toDate={toDateString} hotelId={-1} areaId={areaId} search={search} />
         </div>
     );
 }

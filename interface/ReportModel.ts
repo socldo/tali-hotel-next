@@ -22,4 +22,12 @@ export namespace ReportModel {
     }
 
 
+    export interface NumberOfVisitorsAndRevenue {
+        id: number;
+        room_name: string;
+        hotel_id: number;
+        quantity: number;
+        hotel_name: string;
+    }
+
 }

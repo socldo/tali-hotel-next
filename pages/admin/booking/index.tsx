@@ -14,6 +14,7 @@ import { toast } from 'react-toastify'
 import { ConfirmPopup } from "primereact/confirmpopup";
 import { Dialog } from "primereact/dialog";
 import BookingDetailAdmin from "../../../components/admin/booking/booking-detail";
+import BookingCreate from "../../../components/admin/booking/booking-create";
 
 function Booking() {
     const token = getCookie('jwt_token')?.toString();
@@ -35,6 +36,7 @@ function Booking() {
     const [hotels, setHotels] = useState<Model.Hotel[]>([]);
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [visibleDetail, setVisibleDetail] = useState<boolean>(false);
+    const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
 
     const buttonEl = useRef(null);
 
@@ -266,7 +268,7 @@ function Booking() {
                     icon="pi pi-plus"
                     style={{ marginRight: '.5em' }}
                     onClick={() => {
-                        // setVisible(true);
+                        setVisibleCreate(true);
                         // setBranch(null);
                     }}
                 />
@@ -369,6 +371,16 @@ function Booking() {
 
     }
 
+
+    const showSuccess = () => {
+        setRenderCount(renderCount => renderCount + 1);
+
+        let message = !booking ? 'Tạo mới thành công' : 'Cập nhật thành công';
+        toast.success(message);
+
+
+    }
+
     return (
         <>
             <DataTable
@@ -405,6 +417,12 @@ function Booking() {
 
                 </p>
             </Dialog>
+
+            <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={!booking ? "Tạo mới" : "Cập nhật"}>
+                <BookingCreate setVisible={setVisibleCreate} currentBooking={booking || null} onSave={() => showSuccess()} />
+
+            </Dialog>
+
 
         </>
 

@@ -11,18 +11,16 @@ interface Props {
     fromDate: string;
     toDate: string;
     areaId: number;
-    search: number;
     hotelId: number;
+    search: number;
 }
 
-
-
-const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, search, hotelId }) => {
+const RpTotalBookingByRoom: React.FC<Props> = ({ fromDate, toDate, areaId, hotelId, search }) => {
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
     const token = getCookie('jwt_token')?.toString();
     const [dataLoaded, setDataLoaded] = useState(false);
-    const [dataReport, setDataReport] = useState<ReportModel.CustomerReview[]>([]);
+    const [dataReport, setDataReport] = useState<ReportModel.NumberOfVisitorsAndRevenue[]>([]);
 
 
     const columnColors = randomColor({
@@ -46,9 +44,9 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
         if (dataLoaded) {
             const documentStyle = getComputedStyle(document.documentElement);
 
-            const textColor = documentStyle.getPropertyValue('--text-color');
+            // const textColor = documentStyle.getPropertyValue('--text-color');
 
-            let labels = dataReport?.map(item => item.name);
+            let labels = dataReport?.map(item => item.room_name);
 
             const dataValues = dataReport?.map(item => item.quantity);
 
@@ -56,23 +54,24 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
                 labels: labels,
                 datasets: [
                     {
+                        label: 'Số lượng',
                         data: dataValues,
                         backgroundColor: columnColors,
-                        hoverBackgroundColor: columnColors
+                        borderColor: columnColors,
+                        borderWidth: 1
                     }
                 ]
             };
             const options = {
-                cutout: '60%',
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
                 plugins: {
-                    legend: {
-                        labels: {
-                            color: textColor
-                        }
-                    },
                     title: {
                         display: true,
-                        text: 'Biểu đồ đánh giá khách hàng',
+                        text: 'Biểu đồ số lượng đặt phòng',
                         position: 'bottom',
                         fontSize: 16
                     }
@@ -82,6 +81,7 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
             setChartData(data);
             setChartOptions(options);
         }
+
     }, [dataLoaded, dataReport]
     );
 
@@ -93,7 +93,7 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
             console.log(fromDate, toDate, areaId);
 
 
-            const response = await fetch(`/api/reports/customer-review?${queryParams}`, {
+            const response = await fetch(`/api/reports/total-booking-by-room?${queryParams}`, {
                 method: "GET",
                 headers: new Headers({
                     "Content-Type": "application/json",
@@ -119,7 +119,7 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
         <>
 
             <div>
-                <Chart type="doughnut" data={chartData} options={chartOptions} className="w-full md:w-30rem" />
+                <Chart type="bar" data={chartData} options={chartOptions} />
             </div>
 
 
@@ -127,4 +127,4 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
     )
 }
 
-export default CustomerReviewReport;
+export default RpTotalBookingByRoom;
