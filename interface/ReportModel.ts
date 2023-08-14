@@ -30,4 +30,17 @@ export namespace ReportModel {
         hotel_name: string;
     }
 
+
+    export interface BookingRevenueCustomer {
+        total_order: number;
+        total_amount: number;
+        total_new_user: number;
+        total_review: number;
+        total_order_last_month: number;
+        total_amount_last_month: number;
+        total_new_user_last_month: number;
+        total_review_last_month: number;
+    }
+
+
 }

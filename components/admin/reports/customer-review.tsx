@@ -90,8 +90,6 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
         try {
 
             const queryParams = querystring.stringify({ area_id: areaId, hotel_id: hotelId, from_date: fromDate, to_date: toDate, group_by_type: 4 });
-            console.log(fromDate, toDate, areaId);
-
 
             const response = await fetch(`/api/reports/customer-review?${queryParams}`, {
                 method: "GET",
