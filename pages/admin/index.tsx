@@ -3,6 +3,8 @@ import { getCookie } from 'cookies-next';
 import React, { useEffect, useState } from 'react';
 import querystring from 'querystring';
 import { ReportModel } from '../../interface/ReportModel';
+import NumberOfHotelByAreaReport from '../../components/admin/reports/number-of-hotel-by-area';
+import NumberOfVisitorsAndRevenue from '../../components/admin/reports/number-of-visitors-and-revenue';
 
 const AdminPage = () => {
 
@@ -76,15 +78,36 @@ const AdminPage = () => {
 
     return (
         <>
-            <div className="grid" style={{ 'display': 'flex' }}>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
+            <div className="grid" style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                marginRight: '-0.5rem',
+                marginLeft: '-0.5rem',
+                marginTop: '-0.5rem'
+            }}>
+                <div className="col-12 lg:col-6 xl:col-3" style={{
+                    flex: '0 0 auto',
+                    padding: '0.5rem',
+                    width: '25%'
+                }}>
+                    <div className="card mb-0" style={{ 'padding': '2rem' }}>
+                        <div className="flex justify-content-between mb-3" style={{
+                            marginBottom: '1rem',
+                            justifyContent: 'space-between',
+                            display: 'flex'
+                        }}
+                        >
                             <div>
                                 <span className="block text-500 font-medium mb-3">Đặt phòng</span>
                                 <div className="text-900 font-medium text-xl">{dataReport?.total_order} </div>
                             </div>
-                            <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{
+                                width: '2.5rem',
+                                height: '2.5rem',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                display: 'flex'
+                            }}>
                                 <i className="pi pi-shopping-cart text-blue-500 text-xl" />
                             </div>
                         </div>
@@ -100,15 +123,30 @@ const AdminPage = () => {
                     </div>
                 </div>
 
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-between mb-3">
+                <div className="col-12 lg:col-6 xl:col-3" style={{
+                    flex: '0 0 auto',
+                    padding: '0.5rem',
+                    width: '25%'
+                }}>
+                    <div className="card mb-0" style={{ 'padding': '2rem' }}>
+                        <div className="flex justify-between mb-3" style={{
+                            marginBottom: '1rem',
+                            justifyContent: 'space-between',
+                            display: 'flex'
+                        }}
+                        >
                             <div>
                                 <span className="block text-500 font-medium mb-3">Doanh thu</span>
                                 <div className="text-900 font-medium text-xl">{priceBodyTemplate(dataReport?.total_amount!)}</div>
                             </div>
-                            <div className="flex items-center justify-center bg-orange-100 rounded-full" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <i className="pi pi-map-marker text-orange-500 text-xl" />
+                            <div className="flex items-center justify-center bg-orange-100 rounded-full" style={{
+                                width: '2.5rem',
+                                height: '2.5rem',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                display: 'flex'
+                            }}>
+                                <i className="pi pi-money-bill text-orange-500 text-xl" />
                             </div>
                         </div>
                         <span className="text-green-500 font-medium">
@@ -126,44 +164,81 @@ const AdminPage = () => {
                 </div>
 
 
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
+                <div className="col-12 lg:col-6 xl:col-3" style={{
+                    flex: '0 0 auto',
+                    padding: '0.5rem',
+                    width: '25%'
+                }}>
+                    <div className="card mb-0" style={{ 'padding': '2rem' }}>
+                        <div className="flex justify-content-between mb-3" style={{
+                            marginBottom: '1rem',
+                            justifyContent: 'space-between',
+                            display: 'flex'
+                        }}
+                        >
                             <div>
-                                <span className="block text-500 font-medium mb-3">Customers</span>
-                                <div className="text-900 font-medium text-xl">28441</div>
+                                <span className="block text-500 font-medium mb-3">Khách hàng</span>
+                                <div className="text-900 font-medium text-xl">{dataReport?.total_new_user_last_month}</div>
                             </div>
-                            <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <i className="pi pi-inbox text-cyan-500 text-xl" />
+                            <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{
+                                width: '2.5rem',
+                                height: '2.5rem',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                display: 'flex'
+                            }}>
+                                <i className="pi pi-user-plus text-cyan-500 text-xl" />
                             </div>
                         </div>
-                        <span className="text-green-500 font-medium">520 </span>
-                        <span className="text-500">newly registered</span>
+                        <span className="text-green-500 font-medium">+ {dataReport?.total_new_user} </span>
+                        <span className="text-500">đăng ký mới trong tháng</span>
                     </div>
                 </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
+                <div className="col-12 lg:col-6 xl:col-3" style={{
+                    flex: '0 0 auto',
+                    padding: '0.5rem',
+                    width: '25%'
+                }}>
+                    <div className="card mb-0" style={{ 'padding': '2rem' }}>
+                        <div className="flex justify-content-between mb-3" style={{
+                            marginBottom: '1rem',
+                            justifyContent: 'space-between',
+                            display: 'flex'
+                        }}
+                        >
                             <div>
-                                <span className="block text-500 font-medium mb-3">Comments</span>
-                                <div className="text-900 font-medium text-xl">152 Unread</div>
+                                <span className="block text-500 font-medium mb-3">Đánh giá</span>
+                                <div className="text-900 font-medium text-xl">{dataReport?.total_review}</div>
                             </div>
-                            <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{
+                                width: '2.5rem',
+                                height: '2.5rem',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                display: 'flex'
+                            }}>
                                 <i className="pi pi-comment text-purple-500 text-xl" />
                             </div>
                         </div>
-                        <span className="text-green-500 font-medium">85 </span>
-                        <span className="text-500">responded</span>
+                        <span className="text-green-500 font-medium">
+                            {dataReport?.total_review !== undefined && dataReport?.total_review_last_month !== undefined ? (
+                                <>
+                                    {dataReport.total_review > dataReport.total_review_last_month ? '+ ' : '- '}
+                                    {Math.abs(dataReport.total_review - dataReport.total_review_last_month)}
+                                </>
+                            ) : ''} </span>
+                        <span className="text-500">so với tháng trước</span>
                     </div>
                 </div>
 
-                {/* <div className="card flex justify-content-center">
+
+
+            </div>
+            <div className="card flex justify-content-center">
                 <NumberOfHotelByAreaReport></NumberOfHotelByAreaReport>
             </div>
             <div className="card">
                 <NumberOfVisitorsAndRevenue />
-            </div> */}
-
             </div>
 
         </>
