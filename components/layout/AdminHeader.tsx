@@ -51,6 +51,11 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         deleteCookie("role");
         deleteCookie("avatar");
         await router.push('/auth')
+    }
+
+    const handleUpdateUser = async () => {
+
+        await router.push('/user')
 
     }
 
@@ -92,7 +97,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                     <ul className="absolute right-0 mt-2 bg-white border shadow" style={{ 'marginTop': '1rem' }}>
                         <li
                             className="font-semibold bg-white hover:bg-gray-300 block whitespace-no-wrap"
-                            onClick={() => handleLogout()}
+                            onClick={() => handleUpdateUser()}
                         >
                             <div className="flex items-center py-2 px-4 gap-x-2.5 cursor-pointer">
                                 <AiOutlineUser />

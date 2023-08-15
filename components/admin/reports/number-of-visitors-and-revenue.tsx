@@ -5,7 +5,15 @@ import { getCookie } from 'cookies-next';
 import querystring from 'querystring';
 import { ReportModel } from '../../../interface/ReportModel';
 
-export default function NumberOfVisitorsAndRevenue() {
+interface Props {
+
+    fromDate: string;
+    toDate: string;
+    areaId: number;
+    hotelId: number;
+    search2: number;
+}
+const NumberOfVisitorsAndRevenue: React.FC<Props> = ({ fromDate, toDate, areaId, hotelId, search2 }) => {
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
     const [dataReport, setDataReport] = useState<ReportModel.NumberOfVisitorsAndRevenue[]>([]);
@@ -18,13 +26,21 @@ export default function NumberOfVisitorsAndRevenue() {
         fetchReport();
 
     }, []);
+    useEffect(() => {
+
+        fetchReport();
+    }, [search2]);
+
     const fetchReport = async (): Promise<void> => {
         try {
             let currentDate = new Date();
             let currentYear: number = currentDate.getFullYear();
 
 
-            const queryParams = querystring.stringify({ area_id: -1, hotel_id: -1, from_date: `01/01/${currentYear}`, to_date: `01/01/${currentYear + 1}`, group_by_type: 4 });
+            const queryParams = querystring.stringify({ area_id: areaId, hotel_id: hotelId, from_date: !fromDate ? `01/01/2023` : fromDate, to_date: !toDate ? `01/01/2024` : toDate, group_by_type: 4 });
+
+            console.log('aaaaa', queryParams);
+
 
             const response = await fetch(`/api/reports/number-of-visitors-and-revenue?${queryParams}`, {
                 method: "GET",
@@ -139,3 +155,4 @@ export default function NumberOfVisitorsAndRevenue() {
 
     )
 }
+export default NumberOfVisitorsAndRevenue;

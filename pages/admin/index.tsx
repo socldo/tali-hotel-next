@@ -238,7 +238,7 @@ const AdminPage = () => {
                 <NumberOfHotelByAreaReport></NumberOfHotelByAreaReport>
             </div>
             <div className="card">
-                <NumberOfVisitorsAndRevenue />
+                <NumberOfVisitorsAndRevenue areaId={-1} hotelId={-1} fromDate='01/01/2023' toDate='01/01/2024' search2={-1} />
             </div>
 
         </>

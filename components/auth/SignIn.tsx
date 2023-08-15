@@ -39,6 +39,7 @@ export default function SignIn({ setIsSignIn }: Props) {
     const router = useRouter();
     const [jwtToken, setJwtToken] = useState("");
 
+
     const { register, formState: { errors } } = useForm<SignUpForm>({
         mode: 'onBlur',
         resolver: yupResolver(signUpSchema)
@@ -61,48 +62,45 @@ export default function SignIn({ setIsSignIn }: Props) {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        try {
-            const response = await fetch(`/api/auth/login`, {
-                method: "POST",
-                body: JSON.stringify({
-                    phone: username,
-                    password: password
-                }),
-                headers: new Headers({
-                    "Content-Type": "application/json",
-                    Accept: "application/json"
-                }),
-            });
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            body: JSON.stringify({
+                phone: username,
+                password: password,
+            }),
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            }),
+        });
+        const json = await response.json();
 
-            const data = await response.json();
+        console.log(json);
 
-            if (data.status == 200) {
-                toast.success("Đăng nhập thành công!");
 
-                setTimeout(() => {
-                    handleRegister();
-                }, 100);
+        if (json.status == 200) {
+            toast.success("Đăng nhập thành công!");
 
-                const token = data.jwt_token;
-                setCookie("jwt_token", token);
-                setCookie("id", data.id);
-                setCookie("email", data.email);
-                setCookie("phone", data.phone);
-                setCookie("name", data.name);
-                setCookie("role_name", data.role);
-                setCookie("avatar", data.avatar);
-                setCookie("role_id", data.role_id);
+            setTimeout(() => {
+                handleRegister();
+            }, 100);
 
-            } else {
-                toast.warning(data.message);
-                deleteCookie("jwt_token");
-            }
+            const data = json.data;
+            const token = data.jwt_token;
+            setCookie("jwt_token", token);
+            setCookie("id", data.id);
+            setCookie("email", data.email);
+            setCookie("phone", data.phone);
+            setCookie("name", data.name);
+            setCookie("role_name", data.role);
+            setCookie("avatar", data.avatar);
+            setCookie("role_id", data.role_id);
 
-        } catch (error) {
-            console.error('Error fetching:', error);
+        } else {
+            toast.warning(json.message);
+            deleteCookie("jwt_token");
         }
     };
-
 
     return (
         <Layout

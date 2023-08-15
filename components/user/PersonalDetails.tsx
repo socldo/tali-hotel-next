@@ -18,29 +18,35 @@ type FormValues = {
 };
 
 const PersonalDetails = () => {
-    const email = getCookie('email');
-    const phone = getCookie('phone');
-    const userName = getCookie('name');
-    const role = getCookie('role');
-    const avatar = getCookie('avatar');
+
     const id = getCookie('id');
+    const phone = getCookie('phone')?.toString();
     const token = getCookie('jwt_token')?.toString();
-    const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [date, setDate] = useState<string | Date | Date[] | null>(null);
 
 
-
-    const [emailUpdate, setEmail] = useState(email?.toString());
-    const [nameUpdate, setName] = useState(userName?.toString());
-    const [phoneUpdate, setPhone] = useState(phone?.toString());
+    const [emailUpdate, setEmailUpdate] = useState("");
+    const [nameUpdate, setNameUpdate] = useState("");
+    const [phoneUpdate, setPhone] = useState("");
     const [birthDay, setBirthDay] = useState('');
     const [gender, setGender] = useState('');
+    const [roleId, setRoleId] = useState(1);
+    const [avatar, setAvatar] = useState("");
+    const [address, setAddress] = useState("");
+
     const [isUpdateAvatar, setIsUpdateAvatar] = useState('');
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+
+    useEffect(() => {
+        handleDetailUser(id)
+    }, [])
 
     const handleSelectedFiles = async (files: File[]) => {
         setSelectedFiles(files);
 
     };
+
 
     const getGender = (gender: any) => {
         switch (gender) {
@@ -78,25 +84,38 @@ const PersonalDetails = () => {
     const handleUpdateUser = async () => {
 
         try {
-            //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
+
+
             let url = `/api/users/${id}/update`;
 
             let downloadURL = await handleImageUpload(selectedFiles[0]);
-            console.log(downloadURL);
 
             if (!downloadURL && !id) {
                 downloadURL = avatar?.toString()
             }
 
+            console.log({
+                name: nameUpdate,
+                phone: phone,
+                email: emailUpdate,
+                birthday: birthDay,
+                gender: gender,
+                avatar: downloadURL,
+                role_id: roleId
+            });
+
+
             const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify({
-                    name: userName,
+                    name: nameUpdate,
                     phone: phone,
-                    email: email,
+                    email: emailUpdate,
                     birthday: birthDay,
                     gender: gender,
-                    avatar: downloadURL
+                    avatar: downloadURL,
+                    role_id: roleId,
+                    address: address,
                 }),
                 headers: new Headers({
                     "Content-Type": "application/json",
@@ -107,11 +126,6 @@ const PersonalDetails = () => {
             const data = await response.json();
             console.log(data);
 
-            setResponseAPI({
-                status: data.status,
-                message: data.message,
-                data: data.data,
-            });
 
             return data;
 
@@ -144,13 +158,15 @@ const PersonalDetails = () => {
 
 
         if (data.data) {
-
-
-            setGender(data.data.gender)
-            setBirthDay(data.data.birthday)
-            console.log(data.data.birthday);
-
-
+            setGender(data.data.gender);
+            setBirthDay(data.data.birthday);
+            setDate(convertToDate(data.data.birthday));
+            setRoleId(data.data.role_id)
+            setNameUpdate(data.data.name);
+            setEmailUpdate(data.data.email);
+            setAvatar(data.data.avatar);
+            setPhone(data.data.phone);
+            setAddress(data.data.address);
         }
 
 
@@ -158,8 +174,11 @@ const PersonalDetails = () => {
     }
 
     const sumitInfor = async () => {
-        if (nameUpdate == '' || !phoneUpdate || !emailUpdate || !birthDay || !(selectedFiles && avatar)) {
-            console.log(nameUpdate);
+
+        console.log(nameUpdate, phoneUpdate, emailUpdate, birthDay, selectedFiles);
+
+        if (nameUpdate == '' || !phoneUpdate || !emailUpdate || !birthDay || !selectedFiles) {
+
             toast.warning("Vui lòng điền đầy đủ thông tin!");
 
         } else {
@@ -172,9 +191,29 @@ const PersonalDetails = () => {
         }
     }
 
-    useEffect(() => {
-        handleDetailUser(id)
-    }, [])
+
+
+
+    const formatDate = (date: Date | null): string => {
+
+
+        if (date instanceof Date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        return '';
+    };
+    const convertToDate = (dateString: string): Date => {
+        const [day, month, year] = dateString.split('/').map(Number);
+        return new Date(year, month - 1, day);
+    };
+    const handleChangeDate = (e: any): void => {
+        setBirthDay(formatDate(e));
+        setDate(e)
+
+    }
 
     return (
         <div>
@@ -189,7 +228,7 @@ const PersonalDetails = () => {
                         <input type="text" id="name-input"
                             className="border-none rounded w-full md:p-4 pr-12"
                             value={nameUpdate}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => setNameUpdate(e.target.value)}
                         />
                         <label className="absolute inset-y-0 right-4 inline-flex items-center cursor-pointer"
                             htmlFor="name-input">
@@ -198,12 +237,12 @@ const PersonalDetails = () => {
                     </div>
                 </div>
                 <div className="border-y px-2.5 py-4 flex flex-wrap md:flex-nowrap w-full items-center ">
-                    <span className="w-full md:w-1/4 font-medium">Địa chỉ email</span>
+                    <span className="w-full md:w-1/4 font-medium">Địa chỉ Email</span>
                     <div className="w-full relative">
                         <input type="text" id="email-input"
                             className="border-none rounded w-full md:p-4 pr-12"
                             value={emailUpdate}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => setEmailUpdate(e.target.value)}
                         />
                         <label className="absolute inset-y-0 right-4 inline-flex items-center cursor-pointer"
                             htmlFor="email-input">
@@ -211,7 +250,7 @@ const PersonalDetails = () => {
                         </label>
                     </div>
                 </div>
-                <div className="border-y px-2.5 py-4 flex flex-wrap md:flex-nowrap w-full items-center ">
+                {/* <div className="border-y px-2.5 py-4 flex flex-wrap md:flex-nowrap w-full items-center ">
                     <span className="w-full md:w-1/4 font-medium">Số điện thoại</span>
                     <div className="w-full relative">
                         <input type="text" id="phone-input"
@@ -224,26 +263,40 @@ const PersonalDetails = () => {
                             <CiEdit />
                         </label>
                     </div>
-                </div>
+                </div> */}
                 <div className="border-y px-2.5 py-4 flex flex-wrap md:flex-nowrap w-full items-center ">
                     <span className="w-full md:w-1/4 font-medium">Ngày sinh</span>
                     <div className="w-full relative">
 
-                        <Calendar value={birthDay} onChange={(e: any) => setBirthDay(e.value)} dateFormat="dd/mm/yy" />
+                        <Calendar id="birthday-input" value={date} onChange={(e: any) => handleChangeDate(e.value)} dateFormat="dd/mm/yy" />
                         {/* <input type="text" id="phone-input"
                             className="border-none rounded w-full md:p-4 pr-12"
                             value={birthDay}
                             onChange={(e) => setBirthDay(e.target.value)}
                         /> */}
                         <label className="absolute inset-y-0 right-4 inline-flex items-center cursor-pointer"
-                            htmlFor="phone-input">
+                            htmlFor="birthday-input">
+                            <CiEdit />
+                        </label>
+                    </div>
+                </div>
+                <div className="border-y px-2.5 py-4 flex flex-wrap md:flex-nowrap w-full items-center ">
+                    <span className="w-full md:w-1/4 font-medium">Địa chỉ</span>
+                    <div className="w-full relative">
+                        <input type="text" id="name-input"
+                            className="border-none rounded w-full md:p-4 pr-12"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                        />
+                        <label className="absolute inset-y-0 right-4 inline-flex items-center cursor-pointer"
+                            htmlFor="name-input">
                             <CiEdit />
                         </label>
                     </div>
                 </div>
                 <div className="border-y px-2.5 py-4 flex flex-wrap md:flex-nowrap w-full items-center ">
                     <span className="w-full md:w-1/4 font-medium">Giới tính</span>
-                    <div className="w-full relative">
+                    <div className="w-full relative flex" >
                         <div className="items-center flex flex-row text-sm">
                             <Checkbox color="blue" defaultChecked={false} checked={parseInt(gender) == 0 ? true : false} onResize={undefined} onResizeCapture={undefined} onChange={() => setGender('0')} />
                             <p className="items-center text-sm">Nam </p>

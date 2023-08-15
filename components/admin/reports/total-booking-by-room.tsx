@@ -90,7 +90,6 @@ const RpTotalBookingByRoom: React.FC<Props> = ({ fromDate, toDate, areaId, hotel
         try {
 
             const queryParams = querystring.stringify({ area_id: areaId, hotel_id: hotelId, from_date: fromDate, to_date: toDate, group_by_type: 4 });
-            console.log(fromDate, toDate, areaId);
 
 
             const response = await fetch(`/api/reports/total-booking-by-room?${queryParams}`, {
