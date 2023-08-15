@@ -61,42 +61,48 @@ export default function SignIn({ setIsSignIn }: Props) {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        const response = await fetch("/api/auth/login", {
-            method: "POST",
-            body: JSON.stringify({
-                phone: username,
-                password: password,
-            }),
-            headers: new Headers({
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            }),
-        });
-        const json = await response.json();
+        try {
+            const response = await fetch(`/api/auth/login`, {
+                method: "POST",
+                body: JSON.stringify({
+                    phone: username,
+                    password: password
+                }),
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                }),
+            });
 
-        if (json.status == 200) {
-            toast.success("Đăng nhập thành công!");
+            const data = await response.json();
 
-            setTimeout(() => {
-                handleRegister();
-            }, 100);
+            if (data.status == 200) {
+                toast.success("Đăng nhập thành công!");
 
-            const data = json.data;
-            const token = data.jwt_token;
-            setCookie("jwt_token", token);
-            setCookie("id", data.id);
-            setCookie("email", data.email);
-            setCookie("phone", data.phone);
-            setCookie("name", data.name);
-            setCookie("role_name", data.role);
-            setCookie("avatar", data.avatar);
-            setCookie("role_id", data.role_id);
+                setTimeout(() => {
+                    handleRegister();
+                }, 100);
 
-        }   else {
-            toast.warning(json.message);
-            deleteCookie("jwt_token");
+                const token = data.jwt_token;
+                setCookie("jwt_token", token);
+                setCookie("id", data.id);
+                setCookie("email", data.email);
+                setCookie("phone", data.phone);
+                setCookie("name", data.name);
+                setCookie("role_name", data.role);
+                setCookie("avatar", data.avatar);
+                setCookie("role_id", data.role_id);
+
+            } else {
+                toast.warning(data.message);
+                deleteCookie("jwt_token");
+            }
+
+        } catch (error) {
+            console.error('Error fetching:', error);
         }
     };
+
 
     return (
         <Layout
@@ -124,7 +130,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                     <label
                                         htmlFor="email"
                                         className={`block font-bold text-sm mb-1${errors.phone ? "text-red-400" : "text-primary"
-                                        }`}
+                                            }`}
                                     >
                                         Phone
                                     </label>
@@ -135,7 +141,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
                                             ? "text-red-300 border-red-400"
                                             : "text-primary"
-                                        }`}
+                                            }`}
                                     />
                                     {errors.phone &&
                                         (
@@ -148,7 +154,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                     <label
                                         htmlFor="password"
                                         className={`block font-bold text-sm mb-1 ${errors.password ? "text-red-400" : "text-primary"
-                                        }`}
+                                            }`}
                                     >
                                         Password
                                     </label>
@@ -159,7 +165,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
                                             ? "text-red-300 border-red-400"
                                             : "text-primary"
-                                        }`}
+                                            }`}
                                     />
                                     {errors.password && (
                                         <p className="text-red-500 text-sm mt-1">
@@ -185,7 +191,7 @@ export default function SignIn({ setIsSignIn }: Props) {
                         <h2 className="text-3xl font-bold mb-2">Xin chào!</h2>
                         <div className="border-2 w-10 border-white inline-block mb-2"></div>
                         <p className="mb-2">
-                        Điền thông tin cá nhân và bắt đầu cuộc hành trình với chúng tôi.
+                            Điền thông tin cá nhân và bắt đầu cuộc hành trình với chúng tôi.
                         </p>
                         <div onClick={() => handleSignUp()}>
                             <Button

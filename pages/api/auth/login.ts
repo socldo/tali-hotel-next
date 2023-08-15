@@ -1,27 +1,28 @@
-import { apiUrl } from "../../../utils/config";
 
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-type User = {
-    phone?: string;
-    password?: string;
-};
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export const config = {
-    runtime: "experimental-edge",
-};
 
-export default async function handler(request: Request, response: Response) {
-    const data: User = await request.json();
-    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signin`, {
+export default async function handler(request: NextApiRequest, response: NextApiResponse) {
+
+    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/signin`;
+
+    const requestOptions = {
         method: request.method,
-        body: JSON.stringify(data),
+        body: JSON.stringify(request.body),
         headers: new Headers({
             "Content-Type": "application/json",
             Accept: "application/json",
+            Authorization: 'Bearer ' + `${request.headers['authorization']}`
         }),
-    });
-    
-
-
-    return response;
+    };
+    try {
+        const apiResponse = await fetch(fetchUrl, requestOptions);
+        const data = await apiResponse.json();
+        response.status(apiResponse.status).json(data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        response.status(500).json({ error: 'Internal Server Error' });
+    }
 }
+
+
