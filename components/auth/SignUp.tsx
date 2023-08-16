@@ -97,12 +97,9 @@ const SignUp = ({ setIsSignIn }: Props) => {
                         </div>
                         <div className="py-5 md:py-10">
                             <h2 className="text-2xl md:text-3xl font-bold text-primary">
-                                Sign Up Account
+                                Đăng ký tài khoản
                             </h2>
-                            <div className="border-2 w-10 border-primary inline-block mb-2"></div>
-                            <SocialsAuth />
-                            <p className="text-gray-400">or use your email account</p>
-                            <form className="w-full sm:w-4/5 mx-auto flex flex-col items-center"
+                            <form className="w-full sm:w-4/5 mx-auto flex flex-col items-center mt-4"
                                 onSubmit={handleSubmit(onSubmit)}>
                                 <div className="mb-2.5 w-full">
                                     <label
@@ -110,7 +107,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block font-bold text-sm mb-1 ${errors.name ? 'text-red-400' : 'text-primary'
                                         }`}
                                     >
-                                        Name
+                                        Tên
                                     </label>
                                     <input
                                         type="text"
@@ -123,7 +120,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     />
                                     {errors.name && (
                                         <p className="text-red-500 text-sm mt-1">
-                                            A valid name is required.
+                                            Tên không hợp lệ.
                                         </p>
                                     )}
                                 </div>
@@ -146,7 +143,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     />
                                     {errors.email && (
                                         <p className="text-red-500 text-sm mt-1">
-                                            A valid email is required.
+                                            Email không hợp lệ.
                                         </p>
                                     )}
                                 </div>
@@ -156,7 +153,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block font-bold text-sm mb-1 ${errors.email ? 'text-red-400' : 'text-primary'
                                         }`}
                                     >
-                                        Phone
+                                        Số điện thoại
                                     </label>
                                     <input
                                         type="text"
@@ -169,7 +166,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     />
                                     {errors.phone && (
                                         <p className="text-red-500 text-sm mt-1">
-                                            A valid phone is required.
+                                            Số điện thoại không hợp lệ.
                                         </p>
                                     )}
                                 </div>
@@ -179,7 +176,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block font-bold text-sm mb-1 ${errors.password ? 'text-red-400' : 'text-primary'
                                         }`}
                                     >
-                                        Password
+                                        Mật khẩu
                                     </label>
                                     <input
                                         type="password"
@@ -192,7 +189,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     />
                                     {errors.password && (
                                         <p className="text-red-500 text-sm mt-1">
-                                            Your password is required.
+                                            Mật khẩu không hợp lệ
                                         </p>
                                     )}
                                 </div>
@@ -202,7 +199,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block font-bold text-sm mb-1 ${errors.password2 ? 'text-red-400' : 'text-primary'
                                         }`}
                                     >
-                                        Confirm Password
+                                        Xác nhận mật khẩu
                                     </label>
                                     <input
                                         type="password"
@@ -215,12 +212,12 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     />
                                     {errors.password2 && (
                                         <p className="text-red-500 text-sm mt-1">
-                                            Your passwords do not match
+                                           Mật khẩu không khớp
                                         </p>
                                     )}
                                 </div>
                                 <button type="submit" onClick={handleSubmit(onSubmit)}>
-                                    <Button text="Sign Up" textColor="text-white" bgColor="bg-primary" />
+                                    <Button text="Đăng kí" textColor="text-white" bgColor="bg-primary" />
                                 </button>
                             </form>
 
@@ -231,11 +228,11 @@ const SignUp = ({ setIsSignIn }: Props) => {
                         className="w-full md:w-2/5 bg-lightPrimary text-white rounded-b-2xl md:rounded-none md:rounded-r-2xl px-8 py-12 xl:px-12
                         flex flex-col items-center justify-center"
                     >
-                        <h2 className="text-3xl font-bold mb-2">Hello, Friend!</h2>
+                        <h2 className="text-3xl font-bold mb-2">Xin chào!</h2>
                         <div className="border-2 w-10 border-white inline-block mb-2"></div>
-                        <p className="mb-2">If you already have account</p>
+                        <p className="mb-2">Bạn đã có tài khoản ?</p>
                         <div onClick={() => handleChangeAuth()}>
-                            <Button text="Sign in" textColor="text-secondary" bgColor="bg-white" />
+                            <Button text="Đăng nhập" textColor="text-secondary" bgColor="bg-white" />
                         </div>
                     </div>
                 </div>

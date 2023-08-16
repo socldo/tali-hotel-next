@@ -24,8 +24,7 @@ const Footer = () => {
                     <p
                         className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 dark:text-gray-400 lg:text-left"
                     >
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt
-            consequuntur amet culpa cum itaque neque.
+            Hãy chia sẽ cho chúng tôi ý kiến của bạn. Chúng tôi luôn luôn lắng nghe bạn ...
                     </p>
                 </div>
   

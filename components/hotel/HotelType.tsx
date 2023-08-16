@@ -28,9 +28,9 @@ const HotelType = () => {
     return (
         <div className="flex flex-col gap-y-5">
             <div>
-                <h1 className="font-bold text-2xl text-black">Quick and easy hotel planer</h1>
-                <h2 className="text-primary font-light text-xl">Pick a vibe and explore the top destinations in
-                    Vietnam</h2>
+                <h1 className="font-bold text-2xl text-black">Đặt phòng nhanh chóng và dễ dàng</h1>
+                <h2 className="text-primary font-light text-xl">
+                    Chọn một sự rung cảm và khám phá những điểm đến hàng đầu trong Việt Nam</h2>
             </div>
             <Types type={type} setType={setType}/>
             <div className="mb-5">

@@ -111,7 +111,18 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
     useEffect(() => {
         getBranches();
     }, []);
+    const getValue = (number: any) => {
+        switch (number) {
+        case -1:
+            return 0;
 
+        case 0:
+            return 1;
+
+        default:
+            return number;
+        }
+    };
     const {width} = useWindowDimensions()
 
     return (
@@ -147,16 +158,15 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
                         </div>
                         <label className="w-full">
                             <span className="text-sm">Số người</span>
-                            <InputNumber className="block w-full rounded-md border-none" defaultValue={2} inputId="border-0 minmax-buttons" value={parseInt(peopleNumber)} onValueChange={(e) => setPeopleNumber(e.value ? e.value.toString() : '2')} mode="decimal" showButtons min={1} max={10} />
+                            <InputNumber className="block w-full rounded-md border-none" defaultValue={-1} inputId="border-0 minmax-buttons" value={getValue(parseInt(peopleNumber))} onValueChange={(e) => setPeopleNumber(e.value ? e.value.toString() : '-1')} mode="decimal" showButtons min={-1} max={10} />
                             {/* <input type="number" className="form-input block w-full rounded-md border-0" onChange={(e) => setPeopleNumber(e.target.value)}/> */}
                         </label>
                         <label className="w-full">
                             <span className="text-sm">Số giường</span>
-                            <InputNumber className="block w-full rounded-md border-none" defaultValue={2} inputId="border-0 minmax-buttons" value={parseInt(bedNumber)} onValueChange={(e) => setBedNumber(e.value? e.value.toString() : '1')} mode="decimal" showButtons min={1} max={20} />
+                            <InputNumber className="block w-full rounded-md border-none" defaultValue={-1} inputId="border-0 minmax-buttons" value={getValue(parseInt(bedNumber))} onValueChange={(e) => setBedNumber(e.value? e.value.toString() : '-1')} mode="decimal" showButtons min={-1} max={20} />
                         </label>
                         <div className="w-full flex flex-wrap gap-x-5">
                             <span className="text-sm">Ngân sách của bạn: {numberFormat(values[0])} - {numberFormat(values[1])}</span>
-
                             <Slider
                                 range
                                 value={values[0]}

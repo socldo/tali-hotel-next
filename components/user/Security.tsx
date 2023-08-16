@@ -134,6 +134,8 @@ const Security = () => {
                 setTimeout(() => {
                     router.push('/auth')
                 }, 3000)
+            } else {
+                toast.warning(data.message);
             }
             return data;
         } catch (error) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CiEdit } from '../../utils/icons'
-import { getCookie } from 'cookies-next'
+import { deleteCookie, getCookie, setCookie } from 'cookies-next'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { storage } from '../../firebaseConfig';
@@ -93,7 +93,8 @@ const PersonalDetails = () => {
                     email: email,
                     birthday: birthDay,
                     gender: gender,
-                    avatar: downloadURL
+                    avatar: downloadURL,
+                    role_id: 1
                 }),
                 headers: new Headers({
                     "Content-Type": "application/json",
@@ -102,6 +103,8 @@ const PersonalDetails = () => {
                 }),
             });
             const data = await response.json();
+            deleteCookie("avatar");
+            setCookie('avatar', downloadURL);
             console.log(data);
 
             setResponseAPI({

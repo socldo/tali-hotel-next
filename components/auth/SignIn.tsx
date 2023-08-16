@@ -38,6 +38,8 @@ export default function SignIn({ setIsSignIn }: Props) {
     const [password, setPassword] = useState("");
     const router = useRouter();
     const [jwtToken, setJwtToken] = useState("");
+    const [isForgotPass, setIsForgotPass] = useState(0);
+    const [phoneChange, setPhoneChange] = useState('');
 
     const { register, formState: { errors } } = useForm<SignUpForm>({
         mode: 'onBlur',
@@ -56,11 +58,31 @@ export default function SignIn({ setIsSignIn }: Props) {
         router.push("/");
     };
 
+    const handleChangePassword = async () => {
+        const response = await fetch("/api/auth/forgot-password", {
+            method: "POST",
+            body: JSON.stringify({
+                phone: phoneChange,
+            }),
+            headers: new Headers({
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            }),
+        });
+        const json = await response.json();
+
+        if (json.status == 200) {
+            toast.success("Đổi mật khẩu thành công vui lòng xem mật khẩu mới trong tin nhắn!");   
+            router.push("/auth");
+        } else {
+            toast.warning(json.message);
+        }
+
+    };
 
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-
         const response = await fetch("/api/auth/login", {
             method: "POST",
             body: JSON.stringify({
@@ -110,71 +132,105 @@ export default function SignIn({ setIsSignIn }: Props) {
                     <div className="w-full md:w-3/5 p-2.5 xl:p-5">
                         <div className="text-left font-bold"></div>
                         <div className="py-5 md:py-10">
-                            <h2 className="text-2xl md:text-3xl font-bold text-primary">
-                                Sign in to Account
-                            </h2>
-                            <div className="border-2 w-10 border-primary inline-block mb-2"></div>
-                            <SocialsAuth />
-                            <p className="text-gray-400">or use your email account</p>
-                            <form
-                                className="w-full sm:w-4/5 mx-auto flex flex-col items-center"
-                                onSubmit={handleSubmit}
-                            >
-                                <div className="mb-2.5 w-full">
-                                    <label
-                                        htmlFor="email"
-                                        className={`block font-bold text-sm mb-1${errors.phone ? "text-red-400" : "text-primary"
-                                        }`}
+                            {isForgotPass == 1 
+                                ?<>
+                                    <h2 className="text-2xl md:text-3xl font-bold text-primary">
+                        Quên mật khẩu
+                                    </h2>
+                                    <div className="mb-2.5 w-full mt-12">
+                                        <label
+                                            htmlFor="email"
+                                            className={`block font-bold text-sm mb-1${errors.phone ? "text-red-400" : "text-primary"
+                                            }`}
+                                        >
+                            Số điện thoại
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="phone"
+                                            onChange={(e) => setPhoneChange(e.target.value)}
+                                            className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
+                                                ? "text-red-300 border-red-400"
+                                                : "text-primary"
+                                            }`}
+                                        />
+                                    </div>
+                                    <button type="submit" onClick={handleChangePassword}>
+                                        <Button
+                                            text="Đổi mật khẩu"
+                                            textColor="text-white"
+                                            bgColor="bg-primary"
+                                        />
+                                    </button>
+                                </>
+                                
+                                : <>
+                                    <h2 className="text-2xl md:text-3xl font-bold text-primary">
+                        Đăng nhập bằng
+                                    </h2>
+                                    <div className="border-2 w-10 border-primary inline-block mb-2"></div>
+                                    <SocialsAuth />
+                                    <p className="text-gray-400">hoặc sử dụng tài khoản đã có</p>
+                                    <form
+                                        className="w-full sm:w-4/5 mx-auto flex flex-col items-center"
+                                        onSubmit={handleSubmit}
                                     >
-                                        Phone
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="phone"
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
-                                            ? "text-red-300 border-red-400"
-                                            : "text-primary"
-                                        }`}
-                                    />
-                                    {errors.phone &&
-                                        (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                A valid phone is required.
-                                            </p>
-                                        )}
-                                </div>
-                                <div className="mb-2.5 w-full">
-                                    <label
-                                        htmlFor="password"
-                                        className={`block font-bold text-sm mb-1 ${errors.password ? "text-red-400" : "text-primary"
-                                        }`}
-                                    >
-                                        Password
-                                    </label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
-                                            ? "text-red-300 border-red-400"
-                                            : "text-primary"
-                                        }`}
-                                    />
-                                    {errors.password && (
-                                        <p className="text-red-500 text-sm mt-1">
-                                            Your password is required.
-                                        </p>
-                                    )}
-                                </div>
-                                <button type="submit" onClick={handleSubmit}>
-                                    <Button
-                                        text="Sign In"
-                                        textColor="text-white"
-                                        bgColor="bg-primary"
-                                    />
-                                </button>
-                            </form>
+                                        <div className="mb-2.5 w-full">
+                                            <label
+                                                htmlFor="email"
+                                                className={`block font-bold text-sm mb-1${errors.phone ? "text-red-400" : "text-primary"
+                                                }`}
+                                            >
+                            Số điện thoại
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="phone"
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
+                                                    ? "text-red-300 border-red-400"
+                                                    : "text-primary"
+                                                }`}
+                                            />
+                                            {errors.phone &&
+                            (
+                                <p className="text-red-500 text-sm mt-1">
+                                    Số điện thoại không hợp lệ.
+                                </p>
+                            )}
+                                        </div>
+                                        <div className="mb-2.5 w-full">
+                                            <label
+                                                htmlFor="password"
+                                                className={`block font-bold text-sm mb-1 ${errors.password ? "text-red-400" : "text-primary"
+                                                }`}
+                                            >
+                            Mật khẩu
+                                            </label>
+                                            <input
+                                                type="password"
+                                                id="password"
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
+                                                    ? "text-red-300 border-red-400"
+                                                    : "text-primary"
+                                                }`}
+                                            />
+                                            {errors.password && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                Mật khẩu không hợp lệ.
+                                                </p>
+                                            )}
+                                        </div>
+                                        <button type="submit" onClick={handleSubmit}>
+                                            <Button
+                                                text="Sign In"
+                                                textColor="text-white"
+                                                bgColor="bg-primary"
+                                            />
+                                        </button>
+                                    </form></>}
+   
                         </div>
                     </div>
 
@@ -189,7 +245,14 @@ export default function SignIn({ setIsSignIn }: Props) {
                         </p>
                         <div onClick={() => handleSignUp()}>
                             <Button
-                                text="Sign Up"
+                                text="Đăng ký"
+                                textColor="text-secondary"
+                                bgColor="bg-white"
+                            />
+                        </div>
+                        <div onClick={() => setIsForgotPass(1)}>
+                            <Button
+                                text="Quên mật khẩu"
                                 textColor="text-secondary"
                                 bgColor="bg-white"
                             />

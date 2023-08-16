@@ -23,7 +23,7 @@ const Types = ({type, setType}: Props) => {
               `}
                 onClick={() => setType('all')}
             >
-                All
+                Tất cả
             </button>
             {types?.map((item) => (
                 <button
