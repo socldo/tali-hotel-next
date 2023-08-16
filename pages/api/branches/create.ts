@@ -18,10 +18,10 @@ export default async function handler(request: NextApiRequest, response: NextApi
     try {
         const apiResponse = await fetch(fetchUrl, requestOptions);
         const data = await apiResponse.json();
-        response.status(apiResponse.status).json(data); // Gửi phản hồi về client
+        response.status(apiResponse.status).json(data);
     } catch (error) {
         console.error('Error fetching data:', error);
-        response.status(500).json({ error: 'Internal Server Error' }); // Gửi phản hồi lỗi về client
+        response.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
