@@ -1,7 +1,7 @@
 import GGMap from "../../components/googlemap/GGMap";
 
 const Contact = () => {
-   
+
 
     return (<>
         <div className="mt-20 flex flex-rows grid-flow-col gap-16 place-content-center">
@@ -15,7 +15,7 @@ const Contact = () => {
             </div>
             <div>
                 <div className="grid grid-cols-1 justify-items-center border-2 py-5 px-3 w-80">
-                    <i className="pi pi-phone text-orange-300" style={{ fontSize: '4rem'}}></i>
+                    <i className="pi pi-phone text-orange-300" style={{ fontSize: '4rem' }}></i>
                     <h1 className="mt-4 font-semibold text-xl ">Số điện thoại</h1>
                     <h1 className="mt-4 text-zinc-500"> 0372202801</h1>
                     <h1 className="text-zinc-500">0999999999</h1>
@@ -30,9 +30,9 @@ const Contact = () => {
                 </div>
             </div>
         </div>
-        <div>
+        <div className="ml-2 mr-2 mb-2 mt-2" >
             <GGMap lat="10.820503" lng='106.691711'></GGMap>
         </div>
-    </> );
+    </>);
 };
 export default Contact;

@@ -25,6 +25,7 @@ import 'primeicons/primeicons.css';
 import { FiShoppingCart } from 'react-icons/fi'
 import Cookies from 'cookies-next';
 import { GiNotebook } from 'react-icons/gi'
+import { MdContactSupport, MdNewLabel, MdNewReleases, MdOutlineBikeScooter, MdTextSnippet } from 'react-icons/md'
 
 const Header = () => {
     const router = useRouter()
@@ -120,12 +121,12 @@ const Header = () => {
             link: '/explore/explore'
         },
         {
-            icon: <MdOutlineAttractions />,
+            icon: <MdTextSnippet />,
             name: 'Blog',
             link: '/blog'
         },
         {
-            icon: <MdOutlineAttractions />,
+            icon: <MdContactSupport />,
             name: 'Liên hệ',
             link: '/contact'
         },

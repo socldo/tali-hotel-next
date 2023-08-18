@@ -1,9 +1,9 @@
-import React, {useRef, useState} from 'react'
-import {toast} from 'react-toastify'
-import {useRouter} from 'next/router'
-import {useForm} from 'react-hook-form'
+import React, { useRef, useState } from 'react'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
-import {yupResolver} from '@hookform/resolvers/yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { deleteCookie, getCookie } from 'cookies-next'
 import { Model } from '../../interface'
 import { setTimeout } from 'timers'
@@ -49,7 +49,7 @@ const Security = () => {
         register,
         handleSubmit,
         setValue,
-        formState: {errors, isValid}
+        formState: { errors, isValid }
     } = useForm({
         mode: 'onChange',
         resolver: yupResolver(formSchema)
@@ -129,7 +129,7 @@ const Security = () => {
                 deleteCookie("name");
                 deleteCookie("role");
                 deleteCookie("avatar");
-                setRenderCount(renderCount + 1);                
+                setRenderCount(renderCount + 1);
                 toast.success("Cập nhật thành công, vui lòng đăng nhập lại!");
                 setTimeout(() => {
                     router.push('/auth')
@@ -145,26 +145,29 @@ const Security = () => {
 
     return (
         <div>
+            aaa
             <div>
-                <h1 className="font-bold text-2xl">Bảo mật tài khoản</h1>
-                <h2>Điều chỉnh cài đặt bảo mật của bạn và thiết lập xác thực hai yếu tố.</h2>
+                <h1 className="font-bold text-2xl ">Bảo mật tài khoản</h1>
+                <h2 className='mt-1 mb-1'>Điều chỉnh cài đặt bảo mật của bạn và thiết lập xác thực hai yếu tố.</h2>
             </div>
             <div className="mt-2.5 flex flex-col text-sm">
                 {/* Password */}
                 <div className="border-y px-2.5 py-4 flex flex-wrap md:flex-nowrap w-full ">
-                    <span className="w-full md:w-1/4 font-medium">Mật khẩu</span>
+                    <span className="w-full md:w-1/4 font-medium flex items-center">
+                        Mật khẩu
+                    </span>
                     <details className="group select-none w-full">
                         <summary
                             className="group flex flex-wrap items-center rounded-lg md:px-4 py-2 "
                         >
                             <div className="md:ml-3" ref={passwordRef}>
-                                <div className="group-open:hidden"> 
-Đặt lại mật khẩu của bạn thường xuyên để giữ tài khoản của bạn
+                                <div className="group-open:hidden">
+                                    Đặt lại mật khẩu của bạn thường xuyên để giữ tài khoản của bạn
                                     chắc chắn
                                 </div>
                                 <div className="hidden group-open:block">
                                     <span>
-Để thay đổi mật khẩu của bạn, vui lòng nhấn enter </span>
+                                        Để thay đổi mật khẩu của bạn, vui lòng nhấn enter </span>
                                 </div>
                             </div>
                             <div
@@ -214,7 +217,7 @@ const Security = () => {
                 </div>
                 {/* Account */}
                 <div className="border-y px-2.5 py-4 flex flex-wrap md:flex-nowrap w-full">
-                    <span className="w-full md:w-1/4 font-medium">Xoá tài khoản</span>
+                    <span className="w-full md:w-1/4 font-medium flex items-center">Xoá tài khoản</span>
                     <details className="group select-none w-full">
                         <summary
                             className="group flex flex-wrap items-center rounded-lg md:px-4 py-2 "
@@ -239,12 +242,12 @@ const Security = () => {
                             <div className="w-full md:w-5/6 flex flex-col gap-2">
                                 <span>Bạn có bất kỳ phản hồi nào muốn chia sẻ trước khi đi không?
                                     Chúng tôi sẽ sử dụng nó để khắc phục sự cố và cải thiện dịch vụ của mình..</span>
-                                <input type="text" className=" mb-2.5"/>
+                                <input type="text" className=" mb-2.5" />
                             </div>
                             <button
                                 className="float-right w-max text-white bg-lightPrimary px-2.5 py-2 rounded-md"
                                 onClick={handleDeleteMyAccount}
-                                // disabled={isDeleting}
+                            // disabled={isDeleting}
                             >Xoá tài khoản
                             </button>
                         </nav>

@@ -111,7 +111,7 @@ const Blog = () => {
 
     return (
         <div className="mr-11 ml-11 mt-16">
-            <div className="mr-80 ml-80 rounded-lg">
+            <div className="mr-40 ml-40 rounded-lg">
                 <div className="grid grid-cols-3 gap-4 rounded-lg">
                     <div className="col-span-2 flex flex-col py-2 border-round rounded-lg">
                         {news?.map((item: INew) =>
@@ -167,7 +167,7 @@ const Blog = () => {
                         </div>
                         <div className="py-2 border rounded-lg mt-4">
                             <h1 className="ml-8 mt-8 text-lg font-semibold text-neutral-600">Tìm kiếm</h1>
-                            <div className="text-center mt-8 ml-8 mr-8 justify-items-center">
+                            <div className="text-center mt-8 ml-4 mr-4 justify-items-center">
                                 <span className="p-input-icon-left border-round mb-16">
                                     <i className="pi pi-search" />
                                     <InputText className="border-lg" placeholder="Tìm kiếm" onChange={(e) => setKeySearch(e.target.value)} />
@@ -181,7 +181,7 @@ const Blog = () => {
                                     {newsTop?.map((item: INew) =>
                                         <li key={item.id} onClick={() => handleDetail(item.id)}
                                             className="mb-8 rounded-3xl hover:bg-gray-500 hover:bg-opacity-25 whitespace-no-wrap flex flex-row items-center">
-                                            <Avatar image={item.user_avatar} className="mr-2" size="large" shape="circle" />
+                                            {/* <Avatar image={item.user_avatar} className="mr-2" size="large" shape="circle" /> */}
                                             <div>
                                                 <p className="font-semibold text-sm">{item.title}</p>
                                                 <p className="text-sm"> <span className="ml-4 pi pi-calendar-times "></span> {item.created_at.toLocaleString()}</p>

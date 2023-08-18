@@ -1,29 +1,29 @@
-import {useRouter} from 'next/router'
-import React, {useEffect, useState} from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 import FilterHotels from '../../components/core/FilterHotels'
 import SearchResults from '../../components/core/SearchResults'
-import {Layout} from '../../components/layout'
+import { Layout } from '../../components/layout'
 import { IRoom } from '../../models'
 import { getCookie } from 'cookies-next'
 interface Props {
     room?: IRoom[];
     setHotelsType: any;
 }
-const SearchPage : React.FC<Props> =  ({room}) => {
+const SearchPage: React.FC<Props> = ({ room }) => {
     const router = useRouter()
     const queryUrl = router?.query
 
-    
+
     const branchSlug = queryUrl?.slug ? queryUrl?.slug[0] : ''
 
     const [branchId, setBranchId] = useState(branchSlug)
-    
+
     const [branchName, setBranchName] = useState();
     useEffect(() => {
         setBranchId(branchSlug)
     }, [])
     // console.log(branchId);
-    
+
     const handleGetDetailBranch = async () => {
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
@@ -39,7 +39,7 @@ const SearchPage : React.FC<Props> =  ({room}) => {
         });
         const data = await response.json();
         // console.log( data);
-        setBranchName(data.data.name)
+        setBranchName(data?.data?.name)
 
         return data;
     }
@@ -57,7 +57,7 @@ const SearchPage : React.FC<Props> =  ({room}) => {
     //     )
     // }
     // console.log(city);
-    
+
     return (
         <Layout
             metadata={{
@@ -69,10 +69,10 @@ const SearchPage : React.FC<Props> =  ({room}) => {
                 <div className="w-full lg:flex gap-5">
                     <div className="w-full lg:w-1/4 h-min">
                         {/* <SearchVertical/> */}
-                        <FilterHotels room={room} setHotelsType={setHotelsType} branchIdBf={branchSlug} branchNameBf={branchName == undefined ? '': branchName}/>
+                        <FilterHotels room={room} setHotelsType={setHotelsType} branchIdBf={branchSlug} branchNameBf={branchName == undefined ? '' : branchName} />
                     </div>
                     <div className="flex-1">
-                        <SearchResults data={hotelsType} city={branchName}/>
+                        <SearchResults data={hotelsType} city={branchName} />
                     </div>
                 </div>
 

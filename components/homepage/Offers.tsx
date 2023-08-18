@@ -10,7 +10,6 @@ import { getCookie } from 'cookies-next'
 
 
 
-
 const Offers = () => {
 
     const [data, setData] = useState([]);
@@ -55,7 +54,7 @@ const Offers = () => {
         },
         {
             title: 'Dễ dàng lên chuyến đi',
-            description: 'Pick a vibe and explore the top destinations',
+            description: 'Chọn một bầu không khí và khám phá những điểm đến hàng đầu.',
             button: 'Khám phá',
             image: '3.avif'
         }
