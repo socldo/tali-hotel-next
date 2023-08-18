@@ -7,11 +7,12 @@ import { Autoplay } from 'swiper'
 import getFlagEmoji from '../../utils/getFLagEMoji'
 import Link from 'next/link'
 import { getCookie } from 'cookies-next'
+import { useRouter } from 'next/router';
 
 
 
 const Offers = () => {
-
+    const router = useRouter()
     const [data, setData] = useState([]);
 
     let token = getCookie('jwt_token')?.toString();
@@ -37,6 +38,10 @@ const Offers = () => {
                 setData(result);
             })
     }, []);
+
+    const handleClick = () => {
+        router.push('/search/')
+    } 
 
 
     const offers = [
@@ -92,8 +97,11 @@ const Offers = () => {
                                 <div className="p-2.5 sm:px-5 sm:py-10 text-white">
                                     <h2 className="font-bold mb-2 text-2xl sm:text-3xl h-24 sm:h-16 lg:h-max">{offer.title}</h2>
                                     <h2 className="mb-5">{offer.description}</h2>
-                                    <Button text={offer.button} textColor={'text-white'} width={'w-40'}
-                                        bgColor={'bg-lightPrimary'} />
+                                    <div onClick={handleClick}>
+                                        <Button text={offer.button} textColor={'text-white'} width={'w-40'}
+                                            bgColor={'bg-lightPrimary'} />
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </SwiperSlide>
