@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../core/Button'
 import { IBranch } from '../../models/IBranch';
 
@@ -7,7 +7,7 @@ interface Props {
     branchesModel?: IBranch[];
 }
 
-const Search : React.FC<Props> = ({branchesModel})  => {
+const Search: React.FC<Props> = ({ branchesModel }) => {
     const [city, setCity] = useState('')
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,47 +57,47 @@ const Search : React.FC<Props> = ({branchesModel})  => {
                         <div className='mb-8'>
                             <span className='ml-4 text-slate-600 text-sm'>Khu vực</span>
                             <div>
-                                <div className="border border-zinc-500 border-neutral-950 w-full select-container rounded-md" > 
-                                    <select className='form-input border-stone-800 border-2 block w-40 rounded-md border-0' onChange={(e) => {setBranchId(e.target.value);}}>
+                                <div className="border border-zinc-500 border-neutral-950 w-full select-container rounded-md" >
+                                    <select className='form-input border-stone-800 border-2 block w-40 rounded-md border-0' onChange={(e) => { setBranchId(e.target.value); }}>
                                         {branches != null ? branches.map((option) => (
                                             <option key={option.id} value={option.id}>{option.name}</option>
-                                        )): null}
+                                        )) : null}
                                     </select>
                                 </div>
-        
+
                             </div>
                         </div>
                         <div className="mb-8">
                             <span className='ml-4 text-slate-600 text-sm'>Check in</span>
-                            <input type="date" className="border border-zinc-500 form-input block w-full rounded-md"  onChange={(e) => setCheckIn(e.target.value)}/>
+                            <input type="date" className="border border-zinc-500 form-input block w-full rounded-md" onChange={(e) => setCheckIn(e.target.value)} />
                         </div>
                         <div className="mb-8">
                             <span className='ml-4 text-slate-600 text-sm'>Check out</span>
-                            <input type="date" className="border border-zinc-500 form-input block w-full rounded-md" onChange={(e) => setCheckOut(e.target.value)}/>
+                            <input type="date" className="border border-zinc-500 form-input block w-full rounded-md" onChange={(e) => setCheckOut(e.target.value)} />
                         </div>
-                        <div className="mb-8">
+                        {/* <div className="mb-8">
                             <span className='ml-4 text-slate-600 text-sm'>Room</span>
-                            <input type="number" className="form-input block rounded"/>
-                        </div>
+                            <input type="number" className="form-input block rounded" />
+                        </div> */}
                     </div>
                 </div>
                 <div
-                    className="
-                    absolute z-50 left-1/2 transform -translate-x-1/4 mt-12
-                    container px-4 lg:px-6 xl:px-40 
-                    "
+                    className="absolute z-50 left-1/2 transform -translate-x-1/2 mt-12 container px-4 lg:px-6 xl:px-40"
+                    style={{ 'textAlign': 'center' }}
                 >
-                    <Link
-                        href={`search/${branchId}`}
-                    >
-                        <div>
-                            <Button
-                                text="Tìm"
-                                textColor="text-white"
-                                width='w-80'
-                            />
-                        </div>
-                    </Link>
+                    <div style={{ textAlign: 'center', display: 'inline-block' }}>
+                        <Link
+                            href={`search/${branchId}`}
+                        >
+                            <div >
+                                <Button
+                                    text="Tìm"
+                                    textColor="text-white"
+                                    width='w-60'
+                                />
+                            </div>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../core'
 import SocialsAuth from './SocialsAuth'
 import { useForm } from 'react-hook-form'
@@ -14,6 +14,8 @@ import { useRouter } from 'next/router'
 import { setHotelWishList } from '../../features/appSlice'
 import { Layout } from '../layout'
 import { deleteCookie } from 'cookies-next'
+import PasswordInput from './PasswordInput'
+import querystring from 'querystring';
 
 interface Props {
     setIsSignIn: (arg: boolean) => void;
@@ -23,9 +25,12 @@ const SignUp = ({ setIsSignIn }: Props) => {
     const { register, handleSubmit, formState: { errors } } = useForm<SignUpForm>({
         mode: 'onBlur',
         resolver: yupResolver(signUpSchema)
-    })
-        ;
+    });
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+
     register('role_id', { value: 1 });
+
+
 
     const handleDeleteCookie = async () => {
         // Sau khi đăng kí thành công, chuyển hướng đến trang login
@@ -40,7 +45,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
     useEffect(() => {
         handleDeleteCookie();
     })
-    
+
 
     const router = useRouter()
     const dispatch = useAppDispatch()
@@ -56,9 +61,20 @@ const SignUp = ({ setIsSignIn }: Props) => {
 
 
     const onSubmit = async (data: SignUpForm) => {
-
-        return registerUser(data)
+        if (acceptedTerms) {
+            return registerUser(data)
+        }
+        else {
+            toast.warning('Vui lòng chấp nhận chính sách và điều khoản của chúng tôi');
+        }
     };
+
+
+    const handleAcceptTerms = () => {
+        setAcceptedTerms(!acceptedTerms);
+    };
+
+
 
     useEffect(() => {
         if (isRegisterSuccess) {
@@ -67,7 +83,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
             )
             // dispatch(setHotelWishList(registerData.user.wishlist))
             router.push('/auth').then(() =>
-                toast.success('Sign Up Successfully'))
+                toast.success('Đăng ký thành công'))
             setIsSignIn(true)
         }
     }, [isRegisterSuccess])
@@ -78,9 +94,14 @@ const SignUp = ({ setIsSignIn }: Props) => {
         }
     }, [isRegisterError])
 
-    const handleChangeAuth = () => {
-        setIsSignIn(true)
-    }
+
+    const handleChangeAuth = async () => {
+
+        setIsSignIn(true);
+
+    };
+
+
     return (
         <Layout
             metadata={{
@@ -105,7 +126,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     <label
                                         htmlFor="name"
                                         className={`block font-bold text-sm mb-1 ${errors.name ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                            }`}
                                     >
                                         Tên
                                     </label>
@@ -115,7 +136,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.name
                                             ? 'text-red-300 border-red-400'
                                             : 'text-primary'
-                                        }`}
+                                            }`}
                                         {...register('name')}
                                     />
                                     {errors.name && (
@@ -128,7 +149,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     <label
                                         htmlFor="email"
                                         className={`block font-bold text-sm mb-1 ${errors.email ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                            }`}
                                     >
                                         Email
                                     </label>
@@ -138,7 +159,8 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.email
                                             ? 'text-red-300 border-red-400'
                                             : 'text-primary'
-                                        }`}
+                                            }`}
+
                                         {...register('email')}
                                     />
                                     {errors.email && (
@@ -151,7 +173,7 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                     <label
                                         htmlFor="phone"
                                         className={`block font-bold text-sm mb-1 ${errors.email ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                            }`}
                                     >
                                         Số điện thoại
                                     </label>
@@ -161,8 +183,10 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.phone
                                             ? 'text-red-300 border-red-400'
                                             : 'text-primary'
-                                        }`}
+                                            }`}
+
                                         {...register('phone')}
+
                                     />
                                     {errors.phone && (
                                         <p className="text-red-500 text-sm mt-1">
@@ -170,51 +194,67 @@ const SignUp = ({ setIsSignIn }: Props) => {
                                         </p>
                                     )}
                                 </div>
-                                <div className="mb-2.5 w-full">
+                                <PasswordInput
+                                    label="Mật khẩu"
+                                    id="password"
+                                    errors={errors.password}
+                                    register={register('password')}
+                                />
+
+                                <PasswordInput
+                                    label="Xác nhận mật khẩu"
+                                    id="password2"
+                                    errors={errors.password2}
+                                    register={register('password2')}
+                                />
+                                <div>
                                     <label
-                                        htmlFor="password"
-                                        className={`block font-bold text-sm mb-1 ${errors.password ? 'text-red-400' : 'text-primary'
-                                        }`}
+                                        className="block mt-2"
+                                        style={{
+                                            position: 'relative',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            cursor: 'pointer',
+                                            fontSize: '14px', // Điều chỉnh kích thước font tùy theo ý muốn
+                                        }}
                                     >
-                                        Mật khẩu
+                                        <input
+                                            type="checkbox"
+                                            checked={acceptedTerms}
+                                            onChange={handleAcceptTerms}
+                                            style={{
+                                                opacity: 0,
+                                                position: 'absolute',
+                                                cursor: 'pointer',
+                                            }}
+                                        />
+                                        <span
+                                            style={{
+                                                position: 'relative',
+                                                width: '20px',
+                                                height: '20px',
+                                                border: '1px solid #ccc',
+                                                marginRight: '8px', // Khoảng cách giữa checkbox và chữ
+                                                backgroundColor: 'white',
+                                            }}
+                                        >
+                                            {acceptedTerms && (
+                                                <span
+                                                    style={{
+                                                        position: 'absolute',
+                                                        left: '6px',
+                                                        top: '2px',
+                                                        width: '5px',
+                                                        height: '10px',
+                                                        border: 'solid black',
+                                                        borderWidth: '0 2px 2px 0',
+                                                        transform: 'rotate(45deg)',
+                                                    }}
+                                                ></span>
+                                            )}
+                                        </span>
+                                        Chính sách và điều khoản
                                     </label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password
-                                            ? 'text-red-300 border-red-400'
-                                            : 'text-primary'
-                                        }`}
-                                        {...register('password')}
-                                    />
-                                    {errors.password && (
-                                        <p className="text-red-500 text-sm mt-1">
-                                            Mật khẩu không hợp lệ
-                                        </p>
-                                    )}
-                                </div>
-                                <div className="mb-2.5 w-full">
-                                    <label
-                                        htmlFor="password2"
-                                        className={`block font-bold text-sm mb-1 ${errors.password2 ? 'text-red-400' : 'text-primary'
-                                        }`}
-                                    >
-                                        Xác nhận mật khẩu
-                                    </label>
-                                    <input
-                                        type="password"
-                                        id="password2"
-                                        className={`block rounded-xl w-full bg-transparent outline-none border-b-2 py-2 px-4  ${errors.password2
-                                            ? 'text-red-300 border-red-400'
-                                            : 'text-primary'
-                                        }`}
-                                        {...register('password2')}
-                                    />
-                                    {errors.password2 && (
-                                        <p className="text-red-500 text-sm mt-1">
-                                           Mật khẩu không khớp
-                                        </p>
-                                    )}
                                 </div>
                                 <button type="submit" onClick={handleSubmit(onSubmit)}>
                                     <Button text="Đăng kí" textColor="text-white" bgColor="bg-primary" />

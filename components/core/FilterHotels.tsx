@@ -1,6 +1,6 @@
-import {Disclosure} from '@headlessui/react'
-import React, {useState, useEffect} from 'react'
-import {IRoom} from '../../models'
+import { Disclosure } from '@headlessui/react'
+import React, { useState, useEffect } from 'react'
+import { IRoom } from '../../models'
 
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { useForm } from 'react-hook-form'
@@ -24,8 +24,8 @@ const numberFormat = (e: any) =>
         currency: 'VND'
     }).format(e);
 
-const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,room, setHotelsType}) => {
-    const {register, watch} = useForm()
+const FilterHotels: React.FC<Props> = ({ branchIdBf, branchNameBf, branchesModel, room, setHotelsType }) => {
+    const { register, watch } = useForm()
 
     const router = useRouter()
     const queryUrl = router?.query
@@ -54,7 +54,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
     const [bedNumber, setBedNumber] = useState('-1')
     const [minPrice, setMinPrice] = useState('0')
     const [maxPrice, setMaxPrice] = useState('500000000')
-    
+
     const onChangeValues = (event: any) => {
         setValues(event.value);
     };
@@ -63,7 +63,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
         setMinPrice(values[0].toString());
         setMaxPrice(values[1].toString());
     }, [values])
-    
+
 
     const [rating, setRating] = useState('-1')
     let token = getCookie('jwt_token')?.toString();
@@ -80,7 +80,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
                 Accept: "application/json",
                 Authorization: token == undefined ? "" : token
             }),
-            
+
         });
         const data = await response.json();
 
@@ -89,7 +89,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
     }
     useEffect(() => {
         handleFilter();
-    }, [branchId,rating, values, bedNumber, peopleNumber]);
+    }, [branchId, rating, values, bedNumber, peopleNumber]);
 
     // Trả kết quả ra cho ô export kết quả
     setHotelsType(rooms);
@@ -113,34 +113,34 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
     }, []);
     const getValue = (number: any) => {
         switch (number) {
-        case -1:
-            return 0;
+            case -1:
+                return 0;
 
-        case 0:
-            return 1;
+            case 0:
+                return 1;
 
-        default:
-            return number;
+            default:
+                return number;
         }
     };
-    const {width} = useWindowDimensions()
+    const { width } = useWindowDimensions()
 
     return (
         <><div><form className="shadow-xl w-full h-full p-5 bg-blue-100 rounded-md drop-shadow-2xl" autoComplete='off'>
-            
+
             <Disclosure defaultOpen={(width > 1024)} >
                 <div className="w-full" >
                     <label className="w-full">
                         <span className="text-sm float-left">Chi nhánh</span>
                         <div>
-                            <div className="select-container" defaultValue={branchNameBf}> 
-                                <select className='form-input block w-full rounded-md border-0' defaultValue={branchNameBf} onChange={(e) => {setBranchId(e.target.value);}}>
+                            <div className="select-container" defaultValue={branchNameBf}>
+                                <select className='form-input block w-full rounded-md border-0' defaultValue={branchNameBf} onChange={(e) => { setBranchId(e.target.value); }}>
                                     {branches != null ? branches.map((option) => (
                                         <option key={option.id} value={option.id}>{option.name}</option>
-                                    )): null}
+                                    )) : null}
                                 </select>
                             </div>
-                        
+
                         </div>
                     </label>
                 </div>
@@ -149,21 +149,26 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
                         <div className="w-full flex flex-wrap gap-x-5 ">
                             <label className="flex-1">
                                 <span className="text-sm">Check In</span>
-                                <input type="date" className="form-input block w-full rounded-md border-0"  onChange={(e) => setCheckIn(e.target.value)}/>
+                                <input type="date" className="form-input block w-full rounded-md border-0" onChange={(e) => setCheckIn(e.target.value)} />
                             </label>
                             <label className="flex-1">
                                 <span className="text-sm">Check Out</span>
-                                <input type="date" className="form-input block w-full rounded-md border-0" onChange={(e) => setCheckOut(e.target.value)}/>
+                                <input type="date" className="form-input block w-full rounded-md border-0" onChange={(e) => setCheckOut(e.target.value)} />
                             </label>
                         </div>
                         <label className="w-full">
                             <span className="text-sm">Số người</span>
-                            <InputNumber className="block w-full rounded-md border-none" defaultValue={-1} inputId="border-0 minmax-buttons" value={getValue(parseInt(peopleNumber))} onValueChange={(e) => setPeopleNumber(e.value ? e.value.toString() : '-1')} mode="decimal" showButtons min={-1} max={10} />
+                            <InputNumber className="block w-full rounded-md border-none" defaultValue={-1}
+                                inputId="border-0 minmax-buttons" value={getValue(parseInt(peopleNumber))}
+                                onValueChange={(e) => setPeopleNumber(e.value ? e.value.toString() : '-1')} mode="decimal"
+                                showButtons min={-1} max={10}
+                            />
+
                             {/* <input type="number" className="form-input block w-full rounded-md border-0" onChange={(e) => setPeopleNumber(e.target.value)}/> */}
                         </label>
                         <label className="w-full">
                             <span className="text-sm">Số giường</span>
-                            <InputNumber className="block w-full rounded-md border-none" defaultValue={-1} inputId="border-0 minmax-buttons" value={getValue(parseInt(bedNumber))} onValueChange={(e) => setBedNumber(e.value? e.value.toString() : '-1')} mode="decimal" showButtons min={-1} max={20} />
+                            <InputNumber className="block w-full rounded-md border-none" defaultValue={-1} inputId="border-0 minmax-buttons" value={getValue(parseInt(bedNumber))} onValueChange={(e) => setBedNumber(e.value ? e.value.toString() : '-1')} mode="decimal" showButtons min={-1} max={20} />
                         </label>
                         <div className="w-full flex flex-wrap gap-x-5">
                             <span className="text-sm">Ngân sách của bạn: {numberFormat(values[0])} - {numberFormat(values[1])}</span>
@@ -181,7 +186,7 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
 
                         <Link
                             href={query}
-                            onClick={() =>handleFilter()}  
+                            onClick={() => handleFilter()}
                         >
                             <Button text={"Search"} bgColor="bg-lightPrimary"></Button>
                         </Link>
@@ -192,58 +197,58 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
             </Disclosure>
         </form>
         </div>
-        <div className="shadow-xl border-2 mt-4 p-4">
-            <h3 className="mb-4 font-bold border-b pb-4 text-xl">Filter by:</h3>
-            <div className="flex flex-col">
-                <div className="flex-1">
-                </div>
-                <div className="flex-1">
-                    <Disclosure defaultOpen={(width > 1024)}>
-                        <Disclosure.Button>
-                            <h4 className="mb-4 font-bold">Star</h4>
-                        </Disclosure.Button>
-                        <Disclosure.Panel>
-                            <ul className="w-48 text-sm font-medium">
-                                <div className="flex items-center mb-4">
-                                    <input
-                                        id="all"
-                                        type="radio"
-                                        name="rating"
-                                        className="w-4 h-4"
-                                        onChange={() =>setRating("-1")}
-                                        value="all"
-                                    />
-                                    <label htmlFor="all" className="ml-2 text-sm font-medium capitalize">
-                                        All
-                                    </label>
-                                </div>
-                                {Array.from(Array(5)).map((item, index) => (
-                                    <div className="flex items-center mb-4" key={index}>
+            <div className="shadow-xl border-2 mt-4 p-4">
+                <h3 className="mb-4 font-bold border-b pb-4 text-xl">Filter by:</h3>
+                <div className="flex flex-col">
+                    <div className="flex-1">
+                    </div>
+                    <div className="flex-1">
+                        <Disclosure defaultOpen={(width > 1024)}>
+                            <Disclosure.Button>
+                                <h4 className="mb-4 font-bold">Star</h4>
+                            </Disclosure.Button>
+                            <Disclosure.Panel>
+                                <ul className="w-48 text-sm font-medium">
+                                    <div className="flex items-center mb-4">
                                         <input
-                                            id={index.toString()}
+                                            id="all"
                                             type="radio"
                                             name="rating"
                                             className="w-4 h-4"
-                                            onChange={() =>setRating((index+1).toString())}
-                                            value={index + 1}
+                                            onChange={() => setRating("-1")}
+                                            value="all"
                                         />
-                                        <label
-                                            htmlFor={index.toString()}
-                                            className="ml-2 text-sm font-medium capitalize"
-                                        >
-                                            {index + 1} stars
+                                        <label htmlFor="all" className="ml-2 text-sm font-medium capitalize">
+                                            All
                                         </label>
                                     </div>
-                                ))}
-                            </ul>
-                        </Disclosure.Panel>
-                    </Disclosure>
-                </div>
+                                    {Array.from(Array(5)).map((item, index) => (
+                                        <div className="flex items-center mb-4" key={index}>
+                                            <input
+                                                id={index.toString()}
+                                                type="radio"
+                                                name="rating"
+                                                className="w-4 h-4"
+                                                onChange={() => setRating((index + 1).toString())}
+                                                value={index + 1}
+                                            />
+                                            <label
+                                                htmlFor={index.toString()}
+                                                className="ml-2 text-sm font-medium capitalize"
+                                            >
+                                                {index + 1} stars
+                                            </label>
+                                        </div>
+                                    ))}
+                                </ul>
+                            </Disclosure.Panel>
+                        </Disclosure>
+                    </div>
 
+                </div>
             </div>
-        </div>
         </>
-        
+
     )
 }
 
