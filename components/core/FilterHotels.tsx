@@ -169,10 +169,10 @@ const FilterHotels: React.FC<Props> = ({branchIdBf,branchNameBf,branchesModel,ro
                             <span className="text-sm">Ngân sách của bạn: {numberFormat(values[0])} - {numberFormat(values[1])}</span>
                             <Slider
                                 range
-                                value={values[0]}
+                                value={values}
                                 min={0}
                                 max={50000000}
-                                onChange={onChangeValues}
+                                onChange={(e) => onChangeValues(e)}
                                 style={{ width: '100%' }}
                                 step={50000}
                                 className='mt-2'

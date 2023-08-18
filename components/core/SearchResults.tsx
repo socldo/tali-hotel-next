@@ -26,7 +26,6 @@ const numberFormat = (e: any) =>
 
 const SearchResults: React.FC<Props> = ({ data, city }) => {
     const [visible, setVisible] = useState(false);
-    console.log(visible);
 
     return (
         <div>
