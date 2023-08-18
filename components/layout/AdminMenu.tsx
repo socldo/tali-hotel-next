@@ -10,12 +10,16 @@ import { AppMenuItem } from '../../types/types';
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
 
+    const redirectTo = (url: any) => {
+        window.location.href = url;
+    };
+
     const model: AppMenuItem[] = [
         {
             label: 'Trang chủ',
             items: [
                 { label: 'Quản trị', icon: 'pi pi-fw pi-android', to: '/admin' },
-                { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', command: () => redirectTo('/') }
 
             ]
         },

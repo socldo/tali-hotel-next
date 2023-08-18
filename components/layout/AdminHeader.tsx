@@ -59,6 +59,9 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
 
     }
 
+    const redirectTo = (url: any) => {
+        window.location.href = url;
+    };
 
     return (
         <div className="layout-topbar">
