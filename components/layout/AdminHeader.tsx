@@ -66,7 +66,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     return (
         <div className="layout-topbar">
             <div style={{ 'marginRight': '1rem' }}>
-                <Link href="/" className="layout-topbar-logo">
+                <Link href="/admin" className="layout-topbar-logo">
                     <img src="/tali-hotel-logo-black.png" alt="logo" />
                 </Link>
             </div>

@@ -78,7 +78,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                             <div>
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                                     <h3 className="font-bold text-2xl mb-4 text-black contents">
-                    Đánh giá khách hàng
+                                        Đánh giá khách hàng
                                     </h3>
                                     <button
                                         className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -109,7 +109,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                                 </div>
                                                 <div className="ml-6">
                                                     <p className="text-gray-500 text-xs leading-relaxed flex-1 w-64">
-                            Đã đánh giá: {moment(review.updatedAt).format("LLL")}
+                                                        Đã đánh giá: {moment(review.updatedAt).format("LLL")}
                                                     </p>
                                                     <div className="flex">
                                                         <textarea
@@ -181,7 +181,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                         ) : (
                             <div>
                                 <h3 className="font-semibold text-2xl mb-4 text-black text-center">
-                  Please login to review
+                                    Vui lòng đăng nhập để nhập giá
                                 </h3>
                                 <Link href="/auth" className="flex text-center justify-center">
                                     <Button
