@@ -113,14 +113,14 @@ const FilterHotels: React.FC<Props> = ({ branchIdBf, branchNameBf, branchesModel
     }, []);
     const getValue = (number: any) => {
         switch (number) {
-            case -1:
-                return 0;
+        case -1:
+            return 0;
 
-            case 0:
-                return 1;
+        case 0:
+            return 1;
 
-            default:
-                return number;
+        default:
+            return number;
         }
     };
     const { width } = useWindowDimensions()
@@ -174,7 +174,7 @@ const FilterHotels: React.FC<Props> = ({ branchIdBf, branchNameBf, branchesModel
                             <span className="text-sm">Ngân sách của bạn: {numberFormat(values[0])} - {numberFormat(values[1])}</span>
                             <Slider
                                 range
-                                value={values}
+                                value={[values[0],values[1]]}
                                 min={0}
                                 max={50000000}
                                 onChange={(e) => onChangeValues(e)}
@@ -197,56 +197,56 @@ const FilterHotels: React.FC<Props> = ({ branchIdBf, branchNameBf, branchesModel
             </Disclosure>
         </form>
         </div>
-            <div className="shadow-xl border-2 mt-4 p-4">
-                <h3 className="mb-4 font-bold border-b pb-4 text-xl">Filter by:</h3>
-                <div className="flex flex-col">
-                    <div className="flex-1">
-                    </div>
-                    <div className="flex-1">
-                        <Disclosure defaultOpen={(width > 1024)}>
-                            <Disclosure.Button>
-                                <h4 className="mb-4 font-bold">Star</h4>
-                            </Disclosure.Button>
-                            <Disclosure.Panel>
-                                <ul className="w-48 text-sm font-medium">
-                                    <div className="flex items-center mb-4">
+        <div className="shadow-xl border-2 mt-4 p-4">
+            <h3 className="mb-4 font-bold border-b pb-4 text-xl">Filter by:</h3>
+            <div className="flex flex-col">
+                <div className="flex-1">
+                </div>
+                <div className="flex-1">
+                    <Disclosure defaultOpen={(width > 1024)}>
+                        <Disclosure.Button>
+                            <h4 className="mb-4 font-bold">Star</h4>
+                        </Disclosure.Button>
+                        <Disclosure.Panel>
+                            <ul className="w-48 text-sm font-medium">
+                                <div className="flex items-center mb-4">
+                                    <input
+                                        id="all"
+                                        type="radio"
+                                        name="rating"
+                                        className="w-4 h-4"
+                                        onChange={() => setRating("-1")}
+                                        value="all"
+                                    />
+                                    <label htmlFor="all" className="ml-2 text-sm font-medium capitalize">
+                                            All
+                                    </label>
+                                </div>
+                                {Array.from(Array(5)).map((item, index) => (
+                                    <div className="flex items-center mb-4" key={index}>
                                         <input
-                                            id="all"
+                                            id={index.toString()}
                                             type="radio"
                                             name="rating"
                                             className="w-4 h-4"
-                                            onChange={() => setRating("-1")}
-                                            value="all"
+                                            onChange={() => setRating((index + 1).toString())}
+                                            value={index + 1}
                                         />
-                                        <label htmlFor="all" className="ml-2 text-sm font-medium capitalize">
-                                            All
+                                        <label
+                                            htmlFor={index.toString()}
+                                            className="ml-2 text-sm font-medium capitalize"
+                                        >
+                                            {index + 1} stars
                                         </label>
                                     </div>
-                                    {Array.from(Array(5)).map((item, index) => (
-                                        <div className="flex items-center mb-4" key={index}>
-                                            <input
-                                                id={index.toString()}
-                                                type="radio"
-                                                name="rating"
-                                                className="w-4 h-4"
-                                                onChange={() => setRating((index + 1).toString())}
-                                                value={index + 1}
-                                            />
-                                            <label
-                                                htmlFor={index.toString()}
-                                                className="ml-2 text-sm font-medium capitalize"
-                                            >
-                                                {index + 1} stars
-                                            </label>
-                                        </div>
-                                    ))}
-                                </ul>
-                            </Disclosure.Panel>
-                        </Disclosure>
-                    </div>
-
+                                ))}
+                            </ul>
+                        </Disclosure.Panel>
+                    </Disclosure>
                 </div>
+
             </div>
+        </div>
         </>
 
     )
