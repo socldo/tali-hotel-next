@@ -10,6 +10,7 @@ import { IBooking, IRoom } from "../../models";
 import BookingDetail from "../../components/booking/BookingDetail";
 import { Dialog } from "primereact/dialog";
 import { useRouter } from "next/router";
+import { Layout } from "../../components/layout";
 
 const numberFormat = (e: any) =>
     new Intl.NumberFormat('it-IT', {
@@ -33,7 +34,7 @@ const BookingManagerPage = () => {
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/bookings/users/${userId}`;
-        
+
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -50,8 +51,8 @@ const BookingManagerPage = () => {
     useEffect(() => {
         handlePayBooking();
     }, [])
-    
-    
+
+
     const formatCurrency = (value: any) => {
         return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     };
@@ -84,17 +85,17 @@ const BookingManagerPage = () => {
 
     const getSeverity = (product: any) => {
         switch (product.status) {
-        case 0:
-            return 'Chưa thanh toán';
+            case 0:
+                return 'Chưa thanh toán';
 
-        case 1:
-            return 'Đã thanh toán';
+            case 1:
+                return 'Đã thanh toán';
 
-        case 2:
-            return 'Hoàn tất';
+            case 2:
+                return 'Hoàn tất';
 
-        default:
-            return null;
+            default:
+                return null;
         }
     };
 
@@ -123,7 +124,7 @@ const BookingManagerPage = () => {
                     ></i>
                     <div className="text-center">
                         <h3 className="mt-2 md:text-2xl text-base text-gray-900 font-semibold text-center">
-             Đăng nhập để sử dụng tính năng này
+                            Đăng nhập để sử dụng tính năng này
                         </h3>
                         <p className="mt-2"> Vui lòng đăng nhập để quản lí đặt phòng của bạn! </p>
                         <div className="py-10 text-center rounded-lg">
@@ -131,7 +132,7 @@ const BookingManagerPage = () => {
                                 href="/auth"
                                 className="rounded-lg px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
                             >
-               Đăng nhập
+                                Đăng nhập
                             </Link>
                         </div>
                     </div>
@@ -140,47 +141,56 @@ const BookingManagerPage = () => {
         </ul>
     }
     return (
-        <>                             
-            <Dialog header="Thông tin đặt phòng" visible={showModel} style={{ width: '80vw' }} onHide={() => setShowModel(false)}>
-                <BookingDetail id={bookingId}></BookingDetail>
-            </Dialog>   
-            { userId ?                
-                <>
+        <>
+            <Layout
+                metadata={{
+                    title: `Đặt phòng`,
+                    description: ""
+                }}
+            >
 
-                    <div className="container mx-auto px-2 lg:px-2 py-5">
-                        <DataTable value={bookingData} header={header} footer={footer} tableStyle={{ minWidth: '60rem' }}>
-                            <Column field="hotel_name" header="Tên khách sạn"></Column>
-                            <Column header="Hình ảnh" body={imageBodyTemplate}></Column>
-                            <Column field="amount" header="Giá tiền" body={priceBodyTemplate}></Column>
-                            <Column field="type" header="Loại phòng"></Column>
-                            <Column field="rating" header="Đánh giá" body={ratingBodyTemplate}></Column>
-                            <Column header="Trạng thái" body={statusBodyTemplate}></Column>
-                            <Column header="" body={getDetailBooking}></Column>
-                        </DataTable>
-                    </div>
-                </> :
-                <div className="bg-gray-100 h-full">
-                    <div className="bg-white p-6  md:mx-auto mt-16 mb-16 text-center">
-                        <i
-                            className="text-orange-500 pi pi-exclamation-circle"
-                            style={{ fontSize: "4rem" }}
-                        ></i>
-                        <div className="text-center">
-                            <h3 className="mt-2 md:text-2xl text-base text-gray-900 font-semibold text-center">
-             Đăng nhập để sử dụng tính năng này
-                            </h3>
-                            <p className="mt-2"> Vui lòng đăng nhập để quản lí đặt phòng của bạn! </p>
-                            <div className="py-10 text-center rounded-lg">
-                                <Link
-                                    href="/auth"
-                                    className="rounded-lg px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
-                                >
-               Đăng nhập
-                                </Link>
+                <Dialog header="Thông tin đặt phòng" visible={showModel} style={{ width: '80vw' }} onHide={() => setShowModel(false)}>
+                    <BookingDetail id={bookingId}></BookingDetail>
+                </Dialog>
+                {userId ?
+                    <>
+
+                        <div className="container mx-auto px-2 lg:px-2 py-5">
+                            <DataTable value={bookingData} header={header} footer={footer} tableStyle={{ minWidth: '60rem' }}>
+                                <Column field="hotel_name" header="Tên khách sạn"></Column>
+                                <Column header="Hình ảnh" body={imageBodyTemplate}></Column>
+                                <Column field="amount" header="Giá tiền" body={priceBodyTemplate}></Column>
+                                <Column field="type" header="Loại phòng"></Column>
+                                <Column field="rating" header="Đánh giá" body={ratingBodyTemplate}></Column>
+                                <Column header="Trạng thái" body={statusBodyTemplate}></Column>
+                                <Column header="" body={getDetailBooking}></Column>
+                            </DataTable>
+                        </div>
+                    </> :
+                    <div className="bg-gray-100 h-full">
+                        <div className="bg-white p-6  md:mx-auto mt-16 mb-16 text-center">
+                            <i
+                                className="text-orange-500 pi pi-exclamation-circle"
+                                style={{ fontSize: "4rem" }}
+                            ></i>
+                            <div className="text-center">
+                                <h3 className="mt-2 md:text-2xl text-base text-gray-900 font-semibold text-center">
+                                    Đăng nhập để sử dụng tính năng này
+                                </h3>
+                                <p className="mt-2"> Vui lòng đăng nhập để quản lí đặt phòng của bạn! </p>
+                                <div className="py-10 text-center rounded-lg">
+                                    <Link
+                                        href="/auth"
+                                        className="rounded-lg px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
+                                    >
+                                        Đăng nhập
+                                    </Link>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>  }
+                    </div>}
+
+            </Layout>
         </>
     );
 }

@@ -56,6 +56,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const handleUpdateUser = async () => {
 
         await router.push('/user')
+        window.location.reload();
 
     }
 
