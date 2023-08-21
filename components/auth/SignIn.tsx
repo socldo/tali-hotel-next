@@ -11,7 +11,7 @@ import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { SignUpForm } from "../../interface/auth";
 import { useDispatch } from "react-redux";
 import { setUser } from "./auth";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaFacebook, FaGoogle, FaGoogleWallet } from "react-icons/fa";
 
 interface Props {
     setIsSignIn: (arg: boolean) => void;
@@ -179,8 +179,14 @@ export default function SignIn({ setIsSignIn }: Props) {
                                         Đăng nhập bằng
                                     </h2>
                                     <div className="border-2 w-10 border-primary inline-block mb-2"></div>
-                                    <SocialsAuth />
-                                    <p className="text-gray-400">hoặc sử dụng tài khoản đã có</p>
+                                    <div className="flex gap-4 items-center justify-center">
+                                        {/* <SocialsAuth /> */}
+                                        <FaGoogle className="text-3xl" />
+                                        <FaFacebook className="text-3xl" />
+                                    </div>
+
+                                    <p className="text-gray-400 mb-1 mt-1" >hoặc sử dụng tài khoản đã có</p>
+
                                     <form
                                         className="w-full sm:w-4/5 mx-auto flex flex-col items-center"
                                         onSubmit={handleSubmit}

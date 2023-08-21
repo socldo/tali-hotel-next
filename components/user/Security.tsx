@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { deleteCookie, getCookie } from 'cookies-next'
 import { Model } from '../../interface'
 import { setTimeout } from 'timers'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 const Security = () => {
     const router = useRouter()
@@ -16,7 +17,12 @@ const Security = () => {
     const [renderCount, setRenderCount] = useState(0);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [responseAPI, setResponseAPI] = useState<Model.APIResponse>({ status: 200, message: 'OK', data: null });
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     // Delete Account
     const handleDeleteMyAccount = async () => {
         try {
@@ -95,6 +101,7 @@ const Security = () => {
         }
     };
     const handleChangePasswords = async () => {
+        console.log(1);
 
         try {
 
@@ -145,7 +152,7 @@ const Security = () => {
 
     return (
         <div>
-            aaa
+
             <div>
                 <h1 className="font-bold text-2xl ">Bảo mật tài khoản</h1>
                 <h2 className='mt-1 mb-1'>Điều chỉnh cài đặt bảo mật của bạn và thiết lập xác thực hai yếu tố.</h2>
@@ -178,36 +185,77 @@ const Security = () => {
                         </summary>
 
                         <nav aria-label="Users Nav" className="mt-2 md:ml-8 transition-all">
-                            <div className=" flex flex-col">
+                            <div className="flex flex-col">
                                 <label htmlFor="current-password">Mật khẩu hiện tại</label>
-                                <input id="current-password"
-                                    type="password"
-                                    className="w-full md:w-2/6 mb-2.5 "
-                                    value={oldPassword}
-                                    onChange={(e) => setOldPassword(e.target.value)}
-                                />
+                                <div className="relative">
+                                    <input
+                                        id="current-password"
+                                        type={showOldPassword ? "text" : "password"}
+                                        className="w-full md:w-2/6 mb-2.5"
+                                        value={oldPassword}
+                                        onChange={(e) => setOldPassword(e.target.value)}
+                                    />
+                                    <span
+                                        className="absolute top-2 right-2 cursor-pointer"
+                                        onClick={() => setShowOldPassword(!showOldPassword)}
+                                    >
+                                        {showOldPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </span>
+                                </div>
                                 {errors.oldPassword && (
                                     // @ts-ignore
                                     <p className="text-red-500">{errors.oldPassword.message}</p>
                                 )}
                             </div>
-                            <div className=" flex flex-col">
+                            <div className="flex flex-col">
                                 <label htmlFor="new-password">Mật khẩu mới</label>
-                                <input
-                                    id="new-password"
-                                    type="password"
-                                    className="w-full md:w-2/6 mb-2.5 "
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                />
+                                <div className="relative">
+                                    <input
+                                        id="new-password"
+                                        type={showNewPassword ? "text" : "password"}
+                                        className="w-full md:w-2/6 mb-2.5 pr-10"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                    />
+                                    <span
+                                        className="absolute top-2 right-2 cursor-pointer"
+                                        style={{ top: "50%", transform: "translateY(-50%)" }}
+                                        onClick={() => setShowNewPassword(!showNewPassword)}
+                                    >
+                                        {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </span>
+                                </div>
                                 {errors.newPassword && (
                                     // @ts-ignore
                                     <p className="text-red-500">{errors.newPassword.message}</p>
                                 )}
                             </div>
+                            <div className="flex flex-col">
+                                <label htmlFor="confirm-password">Xác nhận mật khẩu</label>
+                                <div className="relative">
+                                    <input
+                                        id="confirm-password"
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        className={`w-full md:w-2/6 mb-2.5 pr-10 ${newPassword !== confirmPassword && "border-red-500"}`}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                    />
+                                    <span
+                                        className="absolute top-2 right-2 cursor-pointer"
+                                        style={{ top: "50%", transform: "translateY(-50%)" }}
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    >
+                                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </span>
+                                </div>
+                                {newPassword !== confirmPassword && (
+                                    <p className="text-red-500">Mật khẩu mới và xác nhận không khớp.</p>
+                                )}
+                            </div>
+
                             <button
-                                className={`float-right w-max text-white bg-lightPrimary px-2.5 py-2 rounded-md`}
-                                // disabled={!isValid}
+                                className={`float-right w-max text-white bg-lightPrimary px-2.5 py-2 rounded-md ${(newPassword !== confirmPassword) && "opacity-50 cursor-not-allowed"}`}
+                                disabled={newPassword !== confirmPassword}
                                 onClick={handleChangePasswords}
                             >
                                 Lưu

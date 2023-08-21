@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     usePostReviewMutation,
     useDeleteReviewMutation,
@@ -9,44 +9,91 @@ import { Button } from "../../components/core";
 import Image from "next/image";
 import { AiOutlineClose, CiEdit } from "../../utils/icons";
 import { toast } from "react-toastify";
-import { useAppSelector } from "../../store/hooks";
 import Link from "next/link";
 import { getCookie } from "cookies-next";
+import { Rating, RatingChangeEvent } from "primereact/rating";
+import { Avatar } from "primereact/avatar";
 
 const HotelReview = ({ reviews, id, setShowModal }: any) => {
-    const [postReview] = usePostReviewMutation();
+    const [value, setValue] = useState<number | null>(null);
+    const token = getCookie('jwt_token')?.toString();
+
     const [deleteReview] = useDeleteReviewMutation();
     const [updateReview] = useUpdateReviewMutation();
 
     const [reviewInput, setReviewInput] = useState("");
-    const [score, setScore] = useState(10);
-    const token = getCookie('jwt_token');
     const user_id = getCookie('id');
-    const email = getCookie('email');
-    const phone = getCookie('phone');
-    const name = getCookie('name');
-    const role = getCookie('role');
-    const avatar = getCookie('avatar');
+
+    useEffect(() => {
+        console.log(reviews);
+
+
+    }, []);
 
     const handleChangeReview = (e: React.ChangeEvent<any>) => {
         setReviewInput(e.target.value);
     };
 
-    const handleChangeScore = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setScore(+e.target.value);
-    };
-
     const handleReview = async () => {
-        if (!reviewInput || !score) {
+        if (!reviewInput) {
+
+
             toast.error("Vui lòng điền vào ô trống");
-        } else if (score < 0 || score > 10) {
-            toast.error("Điểm 0-10");
-        } else {
-            await postReview({ id, review: reviewInput, score });
-            toast.success("Đánh giá thành công");
+        }
+        else if (!value) {
+
+            toast.error("Vui lòng chọn điểm đánh giá");
+
+        }
+        else {
+
+            // const response = await postReviewMutation({ id, review: reviewInput, score_rate: score });
+            let response = await handleCreate()
+
+            console.log(response);
+
+            if (response.status != 200) {
+                toast.error("Có lỗi xảy ra khi đánh giá");
+            } else {
+                toast.success("Đánh giá thành công");
+                setReviewInput("");
+            }
             setReviewInput("");
         }
     };
+
+    const handleCreate = async () => {
+
+        try {
+            let score = !value ? 1 : value;
+
+            const response = await fetch(`/api/reviews/create`, {
+                method: "POST",
+                body: JSON.stringify({
+                    parent_review_id: 0,
+                    hotel_id: id,
+                    content: reviewInput,
+                    score_rate: score
+
+                }),
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: !token ? "" : token
+                }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+
+            return data;
+        } catch (error) {
+            console.error('Error fetching:', error);
+
+        }
+    };
+
     const handleDeleteReview = async (id: string) => {
         if (window.confirm("Bạn muốn xoá đúng không?")) {
             try {
@@ -78,7 +125,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                             <div>
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                                     <h3 className="font-bold text-2xl mb-4 text-black contents">
-                    Đánh giá khách hàng
+                                        Đánh giá khách hàng
                                     </h3>
                                     <button
                                         className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -95,13 +142,14 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                             <div className="grid grid-cols-3 gap-4">
                                                 <div className="flex items-center">
                                                     <div>
-                                                        <Image
+                                                        <Avatar image={review?.users?.avatar} size="large" shape="circle" />
+                                                        {/* <Image
                                                             className="w-full object-cover rounded-full"
                                                             width={32}
                                                             height={32}
                                                             src={review?.users?.avatar}
                                                             alt={review?.users?.avatar}
-                                                        />
+                                                        /> */}
                                                     </div>
                                                     <p className="ml-2 text-black text-lg leading-relaxed flex-1 w-auto font-semibold capitalize">
                                                         {review?.users?.name || review?.users?.username}
@@ -109,7 +157,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                                 </div>
                                                 <div className="ml-6">
                                                     <p className="text-gray-500 text-xs leading-relaxed flex-1 w-64">
-                            Đã đánh giá: {moment(review.updatedAt).format("LLL")}
+                                                        Đã đánh giá: {review?.updated_at}
                                                     </p>
                                                     <div className="flex">
                                                         <textarea
@@ -162,13 +210,17 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                         onChange={handleChangeReview}
                                     />
                                     <span className="text-black">Điểm</span>
-                                    <input
+                                    {/* <input
                                         value={score}
                                         type="number"
                                         className="form-input block rounded my-4"
                                         placeholder="9.5"
                                         onChange={handleChangeScore}
-                                    />
+                                    /> */}
+                                    <div className="card flex justify-content-center mt-2">
+                                        <Rating value={value !== null ? value : undefined} onChange={(e: RatingChangeEvent) => setValue(e.value!)} cancel={false} />
+                                    </div>
+
                                     <div className="mt-8" onClick={handleReview}>
                                         <Button
                                             text="Đánh giá"
@@ -181,7 +233,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                         ) : (
                             <div>
                                 <h3 className="font-semibold text-2xl mb-4 text-black text-center">
-                  Please login to review
+                                    Vui lòng đăng nhập để nhập giá
                                 </h3>
                                 <Link href="/auth" className="flex text-center justify-center">
                                     <Button

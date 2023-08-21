@@ -313,14 +313,15 @@ function Branch() {
 
             <DataTable
                 value={branchFilters}
-                scrollable scrollHeight="400px"
+                scrollable scrollHeight="450px"
                 loading={loading}
-                className="mt-3"
+                className="mt-1"
                 globalFilter={globalFilter}
                 header={header}
                 paginator rows={10}
                 rowsPerPageOptions={[10, 20, 50]}
-                tableStyle={{ minWidth: '30rem' }}
+                tableStyle={{ minWidth: '20rem' }}
+
             >
                 <Column
                     header="STT"

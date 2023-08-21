@@ -17,25 +17,25 @@ import { RoomHotel } from '../../components/room'
 import StarRating from '../../components/core/StarRating'
 import { getCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
-import {  RiCupLine, RiHandSanitizerLine } from 'react-icons/ri'
-import {  GalleriaResponsiveOptions } from 'primereact/galleria';
+import { RiCupLine, RiHandSanitizerLine } from 'react-icons/ri'
+import { GalleriaResponsiveOptions } from 'primereact/galleria';
 import { HotelReview, ImageGallery } from '../../components/hotel'
 import GGMap from '../../components/googlemap/GGMap'
 import { Dialog } from 'primereact/dialog'
 
 const HotelDetailPage = () => {
     const router = useRouter()
+    const token = getCookie('jwt_token')?.toString();
 
     const currentPath = window.location.href;
     const lastChar = currentPath.substring(currentPath.lastIndexOf('/') + 1);
     const queryUrl = router?.query
     const branchSlug = queryUrl?.id ? queryUrl?.id[0] : ''
-    console.log('slug id',lastChar);
-    
+
 
     const [roomId, setRoomId] = useState(branchSlug)
     const url = `/api/hotels/${lastChar}`;
-    
+
     const [images, setImages] = useState<string[]>([]);
     const [hotelId, setHotelId] = useState(0)
     const [branchId, setBranchId] = useState(0)
@@ -72,26 +72,19 @@ const HotelDetailPage = () => {
         }
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleDetailRoom = async ( ) => {
-
-        let token = getCookie('jwt_token')?.toString();
-        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-
-
-        
+    const handleDetailRoom = async () => {
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                Authorization: token == undefined ? "" : token
+                Authorization: !token ? "" : token
             }),
         });
         const data = await response.json();
-        console.log('data id', url);
-        
+
         if (data.data) {
-            setHotelId( data.data.id)
+            setHotelId(data.data.id)
             setBranchId(data.data.branch_id)
             setName(data.data.name)
             setDescription(data.data.description)
@@ -104,42 +97,45 @@ const HotelDetailPage = () => {
             setShortDescription(data.data.short_description)
             setHighlightProperty(data.data.highlight_property)
             setTotalReview(data.data.total_reviews)
-            setImages(data.data.images) 
+            setImages(data.data.images)
             setLat(data.data.lat)
             setLng(data.data.lng)
         }
-  
-  
+
+
         return data;
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleReviews = async () => {
 
-        let token = getCookie('jwt_token')?.toString();
-        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         let url = `/api/reviews?hotel_id=${branchSlug}`;
 
-        
+
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                Authorization: token == undefined ? "" : token
+                Authorization: !token ? "" : token
             }),
         });
         const data = await response.json();
 
+
         setReviews(data.data);
         return data;
+
+
     }
+
+    useEffect(() => {
+        handleReviews();
+    }, [showModal])
 
     useEffect(() => {
         setRoomId(branchSlug);
         handleDetailRoom();
-        handleReviews();
-    },[])
+    }, [])
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -158,7 +154,7 @@ const HotelDetailPage = () => {
         // eslint-disable-next-line @next/next/no-img-element
         return <img src={item} alt={item} style={{ display: 'block' }} />;
     }
-    
+
     return (
         <Layout
             metadata={{
@@ -211,14 +207,14 @@ const HotelDetailPage = () => {
                                             text="Đặt ngay"
                                             textColor="text-white"
                                             bgColor="bg-primary"
-                                            
+
                                         />
                                     </div>
-                                    <div 
+                                    <div
                                         onClick={() => setShowModal(true)}
                                     >
                                         <Button
-                                            text={'Đánh giá của khách'+ ' (' +totalReview + ')'}
+                                            text={'Đánh giá của khách' + ' (' + totalReview + ')'}
                                             textColor="text-white"
                                             bgColor="bg-primary"
                                         />
@@ -241,7 +237,7 @@ const HotelDetailPage = () => {
                                 <h2 className="text-primary">{address}</h2>
                                 <span className="cursor-pointer flex-wrap" >
                                     <p onClick={() => setVisible(true)}>Địa điểm tuyệt vời - Xem vị trí</p>
-                                        
+
                                     <Dialog header={address} visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
 
                                         <GGMap lat={lat} lng={lng}></GGMap>
@@ -259,9 +255,9 @@ const HotelDetailPage = () => {
                     <div className="w-4/5 lg:w-4/5 py-5 text-justify">
                         <p >{description}</p>
                         <p>
-                                Phù hợp cho các cặp đôi và hộ gia đình – Họ đã đánh giá
+                            Phù hợp cho các cặp đôi và hộ gia đình – Họ đã đánh giá
                             <span className="font-bold">{` ${averageRate} `}</span>
-                                sao cho trải nghiệm tại đây.
+                            sao cho trải nghiệm tại đây.
                         </p>
                         <div className="mt-2">
                             <h2 className="font-bold text-lg">Các tiện nghi được ưa chuộng nhất</h2>
@@ -320,13 +316,13 @@ const HotelDetailPage = () => {
                             </div>
                             <div onClick={scrollToSection}>
                                 <Button
-                                    
+
                                     text="Đặt ngay"
                                     textColor="text-white"
                                     bgColor="bg-primary"
                                 />
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -379,7 +375,7 @@ const HotelDetailPage = () => {
             </Transition> */}
         </Layout>
     )
-    
+
 }
 
 export default HotelDetailPage
