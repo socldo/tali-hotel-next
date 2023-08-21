@@ -93,6 +93,9 @@ const BookingManagerPage = () => {
         case 2:
             return 'Hoàn tất';
 
+        case 3:
+            return 'Đã huỷ';
+
         default:
             return null;
         }
@@ -112,7 +115,11 @@ const BookingManagerPage = () => {
             <i className="cursor-pointer active:bg-violet-200 focus:outline-none focus:ring focus:ring-violet-300 pi pi-eye" style={{ color: 'slateblue' }}>
             </i></div>
     };
-
+    const cancelBooking = (product: any) => {
+        return <div className="hover:text-blue-700 mr-4" onClick={() => hadleClickDetailButton(product)}>
+            <i className="cursor-pointer active:bg-violet-200 focus:outline-none focus:ring focus:ring-violet-300 pi pi-times" style={{ color: 'slateblue' }}>
+            </i></div>
+    };
     const popUpDetail = () => {
         <ul className="">
             <div className="bg-gray-100 h-full">
@@ -156,6 +163,7 @@ const BookingManagerPage = () => {
                             <Column field="rating" header="Đánh giá" body={ratingBodyTemplate}></Column>
                             <Column header="Trạng thái" body={statusBodyTemplate}></Column>
                             <Column header="" body={getDetailBooking}></Column>
+                            <Column header="" body={cancelBooking}></Column>
                         </DataTable>
                     </div>
                 </> :

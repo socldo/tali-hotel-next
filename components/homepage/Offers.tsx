@@ -40,7 +40,7 @@ const Offers = () => {
     }, []);
 
     const handleClick = () => {
-        router.push('/search/')
+        router.push('/blog')
     } 
 
 
