@@ -27,6 +27,7 @@ function Booking() {
     const [loading, setLoading] = useState(true);
     const [globalFilter, setGlobalFilter] = useState('');
     const [statusChange, setStatusChange] = useState(0);
+    const [paymentStatusChange, setPaymentStatusChange] = useState(0);
     const [activeIndex, setActiveIndex] = useState(0);
     const [renderCount, setRenderCount] = useState(0);
     const [sortKeyBranch, setSortKeyBranch] = useState(null);
@@ -35,6 +36,7 @@ function Booking() {
     const [hotelFilters, setHotelFilters] = useState<Model.Hotel[]>([]);
     const [hotels, setHotels] = useState<Model.Hotel[]>([]);
     const [confirmPopup, setConfirmPopup] = useState(false);
+    const [confirmPopup2, setConfirmPopup2] = useState(false);
     const [visibleDetail, setVisibleDetail] = useState<boolean>(false);
     const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
 
@@ -219,6 +221,43 @@ function Booking() {
         }
     };
 
+    const fetchChangePaymentStatus = async (statusChange: number) => {
+        if (booking?.payment_status == 2 || booking?.payment_status == 0) {
+            try {
+
+
+                const response = await fetch(`/api/bookings/${booking?.id}/change-payment-status`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        status: statusChange
+                    }),
+                    headers: new Headers({
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        Authorization: !token ? "" : token
+                    }),
+                });
+                const data = await response.json();
+                console.log('data:', data);
+
+                setResponseAPI({
+                    status: data.status,
+                    message: data.message,
+                    data: data.data,
+                });
+
+                if (data.status == 200) {
+
+                    setRenderCount(renderCount + 1);
+                }
+                return data;
+            } catch (error) {
+                console.error('Error fetching:', error);
+            }
+
+        }
+    };
+
 
 
     const header = (
@@ -277,23 +316,47 @@ function Booking() {
 
     );
     const paymentStatusBody = (rowData: Model.Booking) => {
-
         return (
             <>
-                {rowData.payment_status == 1
-                    ? <Button icon="pi pi-check" rounded severity="success" aria-label="success" />
-                    : <Button icon="pi pi-times" rounded severity="danger" aria-label="danger" />
+                {
+                    rowData.payment_status === 2 && (
+                        <Button icon="pi pi-check" rounded severity="success" aria-label="success" tooltip="Đã thanh toán" />
+                    )
                 }
-
-
+                {
+                    rowData.payment_status === 0 && (
+                        <Button icon="pi pi-times" rounded severity="danger" aria-label="danger" tooltip="Chưa thanh toán" />
+                    )
+                }
+                {
+                    rowData.payment_status === 3 && (
+                        <Button icon="pi pi-undo" rounded severity="help" aria-label="help" tooltip="Đã hoàn tiền" />
+                    )
+                }
             </>
-        )
+        );
+    };
 
-    }
+
     const actionBodyTemplate = (rowData: Model.Booking) => {
         const handleClickUpdateStatus = (status: any) => {
-            setConfirmPopup(true);
-            setStatusChange(status);
+            if (rowData.payment_status != 2 && status == 2) {
+                toast.warn('Phải xác nhận thanh toán xong mới có thể hoàn tất')
+            }
+
+            else {
+                setConfirmPopup(true);
+                setStatusChange(status);
+
+            }
+        };
+
+        const handleClickUpdatePaymentStatus = (status: any) => {
+
+            setConfirmPopup2(true);
+            setPaymentStatusChange(status);
+
+
         };
 
         const handleClickDetail = () => {
@@ -303,14 +366,31 @@ function Booking() {
 
             let changeStatus = await handleChangeStatus(status);
 
+            if (status == 3) {
+                await fetchChangePaymentStatus(3);
+            }
+
             if (changeStatus?.status === 200) {
                 toast.success('Cập nhật thành công');
             }
         };
 
+        const accept2 = async (status: any) => {
+
+            let changeStatus = await fetchChangePaymentStatus(status);
+
+
+            if (changeStatus?.status === 200) {
+                toast.success('Cập nhật thành công');
+            }
+            else {
+                toast.warning('Cập nhật thất bại');
+            }
+        };
+
+
         const reject = () => {
             toast.warn('Từ chối cập nhật')
-
 
         };
 
@@ -341,7 +421,21 @@ function Booking() {
                     }
                 }
             );
+
         }
+        if (rowData.payment_status == 0) {
+
+            items.push(
+                {
+                    label: 'Update-Active',
+                    icon: 'pi pi-money-bill',
+                    command: () => {
+                        handleClickUpdatePaymentStatus(2);
+                    }
+                }
+            )
+        }
+
         if (rowData.status === 1) {
             items.push(
                 {
@@ -359,6 +453,10 @@ function Booking() {
 
                 <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup} onHide={() => setConfirmPopup(false)}
                     message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={() => accept(statusChange)} reject={reject} acceptLabel="Có"
+                    rejectLabel="Không" />
+
+                <ConfirmPopup target={buttonEl.current ? buttonEl.current : undefined} visible={confirmPopup2} onHide={() => setConfirmPopup2(false)}
+                    message="Bạn có chắc muốn tiếp tục?" icon="pi pi-exclamation-triangle" accept={() => accept2(paymentStatusChange)} reject={reject} acceptLabel="Có"
                     rejectLabel="Không" />
 
                 <div className="flex align-items-center justify-content-center" style={{ marginRight: '3rem', height: '100%' }}>
