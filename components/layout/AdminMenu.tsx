@@ -18,8 +18,8 @@ const AppMenu = () => {
         {
             label: 'Trang chủ',
             items: [
-                { label: 'Quản trị', icon: 'pi pi-fw pi-android', to: '/admin' },
-                { label: 'Dashboard', icon: 'pi pi-fw pi-home', command: () => redirectTo('/') }
+                { label: 'Dashboard', icon: 'pi pi-fw pi-android', to: '/admin' },
+                { label: 'Trang chủ', icon: 'pi pi-fw pi-home', command: () => redirectTo('/') }
 
             ]
         },

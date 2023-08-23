@@ -136,6 +136,8 @@ const Header = () => {
     const adminNavigationButton = (role: any) => {
 
 
+
+
         if (role !== undefined && role !== null) {
             const roleNumber = parseInt(role, 10);
 
@@ -151,9 +153,9 @@ const Header = () => {
                 );
             }
         }
-
-        return null;
-
+        else {
+            return null;
+        }
 
     }
 
