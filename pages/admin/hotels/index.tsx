@@ -108,8 +108,7 @@ function Hotel() {
             });
 
             const data = await response.json();
-            console.log('data:', data);
-
+  
             setHotels(data.data);
             setLoading(false);
 
