@@ -130,7 +130,7 @@ const Blog = () => {
                                         <Tag severity={'info'}>{getSeverity(item)}</Tag>
                                         <div className="flex flex-row mt-4 text-sm text-slate-500 mb-4">
                                             <p> <span className="pi pi-eye"></span> {item.views}</p>
-                                            <p> <span className="ml-4 pi pi-comments"></span> {item.views}</p>
+                                            <p> <span className="ml-4 pi pi-comments"></span> 0</p>
                                             <p> <span className="ml-4 pi pi-calendar-times"></span> {item.created_at.toLocaleString()}</p>
                                         </div>
                                         <h2 className="italic text-2xl font-semibold mt-4">{item.title}</h2>

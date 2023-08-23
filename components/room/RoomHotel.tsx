@@ -5,11 +5,11 @@ import { Loader } from "../layout";
 import { Button } from "../core";
 import { IRoom } from "../../models";
 import { toast } from "react-toastify";
-import { useRouter } from "next/router";
 import moment from "moment";
 import { getCookie } from "cookies-next";
 import { Calendar, CalendarChangeEvent } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
+import { useRouter } from 'next/router'
 interface Props {
   hotelId: string;
 }
@@ -25,8 +25,12 @@ const numberFormat = (e: any) =>
     }).format(e);
 
 const RoomHotel = ({ hotelId }: Props) => {
+
+    const router = useRouter()
     const [loading, setLoading] = useState(false);
     const [rooms, setRoom] = useState([]);
+
+
     const services = [
         "Phòng tắm thoải mái",
         "Vòi xịt",
@@ -63,42 +67,43 @@ const RoomHotel = ({ hotelId }: Props) => {
     const [peopleNumber, setPeopleNumber] = useState<number>(-1);
     const [bedNumber, setBedNumber] = useState<number>(-1);
 
-    const router = useRouter();
-
-    const handleDetailRoom = async () => {
+    const handleDetailRoom = async (id: any) => {
         let token = getCookie("jwt_token")?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        let url = `/api/rooms?hotel_id=${hotelId}&check_in=${
+        let url = `/api/rooms?hotel_id=${id}&check_in=${
             checkIn != undefined ? moment(checkIn).format("YYYY-MM-DD") : ""
         }&check_out=${
             checkOut != undefined ? moment(checkOut).format("YYYY-MM-DD") : ""
         }&people_number=${peopleNumber}&bed_number=${bedNumber}`;
         console.log(url);
-
-        const response = await fetch(url, {
-            method: "GET",
-            headers: new Headers({
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: token == undefined ? "" : token,
-            }),
-        });
-        const data = await response.json();
-        setRoom(data.data);
-        // console.log( data);
-        return data;
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: token == undefined ? "" : token,
+                }),
+            });
+            const data = await response.json();
+            setRoom(data.data);
+            return data;
+        } catch (error) {
+            console.log(error);
+            return null;
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        handleDetailRoom()
-            .then((res) => res.json())
-            .catch((err) => {
-                console.log(err);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [checkOut, checkIn, peopleNumber, bedNumber]);
+        const queryUrl = router?.query
+        const branchSlug = queryUrl?.id ? queryUrl?.id : ''
+    
+        console.log('hotelIdState', branchSlug);
+        
+        handleDetailRoom(router?.query.id);
+    }, [checkOut, checkIn, peopleNumber, bedNumber, router?.query.id]);
 
     const onChangeSelect = (room: IRoom, quantity: number) => {
         if (quantity === 0) {

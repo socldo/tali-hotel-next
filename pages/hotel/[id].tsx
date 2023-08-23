@@ -107,8 +107,8 @@ const HotelDetailPage = () => {
     }
 
     const handleReviews = async () => {
-        // console.log('aaaa', queryUrl?.id);
-        let url = `/api/reviews?hotel_id=${queryUrl?.id}`;
+
+        let url = `/api/reviews?hotel_id=${branchSlug}`;
 
 
         const response = await fetch(url, {
@@ -123,9 +123,6 @@ const HotelDetailPage = () => {
 
 
         setReviews(data.data);
-
-
-
         return data;
 
 
