@@ -106,7 +106,7 @@ const BlogDetail = () => {
                                         <p> <span className="ml-4 pi pi-calendar-times"></span> {item?.created_at.toLocaleString()}</p>
                                     </div>
                                     <h2 className="italic text-2xl font-semibold mt-4">{item?.title}</h2>
-                                    <h2 className="mt-4 text-base text-slate-600">{item?.content}</h2>
+                                    <h2 className="mt-4 text-base text-slate-600">{item?.summary}</h2>
                                     <div className="className=" mt-4 text-base text-slate-600>
                                         <HtmlRenderer htmlString={item?.content ? item?.content : ""}></HtmlRenderer>
                                     </div>

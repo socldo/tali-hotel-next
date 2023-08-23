@@ -313,7 +313,7 @@ function Review() {
 
             <DataTable
                 value={reviewFilters}
-                scrollable scrollHeight="400px"
+                scrollable scrollHeight="600px"
                 loading={loading}
                 className="mt-3"
                 globalFilter={globalFilter}

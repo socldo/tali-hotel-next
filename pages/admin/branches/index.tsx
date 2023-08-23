@@ -313,7 +313,7 @@ function Branch() {
 
             <DataTable
                 value={branchFilters}
-                scrollable scrollHeight="450px"
+                scrollable scrollHeight="600px"
                 loading={loading}
                 className="mt-1"
                 globalFilter={globalFilter}

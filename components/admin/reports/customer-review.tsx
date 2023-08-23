@@ -63,6 +63,7 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
                 ]
             };
             const options = {
+
                 cutout: '60%',
                 plugins: {
                     legend: {
@@ -116,7 +117,7 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
     return (
         <>
 
-            <div>
+            <div style={{ 'width': '800px', 'height': '800px' }}>
                 <Chart type="doughnut" data={chartData} options={chartOptions} className="w-full md:w-30rem" />
             </div>
 

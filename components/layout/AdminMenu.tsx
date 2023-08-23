@@ -18,8 +18,8 @@ const AppMenu = () => {
         {
             label: 'Trang chủ',
             items: [
-                { label: 'Quản trị', icon: 'pi pi-fw pi-android', to: '/admin' },
-                { label: 'Dashboard', icon: 'pi pi-fw pi-home', command: () => redirectTo('/') }
+                { label: 'Dashboard', icon: 'pi pi-fw pi-android', to: '/admin' },
+                { label: 'Trang chủ', icon: 'pi pi-fw pi-home', command: () => redirectTo('/') }
 
             ]
         },
@@ -33,7 +33,7 @@ const AppMenu = () => {
 
                 { label: 'Đánh giá', icon: 'pi pi-fw pi-star', to: '/admin/reviews' },
                 { label: 'Tin tức', icon: 'pi pi-fw pi-book', to: '/admin/news' },
-                { label: 'Booking', icon: 'pi pi-fw pi-ticket', to: '/admin/booking' }
+                { label: 'Đặt phòng', icon: 'pi pi-fw pi-ticket', to: '/admin/booking' }
             ]
         },
         {

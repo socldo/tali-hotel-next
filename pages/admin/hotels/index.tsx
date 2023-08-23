@@ -17,6 +17,7 @@ import { Model } from '../../../interface/index'
 import HotelUpdateImages from "../../../components/admin/hotel/hotel-update-images";
 import { MenuItem } from "primereact/menuitem";
 import { SpeedDial } from "primereact/speeddial";
+import { Tooltip } from "primereact/tooltip";
 
 function Hotel() {
 
@@ -377,11 +378,30 @@ function Hotel() {
         setRenderCount(prevCount => prevCount + 1);
     };
 
+
+    const renderContentWithTooltip = (content: string) => {
+        let charLimit = 50
+
+        if (content.length > charLimit) {
+            return (
+                <>
+                    <Tooltip target=".short-text" />
+
+                    <div className="short-text" data-pr-tooltip={content}>
+                        {content.slice(0, charLimit)}...
+                    </div>
+                </>
+            );
+        } else {
+            return <div>{content}</div>;
+        }
+    };
+
     return (<>
 
         <DataTable
             value={hotelFilters}
-            scrollable scrollHeight="400px"
+            scrollable scrollHeight="600px"
             loading={loading}
             className="mt-3"
             globalFilter={globalFilter}
@@ -401,8 +421,8 @@ function Hotel() {
 
             <Column field="phone" header="Số điện thoại" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
             <Column field="email" header="Email" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-            <Column field="address" header="Địa chỉ" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-            <Column field="short_description" header="Mô tả" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+            <Column field="address" header="Địa chỉ" body={(hotel) => renderContentWithTooltip(hotel.address)} style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+            <Column field="short_description" header="Mô tả" body={(hotel) => renderContentWithTooltip(hotel.short_description)} style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
             <Column body={(hotel) => actionBodyTemplate2(hotel)}></Column>
         </DataTable>
 

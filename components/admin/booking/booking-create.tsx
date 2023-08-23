@@ -16,9 +16,10 @@ const BookingCreate: React.FC<Props> = ({
 }) => {
     return (
         <>
+            <div className="card">
 
 
-            xin chafo
+            </div>
         </>
 
 

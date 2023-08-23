@@ -19,6 +19,7 @@ import CreateUpdateRoom from "../../../components/admin/room/room-create-update"
 import RoomDetail from "../../../components/admin/room/room-detail";
 import { SpeedDial } from "primereact/speeddial";
 import { MenuItem } from "primereact/menuitem";
+import { Tooltip } from "primereact/tooltip";
 
 function Hotel() {
 
@@ -439,64 +440,81 @@ function Hotel() {
     };
 
 
+    const renderContentWithTooltip = (content: string) => {
+        let charLimit = 40
 
-    return (<>
+        if (content.length > charLimit) {
+            return (
+                <>
+                    <Tooltip target=".short-text" />
 
-        <DataTable
-            value={roomFilters}
-            scrollable scrollHeight="400px"
-            loading={loading}
-            className="mt-3"
-            globalFilter={globalFilter}
-            header={header}
-            paginator
-            rows={10}
-            rowsPerPageOptions={[10, 20, 50]}
-            tableStyle={{ minWidth: '20rem' }}
-            style={{ fontSize: '14px' }}
-        >
-            <Column
-                header="STT"
-                body={(_, { rowIndex }) => rowIndex + 1}
-                style={{ flexGrow: 1, flexBasis: '100px' }}
-            ></Column>
-            <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
-            <Column field="price" body={(rooms) => priceBodyTemplate(rooms.price)} header="Giá" style={{ flexGrow: 1, flexBasis: '200px' }} sortable></Column>
-            <Column field="quantity" header="Số lượng" style={{ flexGrow: 1, flexBasis: '200px' }} sortable ></Column>
-            <Column field="size" header="Kích thước" style={{ flexGrow: 1, flexBasis: '200px' }}  ></Column>
-            <Column field="description" header="Mô tả" style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
-            <Column body={(rooms) => actionBodyTemplate2(rooms)}></Column>
-        </DataTable>
-
-        <Dialog header="Chi tiết" visible={visible} onHide={() => setVisible(false)}
-            style={{ width: '60vw' }} maximizable breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-            <p className="m-0">
-                <RoomDetail room={room ?? null} />
-
-            </p>
-        </Dialog>
-
-        <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={room ? 'Cập nhật' : 'Tạo mới'}>
-
-            <CreateUpdateRoom setVisibleCreate={setVisibleCreate} currentRoom={room ?? null} onSave={() => showSuccess()} hotels={hotels?.filter(hotel => hotel?.status)}></CreateUpdateRoom>
-
-        </Dialog> *
-
-
-
-        {responseAPI?.status != 200 ?
-            <>
-
-                <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} >
-
-                    <CustomErrorPage props={responseAPI} />
-
-                </Dialog>
-            </>
-            : null
+                    <div className="short-text" data-pr-tooltip={content}>
+                        {content.slice(0, charLimit)}...
+                    </div>
+                </>
+            );
+        } else {
+            return <div>{content}</div>;
         }
+    };
+    return (
+        <>
 
-    </>);
+            <DataTable
+                value={roomFilters}
+                scrollable scrollHeight="600px"
+                loading={loading}
+                className="mt-3"
+                globalFilter={globalFilter}
+                header={header}
+                paginator
+                rows={10}
+                rowsPerPageOptions={[10, 20, 50]}
+                tableStyle={{ minWidth: '20rem' }}
+                style={{ fontSize: '14px' }}
+            >
+                <Column
+                    header="STT"
+                    body={(_, { rowIndex }) => rowIndex + 1}
+                    style={{ flexGrow: 1, flexBasis: '100px' }}
+                ></Column>
+                <Column field="name" header="Tên" style={{ flexGrow: 1, flexBasis: '160px' }} sortable className="font-bold"></Column>
+                <Column field="price" body={(rooms) => priceBodyTemplate(rooms.price)} header="Giá" style={{ flexGrow: 1, flexBasis: '200px' }} sortable></Column>
+                <Column field="quantity" header="Số lượng" style={{ flexGrow: 1, flexBasis: '200px' }} sortable ></Column>
+                <Column field="size" header="Kích thước" style={{ flexGrow: 1, flexBasis: '200px' }}  ></Column>
+                <Column field="description" header="Mô tả" body={(rooms) => renderContentWithTooltip(rooms.description)} style={{ flexGrow: 1, flexBasis: '200px' }}></Column>
+                <Column body={(rooms) => actionBodyTemplate2(rooms)}></Column>
+            </DataTable>
+
+            <Dialog header="Chi tiết" visible={visible} onHide={() => setVisible(false)}
+                style={{ width: '60vw' }} maximizable breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+                <p className="m-0">
+                    <RoomDetail room={room ?? null} />
+
+                </p>
+            </Dialog>
+
+            <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={room ? 'Cập nhật' : 'Tạo mới'}>
+
+                <CreateUpdateRoom setVisibleCreate={setVisibleCreate} currentRoom={room ?? null} onSave={() => showSuccess()} hotels={hotels?.filter(hotel => hotel?.status)}></CreateUpdateRoom>
+
+            </Dialog>
+
+
+
+            {responseAPI?.status != 200 ?
+                <>
+
+                    <Dialog visible={visibleError} maximizable onHide={() => setVisibleError(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} >
+
+                        <CustomErrorPage props={responseAPI} />
+
+                    </Dialog>
+                </>
+                : null
+            }
+
+        </>);
 }
 
 export default Hotel;
