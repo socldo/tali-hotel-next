@@ -33,7 +33,7 @@ const AppMenu = () => {
 
                 { label: 'Đánh giá', icon: 'pi pi-fw pi-star', to: '/admin/reviews' },
                 { label: 'Tin tức', icon: 'pi pi-fw pi-book', to: '/admin/news' },
-                { label: 'Booking', icon: 'pi pi-fw pi-ticket', to: '/admin/booking' }
+                { label: 'Đặt phòng', icon: 'pi pi-fw pi-ticket', to: '/admin/booking' }
             ]
         },
         {
