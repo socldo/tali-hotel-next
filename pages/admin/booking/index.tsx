@@ -324,7 +324,7 @@ function Booking() {
                     )
                 }
                 {
-                    rowData.payment_status === 0 && (
+                    (rowData.payment_status === 0 || rowData.payment_status === 1) && (
                         <Button icon="pi pi-times" rounded severity="danger" aria-label="danger" tooltip="Chưa thanh toán" />
                     )
                 }
@@ -479,6 +479,8 @@ function Booking() {
 
     }
 
+
+
     return (
         <>
             <DataTable
@@ -517,7 +519,7 @@ function Booking() {
             </Dialog>
 
             <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={!booking ? "Tạo mới" : "Cập nhật"}>
-                <BookingCreate setVisible={setVisibleCreate} currentBooking={booking || null} onSave={() => showSuccess()} />
+                <BookingCreate areas={branches?.filter(area => area.status)} setVisible={setVisibleCreate} hotels={hotels?.filter(hotel => hotel.status)} currentBooking={booking || null} onSave={() => showSuccess()} />
 
             </Dialog>
 

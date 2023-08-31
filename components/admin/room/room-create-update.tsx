@@ -139,6 +139,7 @@ const CreateUpdateRoom: React.FC<Props> = (
 
     const getFormErrorMessage = (name: keyof FormErrors) => {
         const error = errors[name];
+
         return isFormFieldInvalid(name) && onClickSave ? (
             <small className="p-error">{error}</small>
         ) : (

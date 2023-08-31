@@ -13,7 +13,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
         hotel_id: requestBody.hotel_id,
         check_in: requestBody.check_in,
         check_out: requestBody.check_out,
-        status: 1,
+        status: 0,
         amount: requestBody.amount,
         total_amount: requestBody.total_amount,
         deposit_amount: requestBody.deposit_amount,
@@ -23,8 +23,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
         phone: requestBody.phone,
         email: requestBody.email
     };
-    console.log("body :",bookingData);
-    
+    console.log("body :", bookingData);
+
     const requestOptions = {
         method: request.method,
         headers: new Headers({
@@ -39,11 +39,11 @@ export default async function handler(request: NextApiRequest, response: NextApi
     };
     try {
         const apiResponse = await fetch(baseUrl, requestOptions);
-        
+
         const data = await apiResponse.json();
 
         response.status(apiResponse.status).json(data); // Gửi phản hồi về client
-        
+
     } catch (error) {
         console.error('Error fetching data:', error);
         response.status(500).json({ error: 'Internal Server Error' }); // Gửi phản hồi lỗi về client
