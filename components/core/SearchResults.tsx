@@ -51,7 +51,7 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                                 <div className="flex flex-wrap gap-1">
                                     <p className="text-xl font-bold text-secondary">
                                         {hotel.name}
-                                    </p>                                   
+                                    </p>
                                 </div>
                                 <StarRating data={hotel.average_rate} />
                                 <div className="text-sm underline text-secondary flex items-center flex-wrap gap-2">
@@ -62,7 +62,7 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                                     <span className="cursor-pointer flex-wrap" >
 
                                         <p onClick={() => setVisible(true)}>Xem vị trí</p>
-                                        
+
                                         <Dialog header={hotel.address} visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
 
                                             <GGMap lat={hotel.lat} lng={hotel.lng}></GGMap>
@@ -70,20 +70,22 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                                     </span>
                                 </div>
                                 <div className="flex flex-wrap gap-1">
-                                    <p className="text-justify text-sm mt-2 flex items-center flex-wrap gap-1">{hotel.description}</p>                                
+                                    <p className="text-justify text-sm mt-2 flex items-center flex-wrap gap-1">{hotel.description}</p>
                                 </div>
 
                             </div>
                             <div
                                 className="basic-1/4 font-semibold flex flex-row lg:flex-col justify-between items-center lg:items-end ">
-                                {hotel.is_popular == 1 ? <div className="basic-1/4 font-semibold flex flex-row lg:flex-col justify-between items-center lg:items-end ">
-                                    <Tag className='-mt-5 -mr-5' value={"Lựa chọn tốt nhất"} severity={'warning'}></Tag> 
-                                    <p className='text-sm text-neutral-900 ml-2 justify-between items-right -mr-5'>{hotel.total_reviews} đánh giá</p></div> : 
+                                {hotel.is_popular == 1 ?
+                                    <div className="basic-1/4 font-semibold flex flex-row lg:flex-col justify-between items-center lg:items-end ">
+                                        <Tag className='-mt-5 -mr-5' value={"Lựa chọn tốt nhất"} severity={'warning'}></Tag>
+                                        <p className='text-sm text-neutral-900 ml-2 justify-between items-right -mr-5' style={{ 'marginRight': '1px' }}>{hotel.total_reviews} đánh giá</p>
+                                    </div> :
                                     <div className="basic-1/4 font-semibold flex flex-row lg:flex-col justify-between items-center lg:items-end ">
                                         <Tag className='-mt-5 -mr-5' value={"Có thể đặt ngay"} severity={'success'}></Tag>
-                                        <p className='text-sm text-neutral-900 ml-2 justify-between items-right -mr-5'>{hotel.total_reviews} đánh giá </p></div>  }
-                                
-                                <div > 
+                                        <p className='text-sm text-neutral-900 ml-2 justify-between items-right -mr-5'>{hotel.total_reviews} đánh giá </p></div>}
+
+                                <div >
                                     <p className='text-neutral-500 ml-2 justify-between items-left'>{numberFormat(hotel.price)}</p>
                                     <Link
                                         href={'/hotel/' + hotel.id}
@@ -93,7 +95,7 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                                             textColor="text-white"
                                             bgColor="bg-lightPrimary"
                                         />
-                                        
+
                                     </Link>
                                 </div>
 

@@ -302,7 +302,7 @@ function Booking() {
                         placeholder="Search..."
                     />
                 </span>
-                <Button
+                {/* <Button
                     label="Thêm Mới"
                     icon="pi pi-plus"
                     style={{ marginRight: '.5em' }}
@@ -310,7 +310,7 @@ function Booking() {
                         setVisibleCreate(true);
                         // setBranch(null);
                     }}
-                />
+                /> */}
             </div>
         </div>
 
@@ -518,10 +518,10 @@ function Booking() {
                 </p>
             </Dialog>
 
-            <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={!booking ? "Tạo mới" : "Cập nhật"}>
+            {/* <Dialog visible={visibleCreate} maximizable onHide={() => setVisibleCreate(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header={!booking ? "Tạo mới" : "Cập nhật"}>
                 <BookingCreate areas={branches?.filter(area => area.status)} setVisible={setVisibleCreate} hotels={hotels?.filter(hotel => hotel.status)} currentBooking={booking || null} onSave={() => showSuccess()} />
 
-            </Dialog>
+            </Dialog> */}
 
 
         </>

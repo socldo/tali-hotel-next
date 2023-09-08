@@ -11,11 +11,11 @@ import { Calendar, CalendarChangeEvent } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { useRouter } from 'next/router'
 interface Props {
-  hotelId: string;
+    hotelId: string;
 }
 
 interface RoomReserve extends IRoom {
-  quantity: number;
+    quantity: number;
 }
 
 const numberFormat = (e: any) =>
@@ -70,11 +70,9 @@ const RoomHotel = ({ hotelId }: Props) => {
     const handleDetailRoom = async (id: any) => {
         let token = getCookie("jwt_token")?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        let url = `/api/rooms?hotel_id=${id}&check_in=${
-            checkIn != undefined ? moment(checkIn).format("YYYY-MM-DD") : ""
-        }&check_out=${
-            checkOut != undefined ? moment(checkOut).format("YYYY-MM-DD") : ""
-        }&people_number=${peopleNumber}&bed_number=${bedNumber}`;
+        let url = `/api/rooms?hotel_id=${id}&check_in=${checkIn != undefined ? moment(checkIn).format("YYYY-MM-DD") : ""
+            }&check_out=${checkOut != undefined ? moment(checkOut).format("YYYY-MM-DD") : ""
+            }&people_number=${peopleNumber}&bed_number=${bedNumber}`;
         console.log(url);
         try {
             const response = await fetch(url, {
@@ -99,9 +97,9 @@ const RoomHotel = ({ hotelId }: Props) => {
     useEffect(() => {
         const queryUrl = router?.query
         const branchSlug = queryUrl?.id ? queryUrl?.id : ''
-    
+
         console.log('hotelIdState', branchSlug);
-        
+
         handleDetailRoom(router?.query.id);
     }, [checkOut, checkIn, peopleNumber, bedNumber, router?.query.id]);
 
@@ -195,15 +193,17 @@ const RoomHotel = ({ hotelId }: Props) => {
 
     const booking = async () => {
         if (!checkIn || !checkOut || !bookingBody.roomId || !price) {
-            toast.error("Please enter your check in, check out dates and room");
+            toast.error("Vui lòng chọn  ngày checkin, ngày checkout room");
         } else {
             router.push({
                 pathname: `/booking/${bookingBody.hotel_id}`,
-                query: { roomsReserve: JSON.stringify(roomsReserve) ,
+                query: {
+                    roomsReserve: JSON.stringify(roomsReserve),
                     checkIn: JSON.stringify(checkIn),
                     hotel_id: hotelId,
                     checkOut: JSON.stringify(checkOut),
-                    price: price},
+                    price: price
+                },
             });
             console.log(roomsReserve);
         }
@@ -273,7 +273,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 type="button"
                                 onClick={() => setPeopleNumber(peopleNumber - 1)}
                             >
-                -
+                                -
                             </button>
                         </div>
                         <InputText
@@ -287,7 +287,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 type="button"
                                 onClick={() => setPeopleNumber(peopleNumber + 1)}
                             >
-                +
+                                +
                             </button>
                         </div>
                     </div>
@@ -301,7 +301,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 type="button"
                                 onClick={() => setBedNumber(bedNumber - 1)}
                             >
-                -
+                                -
                             </button>
                         </div>
                         <InputText
@@ -315,7 +315,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 type="button"
                                 onClick={() => setBedNumber(bedNumber + 1)}
                             >
-                +
+                                +
                             </button>
                         </div>
                     </div>
@@ -325,19 +325,19 @@ const RoomHotel = ({ hotelId }: Props) => {
                 <div className="w-full xl:w-4/5 lg:w-full rounded-md drop-shadow-lg">
                     <div className="hidden md:grid grid-cols-12 bg-blue-400 text-white rounded-md drop-shadow-lg">
                         <div className="xl:col-span-5 lg:col-span-6 md:col-span-7 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Loại phòng
+                            Loại phòng
                         </div>
                         <div className="col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Số người
+                            Số người
                         </div>
                         <div className="xl:col-span-2 lg:col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Giá 1 đêm
+                            Giá 1 đêm
                         </div>
                         <div className="col-span-2 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Các lựa chọn
+                            Các lựa chọn
                         </div>
                         <div className="xl:col-span-2 lg:col-span-2 md:col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Chọn số lượng
+                            Chọn số lượng
                         </div>
                     </div>
                     <div>
@@ -387,12 +387,12 @@ const RoomHotel = ({ hotelId }: Props) => {
                                         <h2 className="font-semibold">Miễn phí huỷ trước 2 ngày</h2>
                                         <p>
                                             <span className="font-semibold uppercase">
-                        HOÀN TRẢ 100%{" "}
+                                                HOÀN TRẢ 100%{" "}
                                             </span>
-                      – thanh toán ngay
+                                            – thanh toán ngay
                                         </p>
                                         <p className="text-red-500">
-                      Chỉ còn {room.quantity} phòng trống theo yêu cầu của bạn
+                                            Chỉ còn {room.quantity} phòng trống theo yêu cầu của bạn
                                         </p>
                                     </div>
                                 </div>
@@ -420,10 +420,10 @@ const RoomHotel = ({ hotelId }: Props) => {
                 {/* Right */}
                 <div className="w-full xl:w-1/5 border md:border-l-0 border-blue-500">
                     <div className="bg-blue-400 text-sm 2xl:text-base border-b-2 border-blue-500 p-1.5 flex justify-center items-center">
-            &nbsp;
+                        &nbsp;
                         <span className="lg:hidden">
                             <br />
-              &nbsp;
+                            &nbsp;
                         </span>
                     </div>
 
@@ -443,7 +443,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 <li>Không mất phí đặt phòng hay phí thẻ tín dụng!</li>
                             </ul>
                             <h2 className="text-center rounded-md text-green-500 font-medium text-xs lg:text-base border-2 border-green-500 mt-2.5 px-1.5 py-0.5">
-                Thanh toán nhanh!
+                                Thanh toán nhanh!
                             </h2>
                         </div>
                     </div>

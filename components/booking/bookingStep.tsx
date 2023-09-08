@@ -7,7 +7,7 @@ const Booking = () => {
             label: "Bạn chọn",
         },
         {
-            label: "Chi tiết về bạn",
+            label: "Chi tiết",
         },
         {
             label: "Bước cuối cùng",

@@ -11,6 +11,7 @@ import { getCookie } from 'cookies-next'
 import { IBranch } from '../../models/IBranch'
 import { Slider } from 'primereact/slider';
 import { InputNumber } from 'primereact/inputnumber';
+import { Rating } from 'primereact/rating'
 interface Props {
     room?: IRoom[];
     setHotelsType: any;
@@ -232,12 +233,15 @@ const FilterHotels: React.FC<Props> = ({ branchIdBf, branchNameBf, branchesModel
                                                 onChange={() => setRating((index + 1).toString())}
                                                 value={index + 1}
                                             />
-                                            <label
+                                            <div className='ml-2'>
+                                                <Rating value={index + 1} readOnly cancel={false} />
+                                            </div>
+                                            {/* <label
                                                 htmlFor={index.toString()}
                                                 className="ml-2 text-sm font-medium capitalize"
                                             >
                                                 {index + 1} stars
-                                            </label>
+                                            </label> */}
                                         </div>
                                     ))}
                                 </ul>

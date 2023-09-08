@@ -37,7 +37,7 @@ const BookingManagerPage = () => {
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/bookings/users/${userId}`;
-        
+
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -54,8 +54,8 @@ const BookingManagerPage = () => {
     useEffect(() => {
         handlePayBooking();
     }, [])
-    
-    
+
+
     const formatCurrency = (value: any) => {
         return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     };
@@ -90,7 +90,7 @@ const BookingManagerPage = () => {
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/bookings/${id}/cancel`;
-        
+
         const response = await fetch(url, {
             method: "POST",
             headers: new Headers({
@@ -112,36 +112,36 @@ const BookingManagerPage = () => {
 
     const getSeverity = (product: any) => {
         switch (product.payment_status) {
-        case 0:
-            return 'Chưa thanh toán';
+            case 0:
+                return 'Chưa thanh toán';
 
-        case 2:
-            if (product.status == 3) {
-                return 'Chờ hoàn tiền';
-            } else 
-                return 'Đã thanh toán';
+            case 2:
+                if (product.status == 3) {
+                    return 'Chờ hoàn tiền';
+                } else
+                    return 'Đã thanh toán';
 
-        case 3:
-            return 'Đã huỷ';
+            case 3:
+                return 'Đã huỷ';
 
-        default:
-            return null;
+            default:
+                return null;
         }
     };
 
     const getColorSeverity = (product: any) => {
         switch (product.payment_status) {
-        case 0:
-            return 'info';
+            case 0:
+                return 'info';
 
-        case 2:
-            return 'success';
+            case 2:
+                return 'success';
 
-        case 3:
-            return 'danger';
+            case 3:
+                return 'danger';
 
-        default:
-            return null;
+            default:
+                return null;
         }
     };
 
@@ -155,18 +155,18 @@ const BookingManagerPage = () => {
 
     const footer = `Tổng cộng có ${bookingData ? bookingData.length : 0} đơn hàng.`;
 
-    const getDetailBooking = (product: any) => {
-        return <div className="hover:text-blue-700 mr-4" onClick={() => hadleClickDetailButton(product)}>
-            <i className="cursor-pointer active:bg-violet-200 focus:outline-none focus:ring focus:ring-violet-300 pi pi-eye" style={{ color: 'slateblue' }}>
-            </i></div>
-    };
+    // const getDetailBooking = (product: any) => {
+    //     return <div className="hover:text-blue-700 mr-4" onClick={() => hadleClickDetailButton(product)}>
+    //         <i className="cursor-pointer active:bg-violet-200 focus:outline-none focus:ring focus:ring-violet-300 pi pi-eye" style={{ color: 'slateblue' }}>
+    //         </i></div>
+    // };
 
     const toast = useRef<Toast>(null);
 
     const accept = async (booking: any) => {
         const response = await handleCancelBooking(parseInt(booking.id))
-        console.log('dasdasdasd',booking.id);
-        
+        console.log('dasdasdasd', booking.id);
+
         if (response.status == 200) {
             toast.current?.show({ severity: 'info', summary: 'Thông báo', detail: 'Đã huỷ thành công', life: 3000 });
         } else {
@@ -176,20 +176,40 @@ const BookingManagerPage = () => {
 
     const reject = () => {
     }
+    const reviewHotel = (booking: any) => {
 
+        const handlePushed = () => {
 
-    const cancelBooking = (product: IBooking) => {
-        console.log('llllll',product);
+            router.push(`/hotel/${booking.hotel_id}`);
+        }
+
         return (
             <>
-                <Toast ref={toast} />
-                <ConfirmDialog visible={visible} onHide={() => setVisible(false)}  message="Bạn chắn chắn muốn huỷ đơn đặt phòng này?" 
-                    header="Huỷ đơn đặt phòng" icon="pi pi-exclamation-triangle" accept={() => accept(bookingIdd)} reject={reject} />
-                <div className="card flex justify-content-center">
-                    <div className="hover:text-blue-700 mr-4" onClick={(e) => {{setVisible(true), setBookingIdd(product)}}}>
-                        <i className="cursor-pointer active:bg-violet-200 focus:outline-none focus:ring focus:ring-violet-300 pi pi-times" style={{ color: 'slateblue' }}>
+                <div className="" onClick={handlePushed}>
+                    <i className="pi pi-arrow-circle-right" style={{ color: 'var(--primary-color)' }}></i>
+                </div>
+            </>
+        )
+    };
+
+    const cancelBooking = (product: IBooking) => {
+        return (
+            <>
+                <div className="flex">
+                    <div className="hover:text-blue-700 mr-4" onClick={() => hadleClickDetailButton(product)}>
+                        <i className="cursor-pointer active:bg-violet-200 focus:outline-none focus:ring focus:ring-violet-300 pi pi-eye" style={{ color: 'slateblue' }}>
                         </i>
-            
+                    </div>
+
+                    <Toast ref={toast} />
+                    <ConfirmDialog visible={visible} onHide={() => setVisible(false)} message="Bạn chắn chắn muốn huỷ đơn đặt phòng này?"
+                        header="Huỷ đơn đặt phòng" icon="pi pi-exclamation-triangle" accept={() => accept(bookingIdd)} reject={reject} />
+                    <div className="card flex justify-content-center">
+                        <div className="hover:text-blue-700 mr-4" onClick={(e) => { { setVisible(true), setBookingIdd(product) } }}>
+                            <i className="cursor-pointer active:bg-violet-200 focus:outline-none focus:ring focus:ring-violet-300 pi pi-times" style={{ color: 'slateblue' }}>
+                            </i>
+
+                        </div>
                     </div>
                 </div>
             </>
@@ -197,11 +217,11 @@ const BookingManagerPage = () => {
     };
 
     return (
-        <>                             
+        <>
             <Dialog header="Thông tin đặt phòng" visible={showModel} style={{ width: '80vw' }} onHide={() => setShowModel(false)}>
                 <BookingDetail id={bookingId}></BookingDetail>
-            </Dialog>   
-            { userId ?                
+            </Dialog>
+            {userId ?
                 <>
                     <div className="container mx-auto px-2 lg:px-2 py-5">
                         <DataTable value={bookingData} header={header} footer={footer} tableStyle={{ minWidth: '60rem' }}>
@@ -209,10 +229,12 @@ const BookingManagerPage = () => {
                             <Column header="Hình ảnh" body={imageBodyTemplate}></Column>
                             <Column field="amount" header="Giá tiền" body={priceBodyTemplate}></Column>
                             <Column field="type" header="Loại phòng"></Column>
-                            <Column field="rating" header="Đánh giá" body={ratingBodyTemplate}></Column>
+                            {/* <Column field="rating" header="Đánh giá" body={ratingBodyTemplate}></Column> */}
                             <Column header="Trạng thái" body={statusBodyTemplate}></Column>
-                            <Column header="" body={getDetailBooking}></Column>
+                            {/* <Column header="" body={getDetailBooking}></Column> */}
                             <Column header="" body={(e) => cancelBooking(e)}></Column>
+                            <Column header="" body={(e) => reviewHotel(e)}></Column>
+
                         </DataTable>
                     </div>
                 </> :
@@ -224,7 +246,7 @@ const BookingManagerPage = () => {
                         ></i>
                         <div className="text-center">
                             <h3 className="mt-2 md:text-2xl text-base text-gray-900 font-semibold text-center">
-             Đăng nhập để sử dụng tính năng này
+                                Đăng nhập để sử dụng tính năng này
                             </h3>
                             <p className="mt-2"> Vui lòng đăng nhập để quản lí đặt phòng của bạn! </p>
                             <div className="py-10 text-center rounded-lg">
@@ -232,12 +254,12 @@ const BookingManagerPage = () => {
                                     href="/auth"
                                     className="rounded-lg px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
                                 >
-               Đăng nhập
+                                    Đăng nhập
                                 </Link>
                             </div>
                         </div>
                     </div>
-                </div>  }
+                </div>}
         </>
     );
 }

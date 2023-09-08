@@ -27,6 +27,8 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
     useEffect(() => {
         console.log(reviews);
 
+        console.log(user_id);
+
 
     }, []);
 
@@ -94,11 +96,42 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
         }
     };
 
-    const handleDeleteReview = async (id: string) => {
-        if (window.confirm("Bạn muốn xoá đúng không?")) {
+
+    const fetchDeleteReview = async (reviewId: string) => {
+
+        try {
+            console.log(reviewId);
+
+            const response = await fetch(`/api/reviews/${reviewId}/deleted`, {
+                method: "POST",
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: !token ? "" : token
+                }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+
+            return data;
+        } catch (error) {
+            console.error('Error fetching:', error);
+
+        }
+    };
+
+
+    const handleDeleteReview = async (review: any) => {
+
+        if (window.confirm("Bạn muốn xoá đánh giá này đúng không?")) {
             try {
-                await deleteReview(id);
+                // await deleteReview(id);
+
+                await fetchDeleteReview(review.id);
                 toast.success("Xoá review thành công!");
+                setShowModal(false)
             } catch (err) {
                 toast.error("Có gì đó sai sai!");
             }
@@ -108,6 +141,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
         try {
             await updateReview({ id, review: reviewInput });
             toast.success("Chỉnh sửa thành công");
+            setShowModal(false)
             setReviewInput("");
         } catch (err) {
             toast.error("Có gì đó sai sai!");
@@ -155,7 +189,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                                         {review?.users?.name || review?.users?.username}
                                                     </p>
                                                 </div>
-                                                <div className="ml-6">
+                                                <div className="ml-2">
                                                     <p className="text-gray-500 text-xs leading-relaxed flex-1 w-64">
                                                         Đã đánh giá: {review?.updated_at}
                                                     </p>
@@ -168,13 +202,13 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                                             className="text-black text-xl leading-relaxed flex-1 w-64 mr-2 border-none rounded w-full md:py-1 bg-inherit p-2 h-12 resize-none hover:resize"
                                                             onChange={handleChangeReview}
                                                         />
-                                                        {review.users.id === user_id && (
+                                                        {review.users.id == user_id && (
                                                             <>
                                                                 {reviewInput && <div onClick={() => handleUpdateReview(review._id)} className="cursor-pointer items-center inline-flex cursor-pointer opacity-0 group-hover:opacity-100 text-2xl absolute right-1/4 mt-2">
                                                                     <CiEdit />
                                                                 </div>}
                                                                 <div
-                                                                    onClick={() => handleDeleteReview(review._id)}
+                                                                    onClick={() => handleDeleteReview(review)}
                                                                     className="cursor-pointer items-center inline-flex cursor-pointer opacity-0 group-hover:opacity-100 text-2xl absolute left-3/4 mt-2 ml-2"
                                                                 >
                                                                     <AiOutlineClose />
@@ -189,13 +223,13 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <hr className="my-6"></hr>
+                                            <hr className="my-8"></hr>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                            <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t" style={{ "margin": '1rem', 'justifyContent': 'center' }}>
                                 <h3 className="text-3xl font-semibold">Không có đánh giá</h3>
                             </div>
                         )}
@@ -231,13 +265,13 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                 </div>
                             </>
                         ) : (
-                            <div>
+                            <div style={{ "margin": '1rem' }}>
                                 <h3 className="font-semibold text-2xl mb-4 text-black text-center">
                                     Vui lòng đăng nhập để nhập giá
                                 </h3>
                                 <Link href="/auth" className="flex text-center justify-center">
                                     <Button
-                                        text="Login"
+                                        text="Đăng nhập"
                                         textColor="text-white"
                                         bgColor="bg-primary"
                                     />

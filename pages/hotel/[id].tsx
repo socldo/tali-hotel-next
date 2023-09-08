@@ -108,8 +108,7 @@ const HotelDetailPage = () => {
 
     const handleReviews = async () => {
 
-        let url = `/api/reviews?hotel_id=${branchSlug}`;
-
+        let url = `/api/reviews?hotel_id=${hotelId}`;
 
         const response = await fetch(url, {
             method: "GET",
@@ -122,7 +121,10 @@ const HotelDetailPage = () => {
         const data = await response.json();
 
 
-        setReviews(data.data);
+
+        setReviews(data.data.filter((r: {
+            is_deleted: number, parent_review_id: number
+        }) => r.parent_review_id == 0 && r.is_deleted == 0));
         return data;
 
 

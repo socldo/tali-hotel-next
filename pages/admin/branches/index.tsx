@@ -149,7 +149,7 @@ function Branch() {
             }
             return data;
         } catch (error) {
-            console.error('Error fetching branches:', error);
+            console.error('Error fetching:', error);
         }
     };
 
