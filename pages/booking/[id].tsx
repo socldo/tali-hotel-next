@@ -14,14 +14,15 @@ import querystring from 'querystring';
 import { differenceInDays, parseISO } from 'date-fns';
 
 interface Props {
-    room: IRoom[];
-    checkIn: string;
-    checkOut: string;
-    bookingData: IBooking;
+  room: IRoom[];
+  checkIn: string;
+  checkOut: string;
+  bookingData: IBooking;
+  hotelIdProp: string;
 }
 
 interface RoomReserve extends IRoom {
-    quantity: number;
+  quantity: number;
 }
 
 const numberFormat = (e: any) =>
@@ -30,13 +31,13 @@ const numberFormat = (e: any) =>
         currency: "VND",
     }).format(e);
 
-const formatBookingDate = (date: Date) => {
+const formatBookingDate= (date: Date) => {
     const dayOfWeek = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][date.getDay()];
     const dayOfMonth = date.getDate();
     const monthNames = ["", "tháng 1", "tháng 2", "tháng 3", "tháng 4", "tháng 5", "tháng 6", "tháng 7", "tháng 8", "tháng 9", "tháng 10", "tháng 11", "tháng 12"];
     const monthName = monthNames[date.getMonth() + 1];
     const year = date.getFullYear();
-
+    
     const formattedDate = `${dayOfWeek}, ${dayOfMonth} ${monthName} ${year}`;
     return formattedDate;
 }
@@ -49,9 +50,9 @@ const differentDate = (checkIn: Date, checkOut: Date) => {
 }
 
 
-const Booking = () => {
-
+const Booking = ({ hotelIdProp }: Props) => {
     const router = useRouter();
+    const { id } = router.query;
     const [checkIn, setCheckIn] = useState("")
     const [checkOut, setCheckOut] = useState("")
     const [checkInData, setCheckInData] = useState("")
@@ -59,12 +60,12 @@ const Booking = () => {
     const [roomData, setRoomeData] = useState<IRoom[]>([])
     const [totalDate, setTotalDate] = useState(0)
     const [hotelId, setHotelParamId] = useState("")
-
+    
     useEffect(() => {
-        setRoomeData(Array.isArray(router.query.roomsReserve)
+        setRoomeData( Array.isArray(router.query.roomsReserve)
             ? router.query.roomsReserve.map((item) => JSON.parse(item))
             : JSON.parse(router.query.roomsReserve || '[]'))
-
+        
         if (router.query.checkIn) {
             setCheckInData(Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn);
             setCheckIn(formatBookingDate(new Date(JSON.parse(Array.isArray(router.query.checkIn) ? router.query.checkIn[0] : router.query.checkIn))));
@@ -80,17 +81,18 @@ const Booking = () => {
         }
 
         if (router.query.hotel_id) {
-            setHotelParamId(router.query.hotel_id ? router.query.hotel_id[0] : "0")
+            setHotelParamId(router.query.hotel_id ? router.query.hotel_id.toString()  : "0")
         }
-
-        handleDetailRoom(router.query.hotel_id ? router.query.hotel_id[0] : "0")
+        console.log('hotelIdProp',id);
+        
+        handleDetailRoom(router.query.hotel_id)
 
     }, [router.query])
 
     const changeOption = () => {
         router.push(`/hotel/${hotelId}`)
     }
-
+    
     const price: number = Array.isArray(router.query.price)
         ? parseInt(router.query.price ? router.query.price[0] : "0")
         : parseInt(router.query.price ? router.query.price : "0");
@@ -136,7 +138,7 @@ const Booking = () => {
      * Step
      */
     const [step, setStep] = useState(1)
-
+    
     /**
      * Payment
      */
@@ -149,11 +151,9 @@ const Booking = () => {
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
 
-
-
         const url = `/api/hotels/${id}`;
         console.log("hotel ne", hotelId);
-
+        
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -162,11 +162,11 @@ const Booking = () => {
                 Authorization: token == undefined ? "" : token
             }),
         });
-
+        
         const data = await response.json();
 
         if (data.data) {
-            setHotelId(data.data.id)
+            setHotelId( data.data.id)
             setBranchId(data.data.branch_id)
             setName(data.data.name)
             setDescription(data.data.description)
@@ -179,11 +179,11 @@ const Booking = () => {
             setShortDescription(data.data.short_description)
             setHighlightProperty(data.data.highlight_property)
             setTotalReview(data.data.total_reviews)
-            setImages(data.data.images)
+            setImages(data.data.images) 
         }
 
         console.log(data.data);
-
+        
         return data;
     }
 
@@ -192,12 +192,12 @@ const Booking = () => {
         let token = getCookie('jwt_token')?.toString();
         let user_id = getCookie('id')?.toString();
         const url = `/api/bookings/create`;
-
+        
         const bookingData = {
             user_id: user_id ? user_id : 0,
             hotel_id: hotelId,
-            check_in: checkInData.slice(0, checkInData.indexOf('T1')).replace('"', ''),
-            check_out: checkOutData.slice(0, checkOutData.indexOf('T1')).replace('"', ''),
+            check_in: checkInData.slice(0,checkInData.indexOf('T1')).replace('"',''),
+            check_out:checkOutData.slice(0,checkOutData.indexOf('T1')).replace('"',''),
             status: 1,
             amount: price,
             total_amount: price,
@@ -206,7 +206,7 @@ const Booking = () => {
             first_name: firstName,
             last_name: lastName,
             phone: phone,
-            email: email
+            email:email
         };
 
         const response = await fetch(url, {
@@ -219,12 +219,12 @@ const Booking = () => {
             body: JSON.stringify(bookingData)
         });
         const data = await response.json();
-
+        
         if (data.data) {
             setBookingId(data.data.id)
-            setCookie("booking_id", data.data.id);
+            setCookie("booking_id",data.data.id);
         }
-
+        
         return data;
     }
 
@@ -233,7 +233,7 @@ const Booking = () => {
     }
 
 
-    const [error, setError] = useState("");
+    const [error, setError] = useState("");    
 
     const handleChangeEmail = (event: any) => {
         if (!isValidEmail(event) || !event) {
@@ -241,21 +241,21 @@ const Booking = () => {
         } else {
             setError("");
         }
-
+    
         setEmail(event);
     };
-
+    
     const handleVNPay = async () => {
         const orderInfo = "test";
-        const amount = price * totalDate;
-        const queryParams = querystring.stringify({ amount, orderInfo });
-
+        const amount = price*totalDate;
+        const queryParams = querystring.stringify({ amount, orderInfo});
+        
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        const jsonData = { amount: amount, orderInfo: orderInfo };
+        const jsonData = {amount: amount, orderInfo:orderInfo};
 
         const url = `/api/vnpay/submitOrder`;
-
+        
         const response = await fetch(url, {
             method: "POST",
             body: JSON.stringify(jsonData),
@@ -276,7 +276,7 @@ const Booking = () => {
         let token = getCookie('jwt_token')?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/booking/${bookingId}`;
-
+        
         const response = await fetch(url, {
             method: "POST",
             headers: new Headers({
@@ -295,19 +295,19 @@ const Booking = () => {
         window.open(await vnPay, 'Thanh toán');
     }
 
-    const handleSetFirstName = (e: any) => {
-        if (e) {
+    const handleSetFirstName =  (e :any)  =>  {
+        if(e) {
             setFirstName(e);
-            return 1;
-        } else return 2;
+            return  1;
+        } else return 2; 
 
     }
 
-    const handleSetLastName = (e: any) => {
-        if (e) {
+    const handleSetLastName =  (e :any)  =>  {
+        if(e) {
             setLastName(e);
-            return 1;
-        } else return 2;
+            return  1;
+        } else return 2; 
 
     }
 
@@ -315,11 +315,11 @@ const Booking = () => {
 
         if (firstName && lastName && phone && email) {
             handleCreateBooking()
-            setStep(2)
+            setStep(2) 
         }
         setIsSubmit(1)
     }
-
+    
 
     const items: MenuItem[] = [
         {
@@ -327,7 +327,7 @@ const Booking = () => {
             className: "text-blue-500",
         },
         {
-            label: "Chi tiết",
+            label: "Chi tiết về bạn",
             className: "text-blue-500",
         },
         {
@@ -370,7 +370,7 @@ const Booking = () => {
                                 <p className="mt-4 text-sm font-bold">Bạn đã chọn</p>
                                 {roomData?.map((bookingData: RoomReserve) => (<p key={bookingData.id} className="mt-2 text-sm">{bookingData.quantity} x {bookingData.name} </p>))}
                                 <div className="mb-2 mt-2 text-sm font-bold text-sky-500" onClick={changeOption}>
-                                    <Button
+                                    <Button                                   
                                         text="Đổi lựa chọn của bạn"
                                         textColor="text-white"
                                     />
@@ -384,7 +384,7 @@ const Booking = () => {
                                     <p className="text-2xl font-semibold">Giá</p>
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-semibold">{numberFormat(price * totalDate)}</p>
+                                    <p className="text-2xl font-semibold">{numberFormat(price*totalDate)}</p>
                                     <p className="text-sm">+ 0đ thuế và phí</p>
                                 </div>
                             </div>
@@ -424,10 +424,10 @@ const Booking = () => {
                         <div className="mt-4 border container">
                             <div className="m-4">
                                 <p className="text-lg font-bold">Mách nhỏ:</p>
-                                <p className="text-sm mt-2"><i className="pi pi-car text-green-600 mr-2" style={{ fontSize: '1rem' }}></i>
-                                    Tận hưởng ưu đãi 5% cho xe thuê khi đặt kỳ nghỉ này</p>
-                                <p className="text-sm mt-2"><i className="pi pi-clock text-red-600 mr-2" style={{ fontSize: '1rem' }}></i>
-                                    Bạn đang đặt {roomData[0]?.name} cuối cùng còn trống chúng tôi có ở {name}.</p>
+                                <p className="text-sm mt-2"><i className="pi pi-car text-green-600 mr-2" style={{ fontSize: '1rem' }}></i> 
+                                Tận hưởng ưu đãi 5% cho xe thuê khi đặt kỳ nghỉ này</p>
+                                <p className="text-sm mt-2"><i className="pi pi-clock text-red-600 mr-2" style={{ fontSize: '1rem' }}></i> 
+                                Bạn đang đặt {roomData[0]?.name} cuối cùng còn trống chúng tôi có ở {name}.</p>
                             </div>
                         </div>
                         <div className="mt-4 border container">
@@ -440,8 +440,8 @@ const Booking = () => {
                                 </div>
                             </div>
                         </div>
-                        {step == 1 ?
-                            <>
+                        {step == 1 ?                
+                            <>        
                                 <div className="mt-4 border container">
                                     <div className="m-4">
                                         <p className="text-lg font-bold">Nhập thông tin chi tiết của bạn</p>
@@ -460,11 +460,11 @@ const Booking = () => {
                                                         placeholder=" "
                                                     />
                                                     <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                                                        Họ  <span className="text-red-500"> *</span>
+                                                Họ  <span className="text-red-500"> *</span>
                                                     </label>
-                                                    {(isSubmit == 1 && lastName.length == 0) ?
+                                                    {(isSubmit == 1 && lastName.length == 0) ?  
                                                         <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
-                                                            Họ không được để trống
+                                                    Họ không được để trống
                                                         </p> : <></>}
 
                                                 </div>
@@ -481,9 +481,9 @@ const Booking = () => {
                                                     <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500" >
                                                         <p >Tên <span className="text-red-500">*</span></p>
                                                     </label>
-                                                    {(isSubmit == 1 && firstName.length == 0) ?
+                                                    {(isSubmit == 1 && firstName.length == 0) ?  
                                                         <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
-                                                            Tên không được để trống
+                                                    Tên không được để trống
                                                         </p> : <></>}
                                                 </div>
                                             </div>
@@ -501,7 +501,7 @@ const Booking = () => {
                                             <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                                                 Số điện thoại  <span className="text-red-500">  *</span>
                                             </label>
-                                            {(isSubmit === 1 && phone.length === 0) ?
+                                            {(isSubmit === 1 && phone.length === 0) ?  
                                                 <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
                                                     Số điện thoại không được để trống
                                                 </p> : <></>}
@@ -520,8 +520,8 @@ const Booking = () => {
                                             <p className="peer-invalid:visible text-red-700 font-light text-xs">
                                                 {error}
                                                 {/* Email không được để trống */}
-                                            </p>
-                                            {(isSubmit === 1 && email.length === 0) ?
+                                            </p> 
+                                            {(isSubmit === 1 && email.length === 0) ?  
                                                 <p className="invisible peer-invalid:visible text-red-700 font-light text-xs">
                                                     Email không được để trống
                                                 </p> : <></>}
@@ -529,20 +529,20 @@ const Booking = () => {
                                         <p className="ml-4 mt-4 text-xs text-slate-500">Email xác nhận đặt phòng sẽ được gửi đến địa chỉ này</p>
                                         <p className="ml-4 mt-4 text-sm font-bold">Bạn đặt phòng cho ai?</p>
                                         <div className="items-center flex flex-row text-sm">
-                                            <Checkbox color="blue" defaultChecked={false} checked={bookingFor == 1 ? true : false} onResize={undefined} onResizeCapture={undefined} onChange={() => setBookingFor(1)} />
+                                            <Checkbox color="blue" defaultChecked={false} checked={bookingFor == 1 ? true : false} onResize={undefined} onResizeCapture={undefined} onChange={() => setBookingFor(1)}/>
                                             <p className="items-center text-sm">Tôi là khách lưu trú chính </p>
                                         </div>
                                         <div className="items-center flex flex-row text-sm">
-                                            <Checkbox color="blue" defaultChecked={false} onResize={undefined} checked={bookingFor == 2 ? true : false} onResizeCapture={undefined} onChange={() => setBookingFor(2)} />
+                                            <Checkbox color="blue" defaultChecked={false} onResize={undefined} checked={bookingFor == 2 ? true : false} onResizeCapture={undefined} onChange={() => setBookingFor(2)}/>
                                             <p className="items-center">Đặt phòng này là cho người khác</p>
                                         </div>
-                                    </div>
-                                </div>
+                                    </div>            
+                                </div> 
                                 <div className="mt-4 w-120 grid justify-items-end">
                                     <div onClick={() => handleSetSetep()}>
-                                        <ButtonNext text="Bước tiếp theo" textColor="text-white" bgColor="bg-blue-500" focusHandle="hover:bg-gray-300" />
+                                        <ButtonNext text="Bước tiếp theo" textColor="text-white" bgColor="bg-blue-500" focusHandle="hover:bg-gray-300"/>
                                     </div>
-
+                                                   
                                 </div>
                             </>
                             :
@@ -552,20 +552,20 @@ const Booking = () => {
                                     <div className="mt-2 flex flex-row bg-green-100 w-80 items-center">
                                         <p className="ml-2 text-xs text-green-700 ">Thanh toán ngay! Chúng tôi cam kết hoàn tiền 100%</p>
                                     </div>
-
-                                    <div>
+                                    
+                                    <div>                                        
                                         <div className="items-center flex flex-row text-sm">
-                                            <Checkbox color="blue" defaultChecked={true} checked={true} onResize={undefined} onResizeCapture={undefined} />
+                                            <Checkbox color="blue" defaultChecked={true} checked={true} onResize={undefined} onResizeCapture={undefined}/>
                                             <p className="items-center text-sm">Đi đến trang thanh toán</p>
                                         </div>
-                                    </div>
+                                    </div> 
                                     <div className="mt-4 w-120 grid justify-items-start">
                                         <div onClick={() => handlePayment()}>
-                                            <Button text="Thanh toán ngay" textColor="text-white" bgColor="bg-blue-500" focusHandle="hover:bg-gray-300" />
-                                        </div>
+                                            <Button text="Thanh toán ngay" textColor="text-white" bgColor="bg-blue-500" focusHandle="hover:bg-gray-300"/>
+                                        </div>                                                 
                                     </div>
-                                </div>
-                            </div>
+                                </div>                   
+                            </div> 
                         }
                     </div>
                 </div>

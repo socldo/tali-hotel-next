@@ -190,7 +190,7 @@ const Blog = () => {
                                         {newsTop?.map((item: INew) =>
                                             <li key={item.id} onClick={() => handleDetail(item.id)}
                                                 className="mb-8 rounded-3xl hover:bg-gray-500 hover:bg-opacity-25 whitespace-no-wrap flex flex-row items-center">
-                                                {/* <Avatar image={item.user_avatar} className="mr-2" size="large" shape="circle" /> */}
+                                                <Avatar image={item.user_avatar} className="mr-2" size="large" shape="circle" />
                                                 <div>
                                                     <p className="font-semibold text-sm">{item.title}</p>
                                                     <p className="text-sm"> <span className="ml-4 pi pi-calendar-times "></span> {item.created_at.toLocaleString()}</p>
