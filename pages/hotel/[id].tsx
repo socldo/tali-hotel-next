@@ -23,18 +23,20 @@ import { HotelReview, ImageGallery } from '../../components/hotel'
 import GGMap from '../../components/googlemap/GGMap'
 import { Dialog } from 'primereact/dialog'
 
-const HotelDetailPage = () => {
+interface Props {
+    hotelIdPrps: string;
+  }
+const HotelDetailPage = ({ hotelIdPrps }: Props) => {
     const router = useRouter()
     const token = getCookie('jwt_token')?.toString();
 
     const currentPath = window.location.href;
     const lastChar = currentPath.substring(currentPath.lastIndexOf('/') + 1);
     const queryUrl = router?.query
-    const branchSlug = queryUrl?.id ? queryUrl?.id[0] : ''
-
+    const branchSlug = queryUrl?.id ? queryUrl?.id : ''
 
     const [roomId, setRoomId] = useState(branchSlug)
-    const url = `/api/hotels/${lastChar}`;
+
 
     const [images, setImages] = useState<string[]>([]);
     const [hotelId, setHotelId] = useState(0)
@@ -72,7 +74,8 @@ const HotelDetailPage = () => {
         }
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleDetailRoom = async () => {
+    const handleDetailRoom = async (id : any) => {
+        const url = `/api/hotels/${id}`;
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -125,17 +128,15 @@ const HotelDetailPage = () => {
         setReviews(data.data);
         return data;
 
-
     }
 
     useEffect(() => {
-        handleReviews();
-    }, [showModal])
-
-    useEffect(() => {
+        const queryUrl = router?.query
+        const branchSlug = queryUrl?.id ? queryUrl?.id : ''
         setRoomId(branchSlug);
-        handleDetailRoom();
-    }, [])
+        handleDetailRoom(branchSlug);
+        handleReviews();
+    }, [showModal, branchSlug])
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -154,7 +155,6 @@ const HotelDetailPage = () => {
         // eslint-disable-next-line @next/next/no-img-element
         return <img src={item} alt={item} style={{ display: 'block' }} />;
     }
-
     return (
         <Layout
             metadata={{
@@ -316,7 +316,6 @@ const HotelDetailPage = () => {
                             </div>
                             <div onClick={scrollToSection}>
                                 <Button
-
                                     text="Đặt ngay"
                                     textColor="text-white"
                                     bgColor="bg-primary"
@@ -329,7 +328,7 @@ const HotelDetailPage = () => {
                 <div ref={scrollRef} className="mt-5 border-t border-current">
                     <div className="my-2.5 w-full">
                         <h1 className="font-bold text-2xl mb-4">Phòng trống</h1>
-                        <RoomHotel hotelId={roomId} />
+                        <RoomHotel hotelId={branchSlug} />
                     </div>
                 </div>
             </div>

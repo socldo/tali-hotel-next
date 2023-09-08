@@ -112,7 +112,7 @@ const BookingManagerPage = () => {
 
     const getSeverity = (product: any) => {
         switch (product.payment_status) {
-        case 0:
+        case 0 || 1:
             return 'Chưa thanh toán';
 
         case 2:

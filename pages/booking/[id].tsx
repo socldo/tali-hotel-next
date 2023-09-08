@@ -18,6 +18,7 @@ interface Props {
   checkIn: string;
   checkOut: string;
   bookingData: IBooking;
+  hotelIdProp: string;
 }
 
 interface RoomReserve extends IRoom {
@@ -49,9 +50,9 @@ const differentDate = (checkIn: Date, checkOut: Date) => {
 }
 
 
-const Booking = () => {
-    
+const Booking = ({ hotelIdProp }: Props) => {
     const router = useRouter();
+    const { id } = router.query;
     const [checkIn, setCheckIn] = useState("")
     const [checkOut, setCheckOut] = useState("")
     const [checkInData, setCheckInData] = useState("")
@@ -80,17 +81,18 @@ const Booking = () => {
         }
 
         if (router.query.hotel_id) {
-            setHotelParamId(router.query.hotel_id ? router.query.hotel_id[0]  : "0")
+            setHotelParamId(router.query.hotel_id ? router.query.hotel_id.toString()  : "0")
         }
-
-        handleDetailRoom(router.query.hotel_id ? router.query.hotel_id[0]  : "0")
+        console.log('hotelIdProp',id);
+        
+        handleDetailRoom(router.query.hotel_id)
 
     }, [router.query])
 
     const changeOption = () => {
         router.push(`/hotel/${hotelId}`)
     }
-
+    
     const price: number = Array.isArray(router.query.price)
         ? parseInt(router.query.price ? router.query.price[0] : "0")
         : parseInt(router.query.price ? router.query.price : "0");

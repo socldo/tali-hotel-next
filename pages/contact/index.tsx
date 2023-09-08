@@ -39,7 +39,7 @@ const Contact = () => {
                         </div>
                     </div>
                 </div>
-                <div className="ml-2 mr-2 mb-2 mt-2" >
+                <div className="" >
                     <GGMap lat="10.820503" lng='106.691711'></GGMap>
                 </div>
             </Layout >

@@ -30,7 +30,6 @@ const RoomHotel = ({ hotelId }: Props) => {
     const [loading, setLoading] = useState(false);
     const [rooms, setRoom] = useState([]);
 
-
     const services = [
         "Phòng tắm thoải mái",
         "Vòi xịt",
@@ -70,7 +69,7 @@ const RoomHotel = ({ hotelId }: Props) => {
     const handleDetailRoom = async (id: any) => {
         let token = getCookie("jwt_token")?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        let url = `/api/rooms?hotel_id=${id}&check_in=${
+        let url = `/api/rooms?hotel_id=${hotelId}&check_in=${
             checkIn != undefined ? moment(checkIn).format("YYYY-MM-DD") : ""
         }&check_out=${
             checkOut != undefined ? moment(checkOut).format("YYYY-MM-DD") : ""
@@ -123,7 +122,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                 setTotal(total + quantity);
                 setPrice(price + quantity * room.price);
             } else {
-                roomsReserve.forEach((item) => {
+                roomsReserve.forEach((item) => {            
                     if (item.id === room.id) {
                         setTotal(total - item.quantity + quantity);
                         setPrice(
@@ -193,7 +192,7 @@ const RoomHotel = ({ hotelId }: Props) => {
         quantity: roomsReserve[0]?.quantity,
     };
 
-    const booking = async () => {
+    const booking = async (id: any) => {
         if (!checkIn || !checkOut || !bookingBody.roomId || !price) {
             toast.error("Please enter your check in, check out dates and room");
         } else {
@@ -201,11 +200,11 @@ const RoomHotel = ({ hotelId }: Props) => {
                 pathname: `/booking/${bookingBody.hotel_id}`,
                 query: { roomsReserve: JSON.stringify(roomsReserve) ,
                     checkIn: JSON.stringify(checkIn),
-                    hotel_id: hotelId,
+                    hotel_id: id,
                     checkOut: JSON.stringify(checkOut),
                     price: price},
             });
-            console.log(roomsReserve);
+            console.log('bookingBody.hotel_id', id);
         }
     };
 
@@ -429,7 +428,7 @@ const RoomHotel = ({ hotelId }: Props) => {
 
                     <div className="p-2.5">
                         <Reserve />
-                        <div onClick={() => booking()}>
+                        <div onClick={() => booking(hotelId)}>
                             <Button
                                 text={"Tôi sẽ đặt"}
                                 textColor="text-white"

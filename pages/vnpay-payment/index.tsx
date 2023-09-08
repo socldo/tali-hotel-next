@@ -18,8 +18,11 @@ const VNPayPayment = () => {
 
     const handlePayment = () => {
         setBookingId(bookingIdCookier ? bookingIdCookier.toString() : "0");
+        console.log(bookingIdCookier,bookingId);
+        
         const url = `/api/bookings/${bookingIdCookier}`;
-
+        console.log(url);
+        
         const response = fetch(url, {
             method: "POST",
             headers: new Headers({
@@ -36,7 +39,7 @@ const VNPayPayment = () => {
         if (query.vnp_TransactionStatus == "00") {
             handlePayment();
         }
-    }, )
+    } )
     
     return (
         <Layout

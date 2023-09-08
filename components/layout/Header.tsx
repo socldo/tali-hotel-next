@@ -96,7 +96,7 @@ const Header = () => {
         {
             icon: <RiSuitcaseLine />,
             name: 'Đặt phòng',
-            link: '/user/booking'
+            link: '/search/1'
         },
         {
             icon: <AiOutlineHeart />,
