@@ -13,10 +13,17 @@ import Link from "next/link";
 import { getCookie } from "cookies-next";
 import { Rating, RatingChangeEvent } from "primereact/rating";
 import { Avatar } from "primereact/avatar";
+import { InputTextarea } from "primereact/inputtextarea";
+import { Chip } from "primereact/chip";
 
 const HotelReview = ({ reviews, id, setShowModal }: any) => {
     const [value, setValue] = useState<number | null>(null);
     const token = getCookie('jwt_token')?.toString();
+    const avatar = getCookie('avatar');
+    const name = getCookie('name');
+
+    const [valueText, setValueText] = useState<string>('');
+
 
     const [deleteReview] = useDeleteReviewMutation();
     const [updateReview] = useUpdateReviewMutation();
@@ -25,12 +32,9 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
     const user_id = getCookie('id');
 
     useEffect(() => {
-        console.log(reviews);
+        setReviewInput(valueText)
 
-        console.log(user_id);
-
-
-    }, []);
+    }, [valueText]);
 
     const handleChangeReview = (e: React.ChangeEvent<any>) => {
         setReviewInput(e.target.value);
@@ -39,8 +43,7 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
     const handleReview = async () => {
         if (!reviewInput) {
 
-
-            toast.error("Vui lòng điền vào ô trống");
+            toast.error("Vui lòng điền nhập đánh giá");
         }
         else if (!value) {
 
@@ -52,14 +55,15 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
             // const response = await postReviewMutation({ id, review: reviewInput, score_rate: score });
             let response = await handleCreate()
 
-            console.log(response);
-
             if (response.status != 200) {
                 toast.error("Có lỗi xảy ra khi đánh giá");
             } else {
                 toast.success("Đánh giá thành công");
+                setShowModal(false)
                 setReviewInput("");
+
             }
+            setValueText("")
             setReviewInput("");
         }
     };
@@ -87,7 +91,6 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
 
             const data = await response.json();
             console.log(data);
-
 
             return data;
         } catch (error) {
@@ -236,14 +239,26 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                         {token ? (
                             <>
                                 <div className="relative p-6 flex-auto">
-                                    <span className="text-black">Viết đánh giá</span>
+                                    <div className="p-fluid" style={{ display: 'grid' }}>
+                                        {typeof name === 'string' && typeof avatar === 'string' ? (
+                                            <Chip label={name} image={avatar} style={{ fontWeight: 'bold', justifySelf: 'end' }} />
+                                        ) : null}
+
+                                        <span className="p-float-label">
+                                            <InputTextarea id="description" value={valueText} onChange={(e) => setValueText(e.target.value)} rows={5} cols={30} />
+                                            <label htmlFor="description">Nội dung</label>
+                                        </span>
+
+                                    </div>
+
+                                    {/* <span className="text-black">Viết đánh giá</span>
                                     <input
                                         value={reviewInput}
                                         className="form-input block rounded my-4 w-full w-128"
                                         placeholder="Khách sạn đẹp quá!"
                                         onChange={handleChangeReview}
                                     />
-                                    <span className="text-black">Điểm</span>
+                                    <span className="text-black">Điểm</span> */}
                                     {/* <input
                                         value={score}
                                         type="number"

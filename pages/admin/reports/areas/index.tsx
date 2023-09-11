@@ -132,7 +132,10 @@ function AreaReport() {
                         <Button icon="pi pi-search" rounded severity="success" aria-label="Search" onClick={handleSearchClick} />
                     </div>
                 </div>
-                <CustomerReviewReport fromDate={fromDateString} toDate={toDateString} hotelId={-1} areaId={areaId} search={search} />
+                <div style={{ 'justifyContent': 'center' }}>
+                    <CustomerReviewReport fromDate={fromDateString} toDate={toDateString} hotelId={-1} areaId={areaId} search={search} />
+                </div>
+
             </div>
 
             <div className="card justify-content-center">

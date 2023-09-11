@@ -118,7 +118,7 @@ const CustomerReviewReport: React.FC<Props> = ({ fromDate, toDate, areaId, searc
         <>
 
             <div style={{ 'width': '800px', 'height': '800px' }}>
-                <Chart type="doughnut" data={chartData} options={chartOptions} className="w-full md:w-30rem" />
+                <Chart type="doughnut" data={chartData} options={chartOptions} className="w-full md:w-80rem" />
             </div>
 
 
