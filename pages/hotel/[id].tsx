@@ -22,10 +22,12 @@ import { GalleriaResponsiveOptions } from 'primereact/galleria';
 import { HotelReview, ImageGallery } from '../../components/hotel'
 import GGMap from '../../components/googlemap/GGMap'
 import { Dialog } from 'primereact/dialog'
+import querystring from 'querystring';
+import { Model } from '../../interface'
 
 interface Props {
     hotelIdPrps: string;
-  }
+}
 const HotelDetailPage = ({ hotelIdPrps }: Props) => {
     const router = useRouter()
     const token = getCookie('jwt_token')?.toString();
@@ -57,7 +59,7 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
     const [highlightProperty, setHighlightProperty] = useState('')
     const [totalReview, setTotalReview] = useState(0)
     const [showModal, setShowModal] = useState(false)
-    const [reviews, setReviews] = useState()
+    const [reviews, setReviews] = useState<Model.Reviews[]>([]);
     const [visible, setVisible] = useState(false);
     const responsiveOptions: GalleriaResponsiveOptions[] = [
         {
@@ -74,7 +76,7 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
         }
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleDetailRoom = async (id : any) => {
+    const handleDetailRoom = async (id: any) => {
         const url = `/api/hotels/${id}`;
         const response = await fetch(url, {
             method: "GET",
@@ -110,25 +112,35 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
     }
 
     const handleReviews = async () => {
+        try {
+            const queryParams = querystring.stringify({ parent_review_id: -1, user_id: -1, hotel_id: hotelId, is_deleted: 0 });
+            const response = await fetch(`/api/reviews/get-list?${queryParams}`, {
+                method: "GET",
+                headers: new Headers({
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: !token ? "" : token
+                }),
+            });
 
-        let url = `/api/reviews?hotel_id=${hotelId}`;
+            const data = await response.json();
+            console.log('data:', data);
 
-        const response = await fetch(url, {
-            method: "GET",
-            headers: new Headers({
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: !token ? "" : token
-            }),
-        });
-        const data = await response.json();
+            const copiedReviews: Model.ReviewDetail[] = data.data
+                ?.filter((review: { parent_review_id: number }) => review.parent_review_id === 0)
+                .map((review: { id: number }) => ({
+                    ...review,
+                    comments: data.data.filter((comment: { parent_review_id: number }) => comment.parent_review_id === review.id)
+                }));
 
 
 
-        setReviews(data.data.filter((r: {
-            is_deleted: number, parent_review_id: number
-        }) => r.parent_review_id == 0 && r.is_deleted == 0));
-        return data;
+            setReviews(copiedReviews);
+
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
 
     }
 

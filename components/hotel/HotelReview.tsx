@@ -15,12 +15,19 @@ import { Rating, RatingChangeEvent } from "primereact/rating";
 import { Avatar } from "primereact/avatar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Chip } from "primereact/chip";
+import { Dialog } from "primereact/dialog";
+import ReviewHotel from "../admin/review/review-hotel";
+import { Model } from "../../interface";
 
 const HotelReview = ({ reviews, id, setShowModal }: any) => {
     const [value, setValue] = useState<number | null>(null);
     const token = getCookie('jwt_token')?.toString();
     const avatar = getCookie('avatar');
     const name = getCookie('name');
+    const [visible, setVisible] = useState(false);
+
+    const [reviewDetail, setReviewDetail] = useState<Model.ReviewDetail>();
+
 
     const [valueText, setValueText] = useState<string>('');
 
@@ -35,6 +42,8 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
         setReviewInput(valueText)
 
     }, [valueText]);
+
+
 
     const handleChangeReview = (e: React.ChangeEvent<any>) => {
         setReviewInput(e.target.value);
@@ -177,53 +186,40 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
                                     {reviews?.map((review: any, index: any) => (
                                         <div key={index} className="group">
                                             <div className="grid grid-cols-3 gap-4">
-                                                <div className="flex items-center">
-                                                    <div>
-                                                        <Avatar image={review?.users?.avatar} size="large" shape="circle" />
-                                                        {/* <Image
-                                                            className="w-full object-cover rounded-full"
-                                                            width={32}
-                                                            height={32}
-                                                            src={review?.users?.avatar}
-                                                            alt={review?.users?.avatar}
-                                                        /> */}
+                                                <div>
+                                                    <div className="flex items-center">
+                                                        <div>
+                                                            <Avatar image={review?.user_avatar} size="large" shape="circle" />
+
+                                                        </div>
+                                                        <p className="ml-2 text-black text-lg leading-relaxed flex-1 w-auto font-semibold capitalize">
+                                                            {review?.users?.name || review?.users?.username}
+                                                        </p>
                                                     </div>
-                                                    <p className="ml-2 text-black text-lg leading-relaxed flex-1 w-auto font-semibold capitalize">
-                                                        {review?.users?.name || review?.users?.username}
-                                                    </p>
+                                                    <Rating value={review.score_rate} readOnly cancel={false} />
                                                 </div>
-                                                <div className="ml-2">
+                                                <div className="ml-1">
                                                     <p className="text-gray-500 text-xs leading-relaxed flex-1 w-64">
                                                         Đã đánh giá: {review?.updated_at}
                                                     </p>
                                                     <div className="flex">
-                                                        <textarea
-                                                            defaultValue={review.content}
-                                                            disabled={
-                                                                review.users.id === user_id ? false : true
-                                                            }
-                                                            className="text-black text-xl leading-relaxed flex-1 w-64 mr-2 border-none rounded w-full md:py-1 bg-inherit p-2 h-12 resize-none hover:resize"
-                                                            onChange={handleChangeReview}
-                                                        />
-                                                        {review.users.id == user_id && (
-                                                            <>
-                                                                {reviewInput && <div onClick={() => handleUpdateReview(review._id)} className="cursor-pointer items-center inline-flex cursor-pointer opacity-0 group-hover:opacity-100 text-2xl absolute right-1/4 mt-2">
-                                                                    <CiEdit />
-                                                                </div>}
-                                                                <div
-                                                                    onClick={() => handleDeleteReview(review)}
-                                                                    className="cursor-pointer items-center inline-flex cursor-pointer opacity-0 group-hover:opacity-100 text-2xl absolute left-3/4 mt-2 ml-2"
-                                                                >
-                                                                    <AiOutlineClose />
-                                                                </div>
-                                                            </>
-                                                        )}
+
+                                                        <div style={{ color: "black" }}>{review.content}</div>
+
                                                     </div>
                                                 </div>
+
                                                 <div>
-                                                    <div className="items-center p-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg float-right lg:mb-4 justify-center flex">
-                                                        {review.score_rate.toFixed(1)}
+                                                    <div onClick={() => { setReviewDetail(review), setVisible(!visible) }
+                                                    }>
+                                                        {review?.comments?.length} câu trả lời
                                                     </div>
+                                                    <Dialog visible={visible} maximizable onHide={() => setVisible(false)} style={{ width: '60vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} header="Đánh giá">
+
+                                                        <ReviewHotel setVisible={setVisible} onSave={() => console.log(1)
+                                                        } currentReview={reviewDetail ?? null}></ReviewHotel>
+
+                                                    </Dialog>
                                                 </div>
                                             </div>
                                             <hr className="my-8"></hr>
@@ -251,21 +247,6 @@ const HotelReview = ({ reviews, id, setShowModal }: any) => {
 
                                     </div>
 
-                                    {/* <span className="text-black">Viết đánh giá</span>
-                                    <input
-                                        value={reviewInput}
-                                        className="form-input block rounded my-4 w-full w-128"
-                                        placeholder="Khách sạn đẹp quá!"
-                                        onChange={handleChangeReview}
-                                    />
-                                    <span className="text-black">Điểm</span> */}
-                                    {/* <input
-                                        value={score}
-                                        type="number"
-                                        className="form-input block rounded my-4"
-                                        placeholder="9.5"
-                                        onChange={handleChangeScore}
-                                    /> */}
                                     <div className="card flex justify-content-center mt-2">
                                         <Rating value={value !== null ? value : undefined} onChange={(e: RatingChangeEvent) => setValue(e.value!)} cancel={false} />
                                     </div>
