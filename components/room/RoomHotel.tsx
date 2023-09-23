@@ -11,11 +11,11 @@ import { Calendar, CalendarChangeEvent } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { useRouter } from 'next/router'
 interface Props {
-  hotelId: string;
+    hotelId: any;
 }
 
 interface RoomReserve extends IRoom {
-  quantity: number;
+    quantity: number;
 }
 
 const numberFormat = (e: any) =>
@@ -69,11 +69,9 @@ const RoomHotel = ({ hotelId }: Props) => {
     const handleDetailRoom = async (id: any) => {
         let token = getCookie("jwt_token")?.toString();
         //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
-        let url = `/api/rooms?hotel_id=${hotelId}&check_in=${
-            checkIn != undefined ? moment(checkIn).format("YYYY-MM-DD") : ""
-        }&check_out=${
-            checkOut != undefined ? moment(checkOut).format("YYYY-MM-DD") : ""
-        }&people_number=${peopleNumber}&bed_number=${bedNumber}`;
+        let url = `/api/rooms?hotel_id=${hotelId}&check_in=${checkIn != undefined ? moment(checkIn).format("YYYY-MM-DD") : ""
+            }&check_out=${checkOut != undefined ? moment(checkOut).format("YYYY-MM-DD") : ""
+            }&people_number=${peopleNumber}&bed_number=${bedNumber}`;
         console.log(url);
         try {
             const response = await fetch(url, {
@@ -98,9 +96,9 @@ const RoomHotel = ({ hotelId }: Props) => {
     useEffect(() => {
         const queryUrl = router?.query
         const branchSlug = queryUrl?.id ? queryUrl?.id : ''
-    
+
         console.log('hotelIdState', branchSlug);
-        
+
         handleDetailRoom(router?.query.id);
     }, [checkOut, checkIn, peopleNumber, bedNumber, router?.query.id]);
 
@@ -122,7 +120,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                 setTotal(total + quantity);
                 setPrice(price + quantity * room.price);
             } else {
-                roomsReserve.forEach((item) => {            
+                roomsReserve.forEach((item) => {
                     if (item.id === room.id) {
                         setTotal(total - item.quantity + quantity);
                         setPrice(
@@ -156,23 +154,24 @@ const RoomHotel = ({ hotelId }: Props) => {
             setCheckIn(new Date(moment(event.value).format("DD MMM YYYY")));
         }
     };
-    const Reserve = () => (
-        <>
-            {total > 0 ? (
-                <div className="text-sm lg:text-base text-primary flex flex-col gap-y-0.5">
-                    <p>
-                        <span className="font-semibold ">{total}</span> phòng (Giá 1 đêm):
-                    </p>
-                    <h2 className="text-xl lg:text-3xl font-semibold">
-                        {numberFormat(price)}
-                    </h2>
-                    <p className="text-xs lg:text-sm mb-2.5">Đã bao gồm thuế và phí</p>
-                </div>
-            ) : (
-                <></>
-            )}
-        </>
-    );
+
+    // const Reserve = () => (
+    //     <>
+    //         {total > 0 ? (
+    //             <div className="text-sm lg:text-base text-primary flex flex-col gap-y-0.5">
+    //                 <p>
+    //                     <span className="font-semibold ">{total}</span> phòng (Giá 1 đêm):
+    //                 </p>
+    //                 <h2 className="text-xl lg:text-3xl font-semibold">
+    //                     {numberFormat(price)}
+    //                 </h2>
+    //                 <p className="text-xs lg:text-sm mb-2.5">Đã bao gồm thuế và phí</p>
+    //             </div>
+    //         ) : (
+    //             <></>
+    //         )}
+    //     </>
+    // );
 
     const [
         bookingRoom,
@@ -198,11 +197,13 @@ const RoomHotel = ({ hotelId }: Props) => {
         } else {
             router.push({
                 pathname: `/booking/${bookingBody.hotel_id}`,
-                query: { roomsReserve: JSON.stringify(roomsReserve) ,
+                query: {
+                    roomsReserve: JSON.stringify(roomsReserve),
                     checkIn: JSON.stringify(checkIn),
                     hotel_id: id,
                     checkOut: JSON.stringify(checkOut),
-                    price: price},
+                    price: price
+                },
             });
             console.log('bookingBody.hotel_id', id);
         }
@@ -270,23 +271,30 @@ const RoomHotel = ({ hotelId }: Props) => {
                             <button
                                 className="bg-transparent hover:bg-blue-300 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded"
                                 type="button"
-                                onClick={() => setPeopleNumber(peopleNumber - 1)}
+                                onClick={() => setPeopleNumber(peopleNumber > 0 ? peopleNumber - 1 : peopleNumber)}
                             >
-                -
+                                -
                             </button>
                         </div>
                         <InputText
                             className="rounded focus-border:bg-blue-400 text-center form-control w-32 "
                             value={peopleNumber < 0 ? "2" : peopleNumber.toString()}
-                            onChange={(e) => setPeopleNumber(e.target.valueAsNumber)}
+                            onChange={(e) => {
+                                if (isNaN(parseInt(e.target.value))) {
+                                    setPeopleNumber(0)
+                                } else {
+                                    setPeopleNumber(parseInt(e.target.value))
+                                }
+                            }
+                            }
                         />
                         <div className="input-group-prepend">
                             <button
                                 className="bg-transparent hover:bg-blue-300 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded"
                                 type="button"
-                                onClick={() => setPeopleNumber(peopleNumber + 1)}
+                                onClick={() => setPeopleNumber(peopleNumber < 15 ? peopleNumber + 1 : peopleNumber)}
                             >
-                +
+                                +
                             </button>
                         </div>
                     </div>
@@ -298,23 +306,29 @@ const RoomHotel = ({ hotelId }: Props) => {
                             <button
                                 className="bg-transparent hover:bg-blue-300 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded"
                                 type="button"
-                                onClick={() => setBedNumber(bedNumber - 1)}
+                                onClick={() => setBedNumber(bedNumber > 0 ? bedNumber - 1 : bedNumber)}
                             >
-                -
+                                -
                             </button>
                         </div>
                         <InputText
                             className="rounded focus-border:bg-blue-400 text-center form-control w-32 "
                             value={bedNumber < 0 ? "2" : bedNumber.toString()}
-                            onChange={(e) => setBedNumber(e.target.valueAsNumber)}
+                            onChange={(e) => {
+                                if (isNaN(parseInt(e.target.value))) {
+                                    setBedNumber(0)
+                                } else {
+                                    setBedNumber(parseInt(e.target.value))
+                                }
+                            }}
                         />
                         <div className="input-group-prepend">
                             <button
                                 className="bg-transparent hover:bg-blue-300 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded"
                                 type="button"
-                                onClick={() => setBedNumber(bedNumber + 1)}
+                                onClick={() => setBedNumber(bedNumber < 20 ? bedNumber + 1 : bedNumber)}
                             >
-                +
+                                +
                             </button>
                         </div>
                     </div>
@@ -324,19 +338,19 @@ const RoomHotel = ({ hotelId }: Props) => {
                 <div className="w-full xl:w-4/5 lg:w-full rounded-md drop-shadow-lg">
                     <div className="hidden md:grid grid-cols-12 bg-blue-400 text-white rounded-md drop-shadow-lg">
                         <div className="xl:col-span-5 lg:col-span-6 md:col-span-7 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Loại phòng
+                            Loại phòng
                         </div>
                         <div className="col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Số người
+                            Số người
                         </div>
                         <div className="xl:col-span-2 lg:col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Giá 1 đêm
+                            Giá 1 đêm
                         </div>
                         <div className="col-span-2 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Các lựa chọn
+                            Các lựa chọn
                         </div>
                         <div className="xl:col-span-2 lg:col-span-2 md:col-span-1 text-sm 2xl:text-base border border-l-0 border-blue-500 p-1.5 flex justify-center items-center text-center">
-              Chọn số lượng
+                            Chọn số lượng
                         </div>
                     </div>
                     <div>
@@ -386,12 +400,12 @@ const RoomHotel = ({ hotelId }: Props) => {
                                         <h2 className="font-semibold">Miễn phí huỷ trước 2 ngày</h2>
                                         <p>
                                             <span className="font-semibold uppercase">
-                        HOÀN TRẢ 100%{" "}
+                                                HOÀN TRẢ 100%{" "}
                                             </span>
-                      – thanh toán ngay
+                                            – thanh toán ngay
                                         </p>
                                         <p className="text-red-500">
-                      Chỉ còn {room.quantity} phòng trống theo yêu cầu của bạn
+                                            Chỉ còn {room.quantity} phòng trống theo yêu cầu của bạn
                                         </p>
                                     </div>
                                 </div>
@@ -419,15 +433,31 @@ const RoomHotel = ({ hotelId }: Props) => {
                 {/* Right */}
                 <div className="w-full xl:w-1/5 border md:border-l-0 border-blue-500">
                     <div className="bg-blue-400 text-sm 2xl:text-base border-b-2 border-blue-500 p-1.5 flex justify-center items-center">
-            &nbsp;
+                        &nbsp;
                         <span className="lg:hidden">
                             <br />
-              &nbsp;
+                            &nbsp;
                         </span>
                     </div>
 
                     <div className="p-2.5">
-                        <Reserve />
+
+
+                        {total > 0 ? (
+                            <div className="text-sm lg:text-base text-primary flex flex-col gap-y-0.5">
+                                <p>
+                                    <span className="font-semibold ">{total}</span> phòng (Giá 1 đêm):
+                                </p>
+                                <h2 className="text-xl lg:text-3xl font-semibold">
+                                    {numberFormat(price)}
+                                </h2>
+                                <p className="text-xs lg:text-sm mb-2.5">Đã bao gồm thuế và phí</p>
+                            </div>
+                        ) : <div></div>}
+
+                        {/* // <Reserve /> */}
+
+
                         <div onClick={() => booking(hotelId)}>
                             <Button
                                 text={"Tôi sẽ đặt"}
@@ -442,7 +472,7 @@ const RoomHotel = ({ hotelId }: Props) => {
                                 <li>Không mất phí đặt phòng hay phí thẻ tín dụng!</li>
                             </ul>
                             <h2 className="text-center rounded-md text-green-500 font-medium text-xs lg:text-base border-2 border-green-500 mt-2.5 px-1.5 py-0.5">
-                Thanh toán nhanh!
+                                Thanh toán nhanh!
                             </h2>
                         </div>
                     </div>

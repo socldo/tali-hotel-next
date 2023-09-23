@@ -93,15 +93,20 @@ const Header = () => {
             name: 'Tài khoản',
             link: '/user'
         },
+        // {
+        //     icon: <RiSuitcaseLine />,
+        //     name: 'Đặt phòng',
+        //     link: '/search/1'
+        // },
         {
             icon: <RiSuitcaseLine />,
-            name: 'Đặt phòng',
-            link: '/search/1'
+            name: 'Đã đặt',
+            link: '/booking-manager/manager'
         },
         {
             icon: <AiOutlineHeart />,
-            name: 'Đã đặt',
-            link: '/user/wishlist'
+            name: 'Yêu thích',
+            link: '/favorite'
         }
     ]
     const menu = [

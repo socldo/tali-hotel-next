@@ -109,7 +109,7 @@ function Hotel() {
             });
 
             const data = await response.json();
-  
+
             setHotels(data.data);
             setLoading(false);
 
@@ -242,8 +242,6 @@ function Hotel() {
 
         const reject = () => {
             toast.warn('Từ chối cập nhật')
-
-
         };
         return (
             <>

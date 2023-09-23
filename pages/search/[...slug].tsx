@@ -22,11 +22,12 @@ const SearchPage: React.FC<Props> = ({ room }) => {
     useEffect(() => {
         setBranchId(branchSlug)
     }, [])
-    // console.log(branchId);
+    useEffect(() => {
+        handleGetDetailBranch();
+    }, []);
 
     const handleGetDetailBranch = async () => {
         let token = getCookie('jwt_token')?.toString();
-        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         let url = `/api/branches/${branchId}`;
 
         const response = await fetch(url, {
@@ -38,14 +39,10 @@ const SearchPage: React.FC<Props> = ({ room }) => {
             }),
         });
         const data = await response.json();
-        // console.log( data);
         setBranchName(data?.data?.name)
 
         return data;
     }
-    useEffect(() => {
-        handleGetDetailBranch();
-    }, []); // Passing an empty array as the second argument to useEffect will ensure that the effect runs only once, when the component mounts.
 
 
     const [hotelsType, setHotelsType] = useState(room || undefined)
