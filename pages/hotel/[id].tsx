@@ -24,6 +24,8 @@ import GGMap from '../../components/googlemap/GGMap'
 import { Dialog } from 'primereact/dialog'
 import querystring from 'querystring';
 import { Model } from '../../interface'
+import { toast } from 'react-toastify'
+import { boolean } from 'yup'
 
 interface Props {
     hotelIdPrps: string;
@@ -53,6 +55,7 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
     const [status, setStatus] = useState(0)
     const [rateCount, setRateCount] = useState(0)
     const [averageRate, setAverageRate] = useState(0)
+    const [isFavorite, setIsFavorite] = useState<boolean>(false)
     const [isHaveFreeWifi, setIsHaveFreeWifi] = useState(0)
     const [isHaveFreeParking, setIsHaveFreePaking] = useState(0)
     const [shortDescription, setShortDescription] = useState('')
@@ -105,6 +108,7 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
             setImages(data.data.images)
             setLat(data.data.lat)
             setLng(data.data.lng)
+            setIsFavorite(data.data.is_favorite)
         }
 
 
@@ -169,6 +173,51 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
         // eslint-disable-next-line @next/next/no-img-element
         return <img src={item} alt={item} style={{ display: 'block' }} />;
     }
+
+
+
+    const handleChangeStatus = (item: any) => {
+
+
+        const handleChangeFavorite = async () => {
+
+            try {
+
+                const response = await fetch(`/api/hotels/favorite`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        hotel_id: hotelId
+                    }),
+                    headers: new Headers({
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        Authorization: !token ? "" : token
+                    }),
+                });
+                const data = await response.json();
+                console.log('data:', data);
+
+
+
+                return data;
+            } catch (error) {
+                console.error('Error fetching:', error);
+            }
+        };
+
+        if (!token) {
+
+            toast.warn('Vui lòng đăng nhập!')
+
+        } else {
+
+            handleChangeFavorite()
+            setIsFavorite(!isFavorite);
+        }
+
+
+    }
+
     return (
         <Layout
             metadata={{
@@ -191,17 +240,26 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
                     <div className="w-full ">
                         <div>
                             <div className="flex justify-between flex-wrap">
-                                <div className="flex gap-x-2">
-                                    <p className="first-letter:uppercase text-sm text-white bg-gray-500 w-max h-max px-1.5 py-0.5 rounded">
+                                <div className="flex items-center gap-2">
+                                    <p className="text-sm text-white bg-gray-500 w-max h-max px-1.5 py-0.5 rounded">
                                         {type}
                                     </p>
                                     <StarRating data={averageRate} />
 
-                                    <div
-                                        className="items-center p-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg float-right lg:mb-4">
+                                    <div className="p-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg">
                                         {averageRate}.0
                                     </div>
+
+                                    <div onClick={() => handleChangeStatus(hotelId)}>
+                                        {isFavorite && token
+                                            ?
+                                            <i className="pi pi-heart-fill" style={{ color: 'red', fontSize: '2rem', margin: '0.2rem' }} ></i>
+                                            :
+                                            <i className="pi pi-heart" style={{ color: 'red', fontSize: '2rem', margin: '0.2rem' }} ></i>
+                                        }
+                                    </div>
                                 </div>
+
                                 <div className="text-secondary flex items-center gap-x-2.5">
                                     <div
                                         // onClick={wishListHandle}
@@ -233,6 +291,7 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
                                             bgColor="bg-primary"
                                         />
                                     </div>
+
                                     {showModal ? (
                                         <HotelReview
                                             reviews={reviews}

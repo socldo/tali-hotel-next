@@ -13,10 +13,12 @@ export interface IRoom {
     address: string;
     is_popular: number;
     total_reviews: number;
-    quantity:number;
+    quantity: number;
     average_rate: number;
     createdAt?: Date;
     updatedAt?: Date;
     lat: string;
     lng: string;
+    is_favorite: boolean;
+
 }

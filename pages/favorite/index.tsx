@@ -127,7 +127,6 @@ function Favorite() {
         }
         const handlePushHotel = (hotel: any) => {
             setHotel(rowData)
-            console.log(hotel);
 
             router.push(`/hotel/${hotel?.id}`)
         };
@@ -140,10 +139,10 @@ function Favorite() {
 
                     <div className="flex">
                         <div onClick={(e) => handleChangeFavorite(rowData)}>
-                            <i className="pi pi-heart-fill" style={{ color: 'red', fontSize: '2.5rem' }} ></i>
+                            <i className="pi pi-heart-fill" style={{ color: 'red', fontSize: '2rem' }} ></i>
                         </div>
                         <div style={{ marginLeft: '1rem' }} onClick={(e) => handlePushHotel(rowData)}>
-                            <i className="pi pi-chevron-circle-right" style={{ color: 'blue', fontSize: '2.5rem' }} ></i>
+                            <i className="pi pi-chevron-circle-right" style={{ color: 'blue', fontSize: '2rem' }} ></i>
                         </div>
 
                     </div>

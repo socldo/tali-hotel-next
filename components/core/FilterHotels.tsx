@@ -68,24 +68,28 @@ const FilterHotels: React.FC<Props> = ({ branchIdBf, branchNameBf, branchesModel
 
     const [rating, setRating] = useState('-1')
     let token = getCookie('jwt_token')?.toString();
+    const userId = getCookie('id')?.toString();
 
     const handleFilter = async () => {
-        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
 
-        let url = `/api/hotels?branch_id=${branchId}&check_in=${checkIn}&check_out=${checkOut}&people_number=${peopleNumber}&min_price=${minPrice}&max_price=${maxPrice}&avarage_rate=${rating}&bed_number=${bedNumber}`;
+        let id = userId ?? -1;
+
+        let url = `/api/hotels?branch_id=${branchId}&check_in=${checkIn}&check_out=${checkOut}&people_number=${peopleNumber}&min_price=${minPrice}&max_price=${maxPrice}&avarage_rate=${rating}&bed_number=${bedNumber}&user_id=${id}`;
 
         const response = await fetch(url, {
             method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                Authorization: token == undefined ? "" : token
+                Authorization: !token ? "" : token
             }),
 
         });
         const data = await response.json();
 
         setRooms(data.data)
+
+
         return data;
     }
     useEffect(() => {

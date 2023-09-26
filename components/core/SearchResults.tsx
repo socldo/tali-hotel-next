@@ -11,6 +11,8 @@ import { MapContainer } from '../map'
 import GGMap from '../googlemap/GGMap'
 import { Dialog } from 'primereact/dialog'
 import { LoadScript } from '@react-google-maps/api'
+import { getCookie } from 'cookies-next'
+import { toast } from 'react-toastify'
 interface Props {
     data?: IRoom[];
     city?: string;
@@ -22,10 +24,14 @@ const numberFormat = (e: any) =>
         currency: 'VND'
     }).format(e);
 
+const userId = getCookie('id')?.toString();
 
 
 const SearchResults: React.FC<Props> = ({ data, city }) => {
     const [visible, setVisible] = useState(false);
+
+
+
 
     return (
         <div>
@@ -79,11 +85,28 @@ const SearchResults: React.FC<Props> = ({ data, city }) => {
                                 {hotel.is_popular == 1 ?
                                     <div className="basic-1/4 font-semibold flex flex-row lg:flex-col justify-between items-center lg:items-end ">
                                         <Tag className='-mt-5 -mr-5' value={"Lựa chọn tốt nhất"} severity={'warning'}></Tag>
-                                        <p className='text-sm text-neutral-900 ml-2 justify-between items-right -mr-5' style={{ 'marginRight': '1px' }}>{hotel.total_reviews} đánh giá</p>
+
+                                        <div >
+                                            {hotel.is_favorite ?
+                                                <i className="pi pi-heart-fill" style={{ color: 'red', fontSize: '1.5rem', margin: '0.2rem' }} ></i>
+                                                :
+                                                <i className="pi pi-heart" style={{ color: 'red', fontSize: '1.5rem', margin: '0.2rem' }} ></i>
+                                            }
+                                        </div>
+                                        <p className='text-sm text-neutral-900 ml-2 justify-between items-right -mr-3'>{hotel.total_reviews} đánh giá</p>
+
                                     </div> :
                                     <div className="basic-1/4 font-semibold flex flex-row lg:flex-col justify-between items-center lg:items-end ">
                                         <Tag className='-mt-5 -mr-5' value={"Có thể đặt ngay"} severity={'success'}></Tag>
-                                        <p className='text-sm text-neutral-900 ml-2 justify-between items-right -mr-5'>{hotel.total_reviews} đánh giá </p></div>}
+                                        {hotel.is_favorite ?
+                                            <i className="pi pi-heart-fill" style={{ color: 'red', fontSize: '1.5rem', margin: '0.2rem' }} ></i>
+                                            :
+                                            <i className="pi pi-heart" style={{ color: 'red', fontSize: '1.5rem', margin: '0.2rem' }} ></i>
+
+                                        }
+                                        <p className='text-sm text-neutral-900 ml-2 justify-between items-right -mr-3'>{hotel.total_reviews} đánh giá </p>
+
+                                    </div>}
 
                                 <div >
                                     <p className='text-neutral-500 ml-2 justify-between items-left'>{numberFormat(hotel.price)}</p>

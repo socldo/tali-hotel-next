@@ -3,9 +3,9 @@ import querystring from 'querystring';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
 
-    const { branch_id, check_in, check_out, people_number, min_price, max_price, avarage_rate } = request.query;
+    const { branch_id, check_in, check_out, people_number, min_price, max_price, avarage_rate, user_id } = request.query;
 
-    const queryParams = querystring.stringify({ branch_id, check_in, check_out, people_number, min_price, max_price, avarage_rate });
+    const queryParams = querystring.stringify({ branch_id, check_in, check_out, people_number, min_price, max_price, avarage_rate, user_id });
 
     const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/hotels`;
 
