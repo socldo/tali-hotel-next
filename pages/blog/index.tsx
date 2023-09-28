@@ -20,7 +20,6 @@ const Blog = () => {
     const getListNews = async () => {
 
 
-        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/news/get-list?key_search=${keySearch}`;
 
         const response = await fetch(url, {
@@ -32,7 +31,7 @@ const Blog = () => {
             }),
         });
         const data = await response.json();
-        setNews(data.data.filter((news: { is_deleted: number; }) => news.is_deleted == 0))
+        setNews(data?.data?.filter((news: { is_deleted: number; }) => news.is_deleted == 0))
 
         return data.data;
 
@@ -40,7 +39,6 @@ const Blog = () => {
 
     const getListNewsTop = async () => {
 
-        //Nếu id = 0 thì sẽ tạo mới, không thì sẽ cập nhật
         const url = `/api/news/get-list?sort=1`;
 
         const response = await fetch(url, {
@@ -52,7 +50,7 @@ const Blog = () => {
             }),
         });
         const data = await response.json();
-        setNewsTop(data.data.filter((news: { is_deleted: number; }) => news.is_deleted == 0))
+        setNewsTop(data?.data?.filter((news: { is_deleted: number; }) => news.is_deleted == 0))
 
         return data.data;
 
