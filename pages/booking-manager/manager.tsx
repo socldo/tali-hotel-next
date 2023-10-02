@@ -5,7 +5,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Rating } from "primereact/rating";
 import { Tag } from "primereact/tag";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { CSSProperties, SetStateAction, useEffect, useRef, useState } from "react";
 import { IBooking, IRoom } from "../../models";
 import BookingDetail from "../../components/booking/BookingDetail";
 import { Dialog } from "primereact/dialog";
@@ -48,6 +48,9 @@ const BookingManagerPage = () => {
         });
         const data = await response.json();
         setBookingData(data.data);
+        console.log(bookingData);
+
+
         return data.data;
     }
 
@@ -72,9 +75,74 @@ const BookingManagerPage = () => {
         return <Rating value={product.rating} readOnly cancel={false} color={"red"} />;
     };
 
-    const statusBodyTemplate = (product: any) => {
+    const paymentStatusBodyTemplate = (product: any) => {
         return <Tag value={getSeverity(product)} severity={getColorSeverity(product)} ></Tag>;
     };
+
+    const statusBodyTemplate = (booking: any) => {
+        let statusName = '';
+        let statusNameVI = '';
+
+        switch (booking.status) {
+            case 0:
+                statusName = 'pre-booked';
+                statusNameVI = 'Đặt trước';
+                break;
+            case 1:
+                statusName = 'staying';
+                statusNameVI = 'Đang ở';
+                break;
+            case 2:
+                statusName = 'completed';
+                statusNameVI = 'Hoàn tất';
+                break;
+            case 3:
+                statusName = 'cancel';
+                statusNameVI = 'Đã hủy';
+                break;
+            default:
+                break;
+        };
+
+        const inlineStyle: CSSProperties = {
+            borderRadius: 'var(--border-radius)',
+            padding: '0.25em 0.5rem',
+            textTransform: 'uppercase',
+            fontWeight: 700,
+            fontSize: '12px',
+            letterSpacing: '0.3px',
+        };
+
+        switch (booking.status) {
+            case 0:
+                inlineStyle.backgroundColor = '#c8e6c9';
+                inlineStyle.color = '#256029';
+                break;
+            case 1:
+                inlineStyle.backgroundColor = '#b3e5fc';
+                inlineStyle.color = '#23547b';
+                break;
+            case 2:
+                inlineStyle.backgroundColor = '#feedaf';
+                inlineStyle.color = '#8a5340';
+                break;
+            case 3:
+                inlineStyle.backgroundColor = '#ffcdd2';
+                inlineStyle.color = '#c63737';
+                break;
+            default:
+                break;
+        };
+
+        return (
+            <span style={inlineStyle}>
+                {statusNameVI}
+            </span>
+        );
+    };
+
+
+
 
     const hadleClickDetailButton = (product: any) => {
         setShowModel(true);
@@ -164,7 +232,6 @@ const BookingManagerPage = () => {
 
     const accept = async (booking: any) => {
         const response = await handleCancelBooking(parseInt(booking.id))
-        console.log('dasdasdasd', booking.id);
 
         if (response.status == 200) {
             toast.current?.show({ severity: 'info', summary: 'Thông báo', detail: 'Đã huỷ thành công', life: 3000 });
@@ -230,6 +297,7 @@ const BookingManagerPage = () => {
                             <Column field="amount" header="Giá tiền" body={priceBodyTemplate}></Column>
                             <Column field="type" header="Loại phòng"></Column>
                             {/* <Column field="rating" header="Đánh giá" body={ratingBodyTemplate}></Column> */}
+                            <Column header="Thanh toán" body={paymentStatusBodyTemplate}></Column>
                             <Column header="Trạng thái" body={statusBodyTemplate}></Column>
                             {/* <Column header="" body={getDetailBooking}></Column> */}
                             <Column header="" body={(e) => cancelBooking(e)}></Column>

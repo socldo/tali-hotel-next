@@ -222,7 +222,7 @@ function Booking() {
     };
 
     const fetchChangePaymentStatus = async (statusChange: number) => {
-        if (booking?.payment_status == 2 || booking?.payment_status == 0) {
+        if (booking?.payment_status == 2 || booking?.payment_status == 0 || booking?.payment_status == 1) {
             try {
 
 
@@ -380,7 +380,7 @@ function Booking() {
             let changeStatus = await fetchChangePaymentStatus(status);
 
 
-            if (changeStatus?.status === 200) {
+            if (changeStatus?.status == 200) {
                 toast.success('Cập nhật thành công');
             }
             else {
@@ -423,7 +423,7 @@ function Booking() {
             );
 
         }
-        if (rowData.payment_status == 0) {
+        if (rowData.payment_status == 0 || rowData.payment_status == 1) {
 
             items.push(
                 {

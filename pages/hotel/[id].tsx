@@ -213,6 +213,8 @@ const HotelDetailPage = ({ hotelIdPrps }: Props) => {
 
             handleChangeFavorite()
             setIsFavorite(!isFavorite);
+            toast.success('Thay đổi thành công!')
+
         }
 
 
