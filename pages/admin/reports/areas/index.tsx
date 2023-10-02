@@ -8,6 +8,7 @@ import { getCookie } from "cookies-next";
 import querystring from "querystring";
 import { toast } from "react-toastify";
 import NumberOfVisitorsAndRevenue from "../../../../components/admin/reports/number-of-visitors-and-revenue";
+import NotHaveAccess from "../../../../components/admin/note-have-access";
 
 function AreaReport() {
     const [branches, setBranches] = useState<Model.Branch[]>([]);
@@ -17,6 +18,7 @@ function AreaReport() {
 
     const [year, setYear] = useState<string | Date | Date[] | null>('2023');
     const token = getCookie("jwt_token")?.toString();
+    const roleId = getCookie("role_id")?.toString();
 
     const [fromDateString, setFromDateString] = useState<string>('');
     const [toDateString, setToDateString] = useState<string>('');
@@ -103,69 +105,87 @@ function AreaReport() {
         return '';
     };
 
+
+
     return (
         <>
-            <div className="card justify-content-center">
-                <div className="flex">
-                    <div className="mr-4">
-                        <Dropdown
-                            value={areaId}
-                            onChange={(e: DropdownChangeEvent) => { setAreaId(e.value) }}
-                            options={[
-                                { label: "Tất cả", value: -1 },
-                                ...(branches?.map((branch) => ({ label: branch.name, value: branch.id })) || []),
-                            ]}
-                            optionLabel="label"
-                            placeholder="Khu vực"
-                            className="w-full md:w-14rem"
-                        />
-                    </div>
-                    <div className="mr-4">
-                        <span>Từ ngày: </span>
-                        <Calendar value={fromDate} onChange={(e: any) => setFromDate(e.value)} dateFormat="dd/mm/yy" />
-                    </div>
-                    <div className="mr-4">
-                        <span>Đến ngày: </span>
-                        <Calendar value={toDate} onChange={(e: any) => setToDate(e.value)} dateFormat="dd/mm/yy" />
-                    </div>
-                    <div className="mr-4">
-                        <Button icon="pi pi-search" rounded severity="success" aria-label="Search" onClick={handleSearchClick} />
-                    </div>
-                </div>
-                <div style={{ 'justifyContent': 'center' }}>
-                    <CustomerReviewReport fromDate={fromDateString} toDate={toDateString} hotelId={-1} areaId={areaId} search={search} />
-                </div>
 
-            </div>
+            {roleId === '3' || roleId === '4' ?
+                (
+                    <>
+                        <div className="card justify-content-center">
 
-            <div className="card justify-content-center">
-                <div className="flex">
-                    <div className="mr-4">
-                        <Dropdown
-                            value={areaId}
-                            onChange={(e: DropdownChangeEvent) => { setAreaId(e.value) }}
-                            options={[
-                                { label: "Tất cả", value: -1 },
-                                ...(branches?.map((branch) => ({ label: branch.name, value: branch.id })) || []),
-                            ]}
-                            optionLabel="label"
-                            placeholder="Khu vực"
-                            className="w-full md:w-14rem"
-                        />
+                            <div className="flex">
+                                <div className="mr-4">
+                                    <Dropdown
+                                        value={areaId}
+                                        onChange={(e: DropdownChangeEvent) => { setAreaId(e.value) }}
+                                        options={[
+                                            { label: "Tất cả", value: -1 },
+                                            ...(branches?.map((branch) => ({ label: branch.name, value: branch.id })) || []),
+                                        ]}
+                                        optionLabel="label"
+                                        placeholder="Khu vực"
+                                        className="w-full md:w-14rem"
+                                    />
+                                </div>
+                                <div className="mr-4">
+                                    <span>Từ ngày: </span>
+                                    <Calendar value={fromDate} onChange={(e: any) => setFromDate(e.value)} dateFormat="dd/mm/yy" />
+                                </div>
+                                <div className="mr-4">
+                                    <span>Đến ngày: </span>
+                                    <Calendar value={toDate} onChange={(e: any) => setToDate(e.value)} dateFormat="dd/mm/yy" />
+                                </div>
+                                <div className="mr-4">
+                                    <Button icon="pi pi-search" rounded severity="success" aria-label="Search" onClick={handleSearchClick} />
+                                </div>
+                            </div>
+                            <div style={{ 'justifyContent': 'center' }}>
+                                <CustomerReviewReport fromDate={fromDateString} toDate={toDateString} hotelId={-1} areaId={areaId} search={search} />
+                            </div>
+
+                        </div>
+
+                        <div className="card justify-content-center">
+                            <div className="flex">
+                                <div className="mr-4">
+                                    <Dropdown
+                                        value={areaId}
+                                        onChange={(e: DropdownChangeEvent) => { setAreaId(e.value) }}
+                                        options={[
+                                            { label: "Tất cả", value: -1 },
+                                            ...(branches?.map((branch) => ({ label: branch.name, value: branch.id })) || []),
+                                        ]}
+                                        optionLabel="label"
+                                        placeholder="Khu vực"
+                                        className="w-full md:w-14rem"
+                                    />
+                                </div>
+                                <div className="mr-4">
+                                    <span>Năm: </span>
+                                    <Calendar value={year} onChange={(e: any) => setYear(e.value)} view="year" dateFormat="yy" />
+                                </div>
+
+                                <div className="mr-4">
+                                    <Button icon="pi pi-search" rounded severity="success" aria-label="Search" onClick={handleSearchClick2} />
+                                </div>
+                            </div>
+                            <NumberOfVisitorsAndRevenue fromDate={fromDateString} toDate={toDateString} hotelId={-1} areaId={areaId} search2={search2} />
+
+
+                        </div>
+                    </>
+                )
+                :
+                (
+                    <div>
+                        <NotHaveAccess />
                     </div>
-                    <div className="mr-4">
-                        <span>Năm: </span>
-                        <Calendar value={year} onChange={(e: any) => setYear(e.value)} view="year" dateFormat="yy" />
-                    </div>
+                )
 
-                    <div className="mr-4">
-                        <Button icon="pi pi-search" rounded severity="success" aria-label="Search" onClick={handleSearchClick2} />
-                    </div>
-                </div>
-                <NumberOfVisitorsAndRevenue fromDate={fromDateString} toDate={toDateString} hotelId={-1} areaId={areaId} search2={search2} />
+            }
 
-
-            </div>
 
 
         </>

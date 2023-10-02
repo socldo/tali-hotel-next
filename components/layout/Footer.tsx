@@ -34,34 +34,17 @@ const Footer = () => {
                     <li>
                         <a
                             className="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
-                            href="#"
+                            href="/contact"
                         >
                             About
                         </a>
                     </li>
 
-                    <li>
-                        <a
-                            className="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
-                            href="#"
-                        >
-                            Services
-                        </a>
-                    </li>
 
                     <li>
                         <a
                             className="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
-                            href="#"
-                        >
-                            Projects
-                        </a>
-                    </li>
-
-                    <li>
-                        <a
-                            className="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
-                            href="#"
+                            href="/blog"
                         >
                             Blog
                         </a>
@@ -72,7 +55,7 @@ const Footer = () => {
             <p
                 className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400 lg:text-right"
             >
-                Copyright &copy; 2023. All rights reserved.
+                Copyright &copy; 2023.
             </p>
         </div>
     </footer>
