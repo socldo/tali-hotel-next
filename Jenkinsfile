@@ -9,7 +9,7 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
-                    image 'taiminh/tali-hotel-docker'
+                    image 'tali-hotel-docker'
                     args '-u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
