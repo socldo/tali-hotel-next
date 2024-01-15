@@ -2,14 +2,16 @@ pipeline {
     agent none
 
     environment {
-        DOCKER_IMAGE = "tali-hotel-next-docker"
+        DOCKER_IMAGE = "taiminh/tali-hotel-next-docker"
     }
 
     stages {
         stage('Test') {
             agent {
                 docker {
-                    image 'tali-hotel-docker'
+                    registryUrl 'https://docker.io'
+                    registryCredentialsId 'docker-hub'
+                    image 'taiminh/tali-hotel-docker'
                     args '-u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
