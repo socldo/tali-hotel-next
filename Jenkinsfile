@@ -9,6 +9,8 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
+                    registryUrl 'https://docker.io'
+                    registryCredentialsId 'docker-hub'
                     image 'taiminh/tali-hotel-docker'
                     args '-u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
                 }
