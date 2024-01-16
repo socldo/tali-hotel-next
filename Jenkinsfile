@@ -9,13 +9,23 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
-                    image 'taiminh/tali-hotel-docker'
+                    image 'tali-hotel-docker'
                     args '-u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
                 sh "npm i -f"
                 sh "npm run dev"
+            }
+        }
+
+        stage('build') {
+            agent { node {label 'master'}}
+            environment {
+                DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${BUILD_NUMBER}-${GIT_COMMIT.substring(0,7)}"
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub')])
             }
         }
     }
