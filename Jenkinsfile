@@ -6,6 +6,15 @@ pipeline {
     }
 
     stages {
+
+        stage('Build Image') {
+        agent any
+        steps {
+            script {
+                docker.build('tali-hotel-docker')
+            }
+        }
+    }
         stage('Test') {
             agent {
                 docker {
