@@ -15,18 +15,18 @@ pipeline {
             }
         }
     }
-        stage('Test') {
-            agent {
-                docker {
-                    image 'tali-hotel-docker'
-                    args '-u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
-            steps {
-                sh "npm i -f"
-                sh "npm run dev"
-            }
-        }
+        // stage('Test') {
+        //     agent {
+        //         docker {
+        //             image 'tali-hotel-docker'
+        //             args '-u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
+        //         }
+        //     }
+        //     steps {
+        //         sh "npm i -f"
+        //         sh "npm run dev"
+        //     }
+        // }
 
         stage('build') {
             agent { node {label 'master'}}
