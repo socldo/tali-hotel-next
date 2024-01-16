@@ -42,11 +42,13 @@ pipeline {
                 sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} . "
                 sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 script {
-                    if (GIT_BRANCH ==~ /.*master.*/) {
+                    if (GIT_BRANCH ==~ /.*main.*/) {
                         sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:lastest"
                         sh "docker push ${DOCKER_IMAGE}:lastest"
                     }
                 }
+
+                sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
             }
         }
     }
